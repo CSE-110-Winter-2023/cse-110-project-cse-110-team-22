@@ -12,8 +12,11 @@
         android:layout_height="wrap_content"
         android:onClick="goToRotate"
         android:text="Launch Rotate"
-        tools:layout_editor_absoluteX="126dp"
-        tools:layout_editor_absoluteY="408dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRotate"
+        app:layout_constraintVertical_bias="0.057" />
 
     <Button
         android:id="@+id/buttonRotate"
@@ -21,7 +24,21 @@
         android:layout_height="wrap_content"
         android:onClick="goToClock"
         android:text="Launch Clock"
-        tools:layout_editor_absoluteX="126dp"
-        tools:layout_editor_absoluteY="250dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <TextView
+        android:id="@+id/orientationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="orientation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonClock" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
