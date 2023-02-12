@@ -3,6 +3,12 @@ package edu.ucsd.cse110.cse110lab4part5;
 public class UserLocation implements Location{
     private double longitude;
     private double latitude;
+
+    public UserLocation(double latitude, double longitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     @Override
     public double getLongitude() {
         return longitude;

@@ -3,6 +3,12 @@ package edu.ucsd.cse110.cse110lab4part5;
 public class LandmarkLocation implements Location{
     private double longitude;
     private double latitude;
+
+    public LandmarkLocation(double latitude, double longitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     @Override
     public double getLongitude() {
         return longitude;
