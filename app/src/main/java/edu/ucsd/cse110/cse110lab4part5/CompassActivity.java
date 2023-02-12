@@ -19,3 +19,4 @@ public class CompassActivity extends AppCompatActivity {
         imageView.setLayoutParams(layoutParams);
     }
 }
+
