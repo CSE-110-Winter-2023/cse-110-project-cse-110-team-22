@@ -1,14 +1,15 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-public class RotateActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class inputCoordinateActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rotate);
+        setContentView(R.layout.activity_input_coordinate);
     }
+
 }
