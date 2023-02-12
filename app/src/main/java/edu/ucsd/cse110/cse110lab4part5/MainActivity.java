@@ -1,6 +1,5 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void submit_alert(View view) {
-        Intent intent = new Intent(this, clockActivity.class);
+        Intent intent = new Intent(this, CompassActivity.class);
         startActivity(intent);
 //        finish();
     }
