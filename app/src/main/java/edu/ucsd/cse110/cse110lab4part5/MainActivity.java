@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         orientationService = new UserOrientationService(this);
         TextView txt = findViewById(R.id.orientationText);
+        orientationService.getOrientation().observe(this, orient -> {txt.setText(Float.toString(orient));});
     }
 
     public void goToRotate(View view) {
