@@ -66,6 +66,13 @@ public class  MainActivity extends AppCompatActivity {
         String friend_longitude_str = friend_longitude_view.getText().toString();
         String friend_latitude_str = friend_latitude_view.getText().toString();
 
+        String home_label = ((TextView)findViewById(R.id.label_home)).getText().toString();
+        String family_label = ((TextView)findViewById(R.id.label_family)).getText().toString();
+        String friend_label = ((TextView)findViewById(R.id.label_friend)).getText().toString();
+        intent.putExtra("home_label", home_label);
+        intent.putExtra("family_label", family_label);
+        intent.putExtra("friend_label", friend_label);
+
         double home_longitude_val = Double.parseDouble(home_longitude_str);
         double home_latitude_val = Double.parseDouble(home_latitude_str);
         double friend_longitude_val = Double.parseDouble(friend_longitude_str);
