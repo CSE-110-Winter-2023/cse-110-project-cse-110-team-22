@@ -29,12 +29,12 @@ public class LocationUtilsTest {
         userLoc_neg_neg = new UserLocation(-10, -10);
         userLoc_zerolat = new UserLocation(0, 10);
         userLoc_zerolon = new UserLocation(-10, 0);
-        landLoc_pos_pos = new UserLocation(30, 30);
-        landLoc_pos_neg = new UserLocation(30, -30);
-        landLoc_neg_pos = new UserLocation(-30, 30);
-        landLoc_neg_neg = new UserLocation(-30, -30);
-        landLoc_zerolat = new UserLocation(0, 30);
-        landLoc_zerolon = new UserLocation(-30, 0);
+        landLoc_pos_pos = new LandmarkLocation(30, 30);
+        landLoc_pos_neg = new LandmarkLocation(30, -30);
+        landLoc_neg_pos = new LandmarkLocation(-30, 30);
+        landLoc_neg_neg = new LandmarkLocation(-30, -30);
+        landLoc_zerolat = new LandmarkLocation(0, 30);
+        landLoc_zerolon = new LandmarkLocation(-30, 0);
     }
     @Test
     public void computeAngleTest() {

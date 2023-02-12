@@ -10,7 +10,7 @@ import android.hardware.SensorManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class UserOrientationService implements SensorEventListener, IUserOrientationService {
+public class UserOrientationService implements SensorEventListener {
     private static UserOrientationService instance;
     private final SensorManager sensorManager;
     private float[] accelerometerReading;
