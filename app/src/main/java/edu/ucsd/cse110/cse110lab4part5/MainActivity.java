@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clock);
+        setContentView(R.layout.activity_input_coordinate);
 
         if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void submit_alert(View view) {
-        Utilities.showAlert(this, "Testing");
+        Intent intent = new Intent(this, clockActivity.class);
+        startActivity(intent);
+//        finish();
     }
 }
