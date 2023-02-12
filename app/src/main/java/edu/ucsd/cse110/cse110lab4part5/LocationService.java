@@ -37,7 +37,7 @@ public class LocationService implements LocationListener {
     protected LocationService(Activity activity){
         this.locationValue = new MutableLiveData<>();
         this.activity = activity;
-        this.locationManager = (LocationManager) activity.getSystemService(Context.LOCALE_SERVICE);
+        this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         this.registerLocationListener();
     }
 
