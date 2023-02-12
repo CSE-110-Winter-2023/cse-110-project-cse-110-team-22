@@ -38,9 +38,15 @@ public class MainActivity extends AppCompatActivity {
         userLocationService.getLocation().observe(this, loc ->{
             test.setText(Double.toString(loc.first) + " , "+Double.toString(loc.second));
         });
+
+
+
+
     }
     public void submit_alert(View view) {
-        Utilities.showAlert(this, "Testing");
+        Intent intent = new Intent(this, CompassActivity.class);
+        startActivity(intent);
+//        finish();
     }
 
     @Override
