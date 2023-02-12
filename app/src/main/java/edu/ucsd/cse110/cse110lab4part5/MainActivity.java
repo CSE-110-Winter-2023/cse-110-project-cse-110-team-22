@@ -2,6 +2,7 @@ package edu.ucsd.cse110.cse110lab4part5;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import android.Manifest;
@@ -15,11 +16,15 @@ public class MainActivity extends AppCompatActivity {
 
     private MutableLiveData<Pair<Double, Double>> locationValue;
     private UserLocationService userLocationService;
+    private UserOrientationService orientationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_coordinate);
+        orientationService = new UserOrientationService(this);
+        // Below is code for updates from orientation
+//        orientationService.getOrientation().observe(this, orient -> {txt.setText(Float.toString(orient));});
 
         if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
@@ -36,5 +41,11 @@ public class MainActivity extends AppCompatActivity {
     }
     public void submit_alert(View view) {
         Utilities.showAlert(this, "Testing");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        orientationService.unregisterSensorListeners();
     }
 }
