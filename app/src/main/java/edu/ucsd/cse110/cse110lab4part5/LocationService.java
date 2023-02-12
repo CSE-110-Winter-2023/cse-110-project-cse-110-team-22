@@ -18,7 +18,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.lang.invoke.MutableCallSite;
 import java.lang.reflect.AccessibleObject;
 
-public class LocationService implements LocationListener {
+public class LocationService implements LocationListener, LocationServiceInterface{
 
     private static LocationService instance;
     private Activity activity;
@@ -37,7 +37,7 @@ public class LocationService implements LocationListener {
     protected LocationService(Activity activity){
         this.locationValue = new MutableLiveData<>();
         this.activity = activity;
-        this.locationManager = (LocationManager) activity.getSystemService(Context.LOCALE_SERVICE);
+        this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         this.registerLocationListener();
     }
 
