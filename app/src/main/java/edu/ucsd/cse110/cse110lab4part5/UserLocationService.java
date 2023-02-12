@@ -8,33 +8,29 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Pair;
-import android.view.animation.AccelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.lang.invoke.MutableCallSite;
-import java.lang.reflect.AccessibleObject;
+public class UserLocationService implements LocationListener{
 
-public class LocationService implements LocationListener, LocationServiceInterface{
-
-    private static LocationService instance;
+    private static UserLocationService instance;
     private Activity activity;
 
     private MutableLiveData<Pair<Double, Double>> locationValue;
 
     private final LocationManager locationManager;
 
-    public static LocationService singleton(Activity activity){
+    public static UserLocationService singleton(Activity activity){
         if(instance == null){
-            instance = new LocationService(activity);
+            instance = new UserLocationService(activity);
         }
             return instance;
     }
 
-    protected LocationService(Activity activity){
+    protected UserLocationService(Activity activity){
         this.locationValue = new MutableLiveData<>();
         this.activity = activity;
         this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);

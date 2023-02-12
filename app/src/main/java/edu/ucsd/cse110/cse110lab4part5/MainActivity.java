@@ -1,12 +1,10 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Pair;
@@ -16,7 +14,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private MutableLiveData<Pair<Double, Double>> locationValue;
-    private LocationService locationService;
+    private UserLocationService userLocationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +26,11 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
         }
 
-        locationService = LocationService.singleton(this);
+        userLocationService = UserLocationService.singleton(this);
 
         TextView test = (TextView) findViewById(R.id.serviceTextView);
 
-        locationService.getLocation().observe(this, loc ->{
+        userLocationService.getLocation().observe(this, loc ->{
             test.setText(Double.toString(loc.first) + " , "+Double.toString(loc.second));
         });
     }
