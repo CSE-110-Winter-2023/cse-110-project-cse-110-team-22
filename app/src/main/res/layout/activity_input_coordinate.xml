@@ -179,7 +179,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="63dp"
-        android:layout_marginTop="23dp"
         android:layout_marginEnd="225dp"
         android:layout_marginBottom="19dp"
         android:text="Your Family's Home"
@@ -187,7 +186,7 @@
         app:layout_constraintBottom_toTopOf="@+id/longitude_family"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_name" />
+        app:layout_constraintTop_toBottomOf="@+id/label_home" />
 
     <TextView
         android:id="@+id/textView3"
