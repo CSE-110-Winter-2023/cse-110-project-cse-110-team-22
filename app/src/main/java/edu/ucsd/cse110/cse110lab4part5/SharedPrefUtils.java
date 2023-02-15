@@ -35,6 +35,31 @@ public class SharedPrefUtils {
         return locations;
     }
 
+    /***
+     *
+     * Clears the SharedPreferences of the app storing locations removing their data and allowing the
+     * user or a tester to launch the app and return to the inputUI screen.
+     * @param context of the requester (ex some Activity)
+     */
+    public static void clearLocationSharedPreferences(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+    /**
+     *
+     * @param context of the requester (ex some Activity)
+     * @return true if there are locations stored in SharedPreferences, false otherwise
+     */
+    public static boolean hasStoredLocations(Context context){
+        if(readLocationLabels(context).size() == 0){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * adds locations to existingLocations in shared_preferences
      * @param context of the requester (ex some Activity)

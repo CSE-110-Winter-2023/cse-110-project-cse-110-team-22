@@ -28,7 +28,6 @@ public class  MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_input_coordinate);
         orientationService = new UserOrientationService(this);
         // Below is code for updates from orientation
 //        orientationService.getOrientation().observe(this, orient -> {txt.setText(Float.toString(orient));});
@@ -40,6 +39,11 @@ public class  MainActivity extends AppCompatActivity {
 
         userLocationService = UserLocationService.singleton(this);
 
+        if(SharedPrefUtils.hasStoredLocations(this)){
+            Intent intent = new Intent(this, CompassActivity.class);
+            startActivity(intent);
+        }
+        setContentView(R.layout.activity_input_coordinate);
         TextView test = (TextView) findViewById(R.id.serviceTextView);
 
         userLocationService.getLocation().observe(this, loc ->{
