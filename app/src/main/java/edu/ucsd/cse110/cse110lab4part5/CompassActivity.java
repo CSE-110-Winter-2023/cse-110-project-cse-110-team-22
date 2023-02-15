@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +53,10 @@ public class CompassActivity extends AppCompatActivity {
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
         layoutParams.circleAngle = angle;
         imageView.setLayoutParams(layoutParams);
+    }
+
+    public void clearDataClicked(View view) {
+        SharedPrefUtils.clearLocationSharedPreferences(this);
     }
 }
 
