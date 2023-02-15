@@ -7,56 +7,82 @@ import static java.util.Arrays.asList;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.core.location.LocationCompat;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SharedPrefUtils {
 
-    /*
-    public static List<LandmarkLocation> readLocations(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences("location_preferences", MODE_PRIVATE);
-        List<String> labels =
-    }
+    private static final String locationPreferencesFile = "location_preferences";
+    private static final String locationLabelsFile = "location_labels";
 
 
+
+    /**
+     *
+     * @param context of the requester (ex some Activity)
+     * @return list of all locations stored in SharedPreferences
      */
+    public static List<Location> readAllLocations(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
+        List<Location> locations = new ArrayList<>();
+        List<String> labels = readLocationLabels(context);
+        for(String label : labels){
+            locations.add(readLocation(context, label));
+        }
+        return locations;
+    }
 
     /**
      * adds locations to existingLocations in shared_preferences
-     * @param context
-     * @param location
+     * @param context of the requester (ex some Activity)
+     * @param location object to write to SharedPreferences
      */
     public static void writeLocation(Context context, Location location) {
-        SharedPreferences preferences = context.getSharedPreferences("location_preferences", MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         String label = location.getLabel();
-        String existingLocations = preferences.getString("locations", "");
-        editor.putString("locations", (existingLocations + "\u0000" + location.getLabel()));
+        String existingLocations = preferences.getString(locationLabelsFile, "");
+        // first location added
+        if(existingLocations.equals("")){
+            editor.putString(locationLabelsFile, (location.getLabel()));
+        } else{
+            // not first location
+            editor.putString(locationLabelsFile, (existingLocations + "\u0000" + location.getLabel()));
+        }
 
         String latLabel = label + "_lat";
         String longLabel = label + "_long";
 
         editor.putString(latLabel, String.valueOf(location.getLatitude()));
         editor.putString(longLabel, String.valueOf(location.getLongitude()));
+        editor.commit();
 
     }
 
     /**
-     *
-     * @param label
+     * @param context of the requester (ex some Activity)
+     * @param label of the location stored in SharedPreferences
      * @return
      */
-    public static Location getLocation(Context context, String label){
-        SharedPreferences preferences = context.getSharedPreferences("location_preferences", MODE_PRIVATE);
+    public static Location readLocation(Context context, String label){
+        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
         double la = Double.parseDouble(preferences.getString(label+"_lat", ""));
         double lo = Double.parseDouble(preferences.getString(label+"_long", ""));
         return new LandmarkLocation(la, lo, label);
     }
 
-    public static List<String> loadLocationLabels(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences("location_preferences", MODE_PRIVATE);
+    /**
+     *
+     * @param context of the requester (ex some Activity)
+     * @return list of all labels of locations stored in SharedPreferences
+     */
+    public static List<String> readLocationLabels(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        String deliminatedString = preferences.getString("existingLocations", "");
+        String deliminatedString = preferences.getString(locationLabelsFile, "");
         return Arrays.asList(deliminatedString.split("\u0000", -1));
 
     }

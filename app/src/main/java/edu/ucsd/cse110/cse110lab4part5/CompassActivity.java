@@ -6,14 +6,22 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.List;
+
 public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
+        List<Location> locations = SharedPrefUtils.readAllLocations(this);
+        Location homeLocation = locations.get(0);
+        Location friendLocation = locations.get(1);
+        Location familyLocation = locations.get(2);
+
 
         // get location data
+        /*
         Bundle extras = getIntent().getExtras();
         Location familyLocation = new LandmarkLocation(extras.getDouble("family_longitude"),
                 extras.getDouble("family_latitude"),
@@ -26,6 +34,8 @@ public class CompassActivity extends AppCompatActivity {
         Location homeLocation = new LandmarkLocation(extras.getDouble("home_longitude"),
                 extras.getDouble("home_latitude"),
                 extras.getString("home_label"));
+
+         */
 
         // Hardcoded user location for demo purposes, WIP
         // Location is UCSD center campus facing north (For now we are ignoring user orientation)
