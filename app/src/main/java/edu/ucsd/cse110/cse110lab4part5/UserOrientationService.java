@@ -25,7 +25,7 @@ public class UserOrientationService implements SensorEventListener {
     protected UserOrientationService(Activity activity) {
         this.azimuth = new MutableLiveData<>();
         this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-// Register sensor listeners
+        // Register sensor listeners
         this.registerSensorListeners();
     }
 
