@@ -45,16 +45,14 @@ public class CompassActivity extends AppCompatActivity {
         layoutParams.circleAngle = angle;
         imageView.setLayoutParams(layoutParams);
     }
-    public void update(double userOrientation, Map<String, Double> directionMap){
-        for (Map.Entry<String, Double> entry : directionMap.entrySet()) {
-            String imageViewIdString = entry.getKey();
+    public void update(double userOrientation, Map<Integer, Double> directionMap){
+        for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
+            int imageViewId = entry.getKey();
             double direction = entry.getValue();
-
-
             double directionRadians = Math.toRadians(direction);
             directionRadians += Math.toRadians(userOrientation);
             float directionDegree = (float) Math.toDegrees(directionRadians);
-            int imageViewId = Integer.parseInt(imageViewIdString);
+
             updateCircleAngle(imageViewId, directionDegree);
         }
     }
