@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.Map;
+
 public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,19 @@ public class CompassActivity extends AppCompatActivity {
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
         layoutParams.circleAngle = angle;
         imageView.setLayoutParams(layoutParams);
+    }
+    public void update(double userOrientation, Map<String, Double> directionMap){
+        for (Map.Entry<String, Double> entry : directionMap.entrySet()) {
+            String imageViewIdString = entry.getKey();
+            double direction = entry.getValue();
+
+
+            double directionRadians = Math.toRadians(direction);
+            directionRadians += Math.toRadians(userOrientation);
+            float directionDegree = (float) Math.toDegrees(directionRadians);
+            int imageViewId = Integer.parseInt(imageViewIdString);
+            updateCircleAngle(imageViewId, directionDegree);
+        }
     }
 }
 
