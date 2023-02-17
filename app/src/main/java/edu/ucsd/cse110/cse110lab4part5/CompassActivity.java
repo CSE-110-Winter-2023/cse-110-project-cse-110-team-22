@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CompassActivity extends AppCompatActivity {
 
@@ -77,6 +78,18 @@ public class CompassActivity extends AppCompatActivity {
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
         layoutParams.circleAngle = angle;
         imageView.setLayoutParams(layoutParams);
+    }
+
+    public void update(double userOrientation, Map<Integer, Double> directionMap){
+        for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
+            int imageViewId = entry.getKey();
+            double direction = entry.getValue();
+            double directionRadians = Math.toRadians(direction);
+            directionRadians += Math.toRadians(userOrientation);
+            float directionDegree = (float) Math.toDegrees(directionRadians);
+
+            updateCircleAngle(imageViewId, directionDegree);
+        }
     }
 }
 
