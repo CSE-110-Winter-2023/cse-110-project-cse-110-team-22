@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 import android.os.Bundle;
+import android.view.View;
 import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,8 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import java.util.List;
 
 public class CompassActivity extends AppCompatActivity {
 
@@ -27,11 +30,9 @@ public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userLocation = UserLocation.singleton(0, 0, "You");
+
         setContentView(R.layout.activity_compass);
-
-
-        TextView orienta = (TextView)findViewById(R.id.orienta);
-        TextView loca = (TextView)findViewById(R.id.loca);
 
 
         // get location data
@@ -39,24 +40,35 @@ public class CompassActivity extends AppCompatActivity {
         //added junlin chen
         mockAngle = extras.getDouble("mock_angle");
         //
-        Location familyLocation = new LandmarkLocation(extras.getDouble("family_longitude"),
-                extras.getDouble("family_latitude"),
-                extras.getString("family_label"), 0);
+        
 
-        Location friendLocation = new LandmarkLocation(extras.getDouble("friend_longitude"),
-                extras.getDouble("friend_latitude"),
-                extras.getString("friend_label"), 1);
+        List<Location> locations = SharedPrefUtils.readAllLocations(this);
+        LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
+        homeLocation.setIconNum(2);
+        LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
+        friendLocation.setIconNum(1);
+        LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
+        familyLocation.setIconNum(0);
 
-        Location homeLocation = new LandmarkLocation(extras.getDouble("home_longitude"),
-                extras.getDouble("home_latitude"),
-                extras.getString("home_label"), 2);
+
         List<Location> locList = new ArrayList<>();
         locList.add(familyLocation);
         locList.add(friendLocation);
         locList.add(homeLocation);
 
+
+        TextView orienta = (TextView)findViewById(R.id.orienta);
+        TextView loca = (TextView)findViewById(R.id.loca);
+
+
         userLocationService = UserLocationService.singleton(this);
         orientationService = UserOrientationService.singleton(this);
+
+
+        userLocationService.getLocation().observe(this, loc -> {
+            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
+        });
 
         orientationService.getOrientation().observe(this, orient -> {
             userOrientation = Math.toDegrees((double)orient);
@@ -65,19 +77,8 @@ public class CompassActivity extends AppCompatActivity {
             mockOrientationD = Math.toDegrees(mockOrientationR);
             update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
-        userLocationService.getLocation().observe(this, loc -> {
-            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
-            update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
-        });
 
-        // Hardcoded user location for demo purposes, WIP
-        // Location is UCSD center campus facing north (For now we are ignoring user orientation)
-        // Location userLocation = new UserLocation(32.88014354083708, -117.2318005216365, "selfLocation");
 
-        // update location data
-        //updateCircleAngle(R.id.familyhouse, (float)LocationUtils.computeAngle(userLocation, familyLocation));
-        //updateCircleAngle(R.id.friend, (float)LocationUtils.computeAngle(userLocation, friendLocation));
-        //updateCircleAngle(R.id.home, (float)LocationUtils.computeAngle(userLocation, homeLocation));
 
     }
     private void updateCircleAngle(int imageViewId, float angle) {
@@ -87,12 +88,15 @@ public class CompassActivity extends AppCompatActivity {
         imageView.setLayoutParams(layoutParams);
     }
 
+    public void clearDataClicked(View view) {
+        SharedPrefUtils.clearLocationSharedPreferences(this);
+    }
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
             int imageViewId = entry.getKey();
             double direction = entry.getValue();
             double directionRadians = Math.toRadians(direction);
-            directionRadians += Math.toRadians(userOrientation);
+            directionRadians -= Math.toRadians(userOrientation);
             float directionDegree = (float) Math.toDegrees(directionRadians);
 
             updateCircleAngle(imageViewId, directionDegree);
