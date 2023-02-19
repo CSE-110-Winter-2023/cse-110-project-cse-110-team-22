@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.util.Pair;
@@ -106,6 +107,10 @@ public class CompassActivity extends AppCompatActivity {
 
             updateCircleAngle(imageViewId, directionDegree);
         }
+    }
+    public void go_back(View view) {
+        Intent intent = new Intent(this, InputCoordinateActivity.class);
+        startActivity(intent);
     }
 }
 
