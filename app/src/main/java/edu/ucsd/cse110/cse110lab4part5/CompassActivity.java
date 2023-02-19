@@ -35,11 +35,16 @@ public class CompassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
 
-        // get location data
+
+        // get orientation offset
         Bundle extras = getIntent().getExtras();
         //added junlin chen
-        mockAngle = extras.getDouble("mock_angle");
-        //
+        try {
+            mockAngle = extras.getDouble("mock_angle");
+        } catch (Exception e){
+            mockAngle = 0;
+        }
+
         
 
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
