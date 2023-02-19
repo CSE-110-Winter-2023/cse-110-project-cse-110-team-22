@@ -55,8 +55,8 @@ public class SharedPrefUtils {
      */
     public static boolean hasStoredLocations(Context context){
         SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
-        String deliminatedString = preferences.getString(locationLabelsFile, "");
-        if(deliminatedString.length() == 0){
+        String delimitedString = preferences.getString(locationLabelsFile, "");
+        if(delimitedString.length() == 0){
             return false;
         }
         return true;
@@ -108,8 +108,7 @@ public class SharedPrefUtils {
      */
     public static List<String> readLocationLabels(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
-        String deliminatedString = preferences.getString(locationLabelsFile, "");
-        return Arrays.asList(deliminatedString.split("\u0000", -1));
-
+        String delimitedString = preferences.getString(locationLabelsFile, "");
+        return Arrays.asList(delimitedString.split("\u0000", -1));
     }
 }
