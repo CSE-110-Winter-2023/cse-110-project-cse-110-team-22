@@ -62,6 +62,7 @@ public class  MainActivity extends AppCompatActivity {
         TextView family_latitude_view = findViewById(R.id.latitude_family);
         TextView friend_longitude_view = findViewById(R.id.longitude_friend);
         TextView friend_latitude_view = findViewById(R.id.latitude_friend);
+        TextView mock_angle = findViewById(R.id.mock_test);
 
         String home_longitude_str = home_longitude_view.getText().toString();
         String home_latitude_str = home_latitude_view.getText().toString();
@@ -69,6 +70,7 @@ public class  MainActivity extends AppCompatActivity {
         String family_latitude_str = family_latitude_view.getText().toString();
         String friend_longitude_str = friend_longitude_view.getText().toString();
         String friend_latitude_str = friend_latitude_view.getText().toString();
+        String mock_angle_str = mock_angle.getText().toString();
 
         String home_label = ((TextView)findViewById(R.id.label_home)).getText().toString();
         String family_label = ((TextView)findViewById(R.id.label_family)).getText().toString();
@@ -83,6 +85,7 @@ public class  MainActivity extends AppCompatActivity {
         double friend_latitude_val = Double.parseDouble(friend_latitude_str);
         double family_longitude_val = Double.parseDouble(family_longitude_str);
         double family_latitude_val = Double.parseDouble(family_latitude_str);
+        double mock_test_val = Double.parseDouble(mock_angle_str);
 //        Optional<Integer> maybeMaxCount = Utilities.parseCount(maxCountStr);
 //        if (!maybeMaxCount.isPresent()) {
 //            Utilities.showAlert(this, "That isn't a number!");
@@ -100,6 +103,7 @@ public class  MainActivity extends AppCompatActivity {
         intent.putExtra("friend_latitude", friend_latitude_val);
         intent.putExtra("family_longitude", family_longitude_val);
         intent.putExtra("family_latitude", family_latitude_val);
+        intent.putExtra("mock_angle", mock_test_val);
     }
 
     @Override

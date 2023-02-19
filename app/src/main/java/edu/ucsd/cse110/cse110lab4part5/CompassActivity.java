@@ -20,7 +20,9 @@ public class CompassActivity extends AppCompatActivity {
     private UserOrientationService orientationService;
     private UserLocation userLocation;
     private double userOrientation;
+    private double mockOrientationD;
     private int count = 0;
+    private double mockAngle = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,9 @@ public class CompassActivity extends AppCompatActivity {
 
         // get location data
         Bundle extras = getIntent().getExtras();
+        //added junlin chen
+        mockAngle = extras.getDouble("mock_angle");
+        //
         Location familyLocation = new LandmarkLocation(extras.getDouble("family_longitude"),
                 extras.getDouble("family_latitude"),
                 extras.getString("family_label"), 0);
@@ -56,11 +61,13 @@ public class CompassActivity extends AppCompatActivity {
         orientationService.getOrientation().observe(this, orient -> {
             userOrientation = Math.toDegrees((double)orient);
             orienta.setText(Float.toString(orient));
-            update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
+            double mockOrientationR = Math.toRadians(userOrientation) + Math.toRadians(mockAngle);
+            mockOrientationD = Math.toDegrees(mockOrientationR);
+            update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
         userLocationService.getLocation().observe(this, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
-            update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
+            update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
 
         // Hardcoded user location for demo purposes, WIP
@@ -68,9 +75,9 @@ public class CompassActivity extends AppCompatActivity {
         // Location userLocation = new UserLocation(32.88014354083708, -117.2318005216365, "selfLocation");
 
         // update location data
-        updateCircleAngle(R.id.familyhouse, (float)LocationUtils.computeAngle(userLocation, familyLocation));
-        updateCircleAngle(R.id.friend, (float)LocationUtils.computeAngle(userLocation, friendLocation));
-        updateCircleAngle(R.id.home, (float)LocationUtils.computeAngle(userLocation, homeLocation));
+        //updateCircleAngle(R.id.familyhouse, (float)LocationUtils.computeAngle(userLocation, familyLocation));
+        //updateCircleAngle(R.id.friend, (float)LocationUtils.computeAngle(userLocation, friendLocation));
+        //updateCircleAngle(R.id.home, (float)LocationUtils.computeAngle(userLocation, homeLocation));
 
     }
     private void updateCircleAngle(int imageViewId, float angle) {
