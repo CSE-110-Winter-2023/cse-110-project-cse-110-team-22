@@ -117,14 +117,17 @@ public class SharedPrefUtils {
      */
     public static void rmLocationLabels(Context context, String label){
         SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile,MODE_PRIVATE);
-        preferences.edit().remove(label+"_lat");
-        preferences.edit().remove(label+"_long");
         SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(label+"_lat");
+        editor.remove(label+"_long");
         String delimitedString = preferences.getString(locationLabelsFile, "");
         String newLocations = "";
         for (String s: delimitedString.split("\u0000")){
-            if (s.compareTo(label) == 0){
+            if (s.equals(label)){
                 continue;
+            }
+            if (newLocations.length() != 0){
+                newLocations = newLocations + "\u0000";
             }
             newLocations = newLocations + s;
         }
