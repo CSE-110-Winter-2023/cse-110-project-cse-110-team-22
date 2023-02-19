@@ -51,13 +51,14 @@ public class CompassActivity extends AppCompatActivity {
         userLocationService = UserLocationService.singleton(this);
         orientationService = UserOrientationService.singleton(this);
 
+        userLocationService.getLocation().observe(this, loc -> {
+            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
+        });
+
         orientationService.getOrientation().observe(this, orient -> {
             userOrientation = Math.toDegrees((double)orient);
             orienta.setText(Float.toString(orient));
-            update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
-        });
-        userLocationService.getLocation().observe(this, loc -> {
-            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
             update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
         });
 
