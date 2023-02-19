@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.util.Pair;
@@ -25,19 +26,28 @@ public class CompassActivity extends AppCompatActivity {
     private double userOrientation;
     private int count = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userLocation = UserLocation.singleton(0, 0, "You");
 
         setContentView(R.layout.activity_compass);
+        TextView home_label = findViewById(R.id.home_label_text);
+        TextView friend_label = findViewById(R.id.friend_label_text);
+        TextView family_label = findViewById(R.id.family_label_text);
 
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
         LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
+        home_label.setText(homeLocation.getLabel());
+
         homeLocation.setIconNum(2);
         LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
+        friend_label.setText(friendLocation.getLabel());
+
         friendLocation.setIconNum(1);
         LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
+        family_label.setText(familyLocation.getLabel());
         familyLocation.setIconNum(0);
 
         List<Location> locList = new ArrayList<>();
@@ -75,6 +85,11 @@ public class CompassActivity extends AppCompatActivity {
 
     public void clearDataClicked(View view) {
         SharedPrefUtils.clearLocationSharedPreferences(this);
+    }
+    public void go_back(View view) {
+        SharedPrefUtils.clearLocationSharedPreferences(this);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
