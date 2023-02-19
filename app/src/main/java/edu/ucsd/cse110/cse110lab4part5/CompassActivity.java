@@ -23,7 +23,9 @@ public class CompassActivity extends AppCompatActivity {
     private UserOrientationService orientationService;
     private UserLocation userLocation;
     private double userOrientation;
+    private double mockOrientationD;
     private int count = 0;
+    private double mockAngle = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,14 @@ public class CompassActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_compass);
 
+
+        // get location data
+        Bundle extras = getIntent().getExtras();
+        //added junlin chen
+        mockAngle = extras.getDouble("mock_angle");
+        //
+        
+
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
         LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
         homeLocation.setIconNum(2);
@@ -39,6 +49,7 @@ public class CompassActivity extends AppCompatActivity {
         friendLocation.setIconNum(1);
         LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
         familyLocation.setIconNum(0);
+
 
         List<Location> locList = new ArrayList<>();
         locList.add(familyLocation);
@@ -53,16 +64,20 @@ public class CompassActivity extends AppCompatActivity {
         userLocationService = UserLocationService.singleton(this);
         orientationService = UserOrientationService.singleton(this);
 
+
         userLocationService.getLocation().observe(this, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
-            update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
+            update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
 
         orientationService.getOrientation().observe(this, orient -> {
             userOrientation = Math.toDegrees((double)orient);
             orienta.setText(Float.toString(orient));
-            update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
+            double mockOrientationR = Math.toRadians(userOrientation) + Math.toRadians(mockAngle);
+            mockOrientationD = Math.toDegrees(mockOrientationR);
+            update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
+
 
 
     }
