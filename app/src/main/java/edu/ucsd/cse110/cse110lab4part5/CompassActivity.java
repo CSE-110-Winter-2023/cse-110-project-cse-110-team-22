@@ -68,9 +68,9 @@ public class CompassActivity extends AppCompatActivity {
         // Location userLocation = new UserLocation(32.88014354083708, -117.2318005216365, "selfLocation");
 
         // update location data
-        updateCircleAngle(R.id.familyhouse, (float)LocationUtils.computeAngle(userLocation, familyLocation));
-        updateCircleAngle(R.id.friend, (float)LocationUtils.computeAngle(userLocation, friendLocation));
-        updateCircleAngle(R.id.home, (float)LocationUtils.computeAngle(userLocation, homeLocation));
+//        updateCircleAngle(R.id.familyhouse, (float)LocationUtils.computeAngle(userLocation, familyLocation));
+//        updateCircleAngle(R.id.friend, (float)LocationUtils.computeAngle(userLocation, friendLocation));
+//        updateCircleAngle(R.id.home, (float)LocationUtils.computeAngle(userLocation, homeLocation));
 
     }
     private void updateCircleAngle(int imageViewId, float angle) {
@@ -85,7 +85,7 @@ public class CompassActivity extends AppCompatActivity {
             int imageViewId = entry.getKey();
             double direction = entry.getValue();
             double directionRadians = Math.toRadians(direction);
-            directionRadians += Math.toRadians(userOrientation);
+            directionRadians -= Math.toRadians(userOrientation);
             float directionDegree = (float) Math.toDegrees(directionRadians);
 
             updateCircleAngle(imageViewId, directionDegree);
