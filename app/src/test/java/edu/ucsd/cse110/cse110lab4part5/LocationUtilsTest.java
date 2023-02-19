@@ -36,12 +36,12 @@ public class LocationUtilsTest {
         userLoc_zerolat = new UserLocation(0, 10, name);
         userLoc_zerolon = new UserLocation(-10, 0, name);
         userLoc_allzero = new UserLocation(0, 0, name);
-        landLoc_pos_pos = new LandmarkLocation(30, 30, name);
-        landLoc_pos_neg = new LandmarkLocation(30, -30, name);
-        landLoc_neg_pos = new LandmarkLocation(-30, 30, name);
-        landLoc_neg_neg = new LandmarkLocation(-30, -30, name);
-        landLoc_zerolat = new LandmarkLocation(0, 30, name);
-        landLoc_zerolon = new LandmarkLocation(-30, 0, name);
+        landLoc_pos_pos = new LandmarkLocation(30, 30, name, 0);
+        landLoc_pos_neg = new LandmarkLocation(30, -30, name, 1);
+        landLoc_neg_pos = new LandmarkLocation(-30, 30, name, 2);
+        landLoc_neg_neg = new LandmarkLocation(-30, -30, name, 0);
+        landLoc_zerolat = new LandmarkLocation(0, 30, name, 1);
+        landLoc_zerolon = new LandmarkLocation(-30, 0, name, 2);
         landLoc_allzero = new UserLocation(0, 0, name);
     }
 

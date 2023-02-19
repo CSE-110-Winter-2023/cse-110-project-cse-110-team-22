@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LocationUtils {
     /**
@@ -27,8 +29,23 @@ public class LocationUtils {
      * @param landscapeLocs
      * @return
      */
-    public static double computeAllAngles (Location userLoc, List<Location> landscapeLocs) {
-        //TODO
-        return 0;
+    public static Map<Integer, Double> computeAllAngles (Location userLoc, List<Location> landscapeLocs) {
+        Map<Integer, Double> idToAngleMap = new HashMap<>();
+        for (Location lc: landscapeLocs) {
+            int i = findPicID(lc);
+            idToAngleMap.put(i, computeAngle(userLoc, lc));
+        }
+        return idToAngleMap;
+    }
+
+    public static int findPicID(Location loc) {
+        final int FAMILYHOUSE = 0;
+        final int FRIEND = 1;
+        final int HOME = 2;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(FAMILYHOUSE, R.id.familyhouse);
+        map.put(FRIEND, R.id.friend);
+        map.put(HOME, R.id.home);
+        return map.get(((LandmarkLocation)loc).getIconNum());
     }
 }
