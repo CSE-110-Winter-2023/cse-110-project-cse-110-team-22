@@ -10,7 +10,6 @@ public class LandmarkLocation implements Location{
         this.longitude = longitude;
         this.latitude = latitude;
         this.label = label;
-        this.icon_num = icon_num;
     }
 
     @Override

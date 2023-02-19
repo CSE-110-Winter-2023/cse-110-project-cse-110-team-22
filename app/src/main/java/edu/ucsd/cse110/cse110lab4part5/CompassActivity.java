@@ -28,6 +28,8 @@ public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userLocation = UserLocation.singleton(0, 0, "You");
+
         setContentView(R.layout.activity_compass);
 
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
