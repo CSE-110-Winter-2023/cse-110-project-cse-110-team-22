@@ -31,33 +31,22 @@ public class CompassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
-        Location homeLocation = locations.get(0);
-        Location friendLocation = locations.get(1);
-        Location familyLocation = locations.get(2);
+        LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
+        homeLocation.setIconNum(2);
+        LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
+        friendLocation.setIconNum(1);
+        LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
+        familyLocation.setIconNum(0);
+
+        List<Location> locList = new ArrayList<>();
+        locList.add(familyLocation);
+        locList.add(friendLocation);
+        locList.add(homeLocation);
 
 
         TextView orienta = (TextView)findViewById(R.id.orienta);
         TextView loca = (TextView)findViewById(R.id.loca);
 
-
-        // get location data
-        /*
-        Bundle extras = getIntent().getExtras();
-        Location familyLocation = new LandmarkLocation(extras.getDouble("family_longitude"),
-                extras.getDouble("family_latitude"),
-                extras.getString("family_label"), 0);
-
-        Location friendLocation = new LandmarkLocation(extras.getDouble("friend_longitude"),
-                extras.getDouble("friend_latitude"),
-                extras.getString("friend_label"), 1);
-
-        Location homeLocation = new LandmarkLocation(extras.getDouble("home_longitude"),
-                extras.getDouble("home_latitude"),
-                extras.getString("home_label"), 2);
-        List<Location> locList = new ArrayList<>();
-        locList.add(familyLocation);
-        locList.add(friendLocation);
-        locList.add(homeLocation);
 
         userLocationService = UserLocationService.singleton(this);
         orientationService = UserOrientationService.singleton(this);
@@ -72,16 +61,6 @@ public class CompassActivity extends AppCompatActivity {
             update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
         });
 
-         */
-
-        // Hardcoded user location for demo purposes, WIP
-        // Location is UCSD center campus facing north (For now we are ignoring user orientation)
-        // Location userLocation = new UserLocation(32.88014354083708, -117.2318005216365, "selfLocation");
-
-        // update location data
-//        updateCircleAngle(R.id.familyhouse, (float)LocationUtils.computeAngle(userLocation, familyLocation));
-//        updateCircleAngle(R.id.friend, (float)LocationUtils.computeAngle(userLocation, friendLocation));
-//        updateCircleAngle(R.id.home, (float)LocationUtils.computeAngle(userLocation, homeLocation));
 
     }
     private void updateCircleAngle(int imageViewId, float angle) {
