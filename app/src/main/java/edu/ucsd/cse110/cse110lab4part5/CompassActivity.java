@@ -37,10 +37,10 @@ public class CompassActivity extends AppCompatActivity {
 
 
 
+        try {
         // get orientation offset
         Bundle extras = getIntent().getExtras();
         //added junlin chen
-        try {
             mockAngle = extras.getDouble("mock_angle");
         } catch (Exception e){
             mockAngle = 0;
