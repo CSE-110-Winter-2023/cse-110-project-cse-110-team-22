@@ -13,6 +13,10 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class  MainActivity extends AppCompatActivity {
@@ -24,7 +28,6 @@ public class  MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_input_coordinate);
         orientationService = new UserOrientationService(this);
         // Below is code for updates from orientation
 //        orientationService.getOrientation().observe(this, orient -> {txt.setText(Float.toString(orient));});
@@ -36,6 +39,11 @@ public class  MainActivity extends AppCompatActivity {
 
         userLocationService = UserLocationService.singleton(this);
 
+        if(SharedPrefUtils.hasStoredLocations(this)){
+            Intent intent = new Intent(this, CompassActivity.class);
+            startActivity(intent);
+        }
+        setContentView(R.layout.activity_input_coordinate);
         TextView test = (TextView) findViewById(R.id.serviceTextView);
 
         userLocationService.getLocation().observe(this, loc ->{
@@ -51,10 +59,70 @@ public class  MainActivity extends AppCompatActivity {
         //Utilities.showAlert(this, "Testing");
 
         Intent intent = new Intent(this, CompassActivity.class);
-        putIntent(intent);
+        List<Location> locations = getLocationsFromUI();
+        for(Location location : locations){
+            SharedPrefUtils.writeLocation(this, location);
+        }
+        //putIntent(intent);
         startActivity(intent);
     }
 
+    /**
+     *
+     * @return list of locations parsed from the input UI
+     */
+    private List<Location> getLocationsFromUI() {
+        List<Location> locations = new ArrayList<>();
+
+        TextView home_longitude_view = findViewById(R.id.longitude_home);
+        TextView home_latitude_view = findViewById(R.id.latitude_home);
+        TextView family_longitude_view = findViewById(R.id.longitude_family);
+        TextView family_latitude_view = findViewById(R.id.latitude_family);
+        TextView friend_longitude_view = findViewById(R.id.longitude_friend);
+        TextView friend_latitude_view = findViewById(R.id.latitude_friend);
+
+        String home_longitude_str = home_longitude_view.getText().toString();
+        String home_latitude_str = home_latitude_view.getText().toString();
+        String family_longitude_str = family_longitude_view.getText().toString();
+        String family_latitude_str = family_latitude_view.getText().toString();
+        String friend_longitude_str = friend_longitude_view.getText().toString();
+        String friend_latitude_str = friend_latitude_view.getText().toString();
+        TextView home_view = (TextView) findViewById(R.id.label_home);
+        TextView family_view = (TextView) findViewById(R.id.label_family);
+        TextView friend_view = (TextView) findViewById(R.id.label_friend);
+
+        String home_label = (home_view).getText().toString();
+        if(home_label.equals("")){
+            home_label = home_view.getHint().toString();
+        }
+
+        String family_label = (family_view).getText().toString();
+        if(family_label.equals("")){
+            family_label = family_view.getHint().toString();
+        }
+
+        String friend_label = (friend_view).getText().toString();
+        if(friend_label.equals("")){
+            friend_label = friend_view.getHint().toString();
+        }
+
+
+
+
+        double home_longitude_val = Double.parseDouble(home_longitude_str);
+        double home_latitude_val = Double.parseDouble(home_latitude_str);
+        double friend_longitude_val = Double.parseDouble(friend_longitude_str);
+        double friend_latitude_val = Double.parseDouble(friend_latitude_str);
+        double family_longitude_val = Double.parseDouble(family_longitude_str);
+        double family_latitude_val = Double.parseDouble(family_latitude_str);
+
+        locations.add(new LandmarkLocation(home_longitude_val, home_latitude_val, home_label));
+        locations.add(new LandmarkLocation(friend_longitude_val, friend_latitude_val, friend_label));
+        locations.add(new LandmarkLocation(family_longitude_val, family_latitude_val, family_label));
+
+        return locations;
+    }
+    //TODO: putIntent will be removed when data persistance is implemented
     private void putIntent(Intent intent) {
         TextView home_longitude_view = findViewById(R.id.longitude_home);
         TextView home_latitude_view = findViewById(R.id.latitude_home);
@@ -83,16 +151,6 @@ public class  MainActivity extends AppCompatActivity {
         double friend_latitude_val = Double.parseDouble(friend_latitude_str);
         double family_longitude_val = Double.parseDouble(family_longitude_str);
         double family_latitude_val = Double.parseDouble(family_latitude_str);
-//        Optional<Integer> maybeMaxCount = Utilities.parseCount(maxCountStr);
-//        if (!maybeMaxCount.isPresent()) {
-//            Utilities.showAlert(this, "That isn't a number!");
-//            return;
-//        }
-//        int maxCount = maybeMaxCount.get();
-//        if (maxCount <= 0) {
-//            Utilities.showAlert(this, "Please enter a positive number!");
-//            return;
-//        }
 
         intent.putExtra("home_longitude", home_longitude_val);
         intent.putExtra("home_latitude", home_latitude_val);

@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 import android.os.Bundle;
+import android.view.View;
 import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,8 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import java.util.List;
 
 public class CompassActivity extends AppCompatActivity {
 
@@ -27,12 +30,18 @@ public class CompassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
 
+        List<Location> locations = SharedPrefUtils.readAllLocations(this);
+        Location homeLocation = locations.get(0);
+        Location friendLocation = locations.get(1);
+        Location familyLocation = locations.get(2);
+
 
         TextView orienta = (TextView)findViewById(R.id.orienta);
         TextView loca = (TextView)findViewById(R.id.loca);
 
 
         // get location data
+        /*
         Bundle extras = getIntent().getExtras();
         Location familyLocation = new LandmarkLocation(extras.getDouble("family_longitude"),
                 extras.getDouble("family_latitude"),
@@ -63,6 +72,8 @@ public class CompassActivity extends AppCompatActivity {
             update(userOrientation, LocationUtils.computeAllAngles(userLocation, locList));
         });
 
+         */
+
         // Hardcoded user location for demo purposes, WIP
         // Location is UCSD center campus facing north (For now we are ignoring user orientation)
         // Location userLocation = new UserLocation(32.88014354083708, -117.2318005216365, "selfLocation");
@@ -80,6 +91,9 @@ public class CompassActivity extends AppCompatActivity {
         imageView.setLayoutParams(layoutParams);
     }
 
+    public void clearDataClicked(View view) {
+        SharedPrefUtils.clearLocationSharedPreferences(this);
+    }
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
             int imageViewId = entry.getKey();
