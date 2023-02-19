@@ -86,7 +86,6 @@ public class SharedPrefUtils {
         editor.putString(latLabel, String.valueOf(location.getLatitude()));
         editor.putString(longLabel, String.valueOf(location.getLongitude()));
         editor.commit();
-
     }
 
     /**
@@ -110,5 +109,26 @@ public class SharedPrefUtils {
         SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
         String delimitedString = preferences.getString(locationLabelsFile, "");
         return Arrays.asList(delimitedString.split("\u0000", -1));
+    }
+    /**
+     *
+     *@paramcontextof the requester (ex some Activity)
+     *@paramlabelof the location to be removed
+     */
+    public static void rmLocationLabels(Context context, String label){
+        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile,MODE_PRIVATE);
+        preferences.edit().remove(label+"_lat");
+        preferences.edit().remove(label+"_long");
+        SharedPreferences.Editor editor = preferences.edit();
+        String delimitedString = preferences.getString(locationLabelsFile, "");
+        String newLocations = "";
+        for (String s: delimitedString.split("\u0000")){
+            if (s.compareTo(label) == 0){
+                continue;
+            }
+            newLocations = newLocations + s;
+        }
+        editor.putString(locationLabelsFile, newLocations);
+        editor.commit();
     }
 }
