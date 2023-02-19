@@ -6,7 +6,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LocationUtilsTest {
-
     Location userLoc_pos_pos;
     Location userLoc_pos_neg;
     Location userLoc_neg_pos;
