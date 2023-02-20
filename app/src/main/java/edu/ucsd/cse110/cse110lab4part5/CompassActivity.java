@@ -29,16 +29,12 @@ public class CompassActivity extends AppCompatActivity {
     private int count = 0;
     private double mockAngle = 0.0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userLocation = UserLocation.singleton(0, 0, "You");
 
         setContentView(R.layout.activity_compass);
-        TextView home_label = findViewById(R.id.home_label_text);
-        TextView friend_label = findViewById(R.id.friend_label_text);
-        TextView family_label = findViewById(R.id.family_label_text);
 
 
 
@@ -55,15 +51,10 @@ public class CompassActivity extends AppCompatActivity {
 
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
         LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
-        home_label.setText(homeLocation.getLabel());
-
         homeLocation.setIconNum(2);
         LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
-        friend_label.setText(friendLocation.getLabel());
-
         friendLocation.setIconNum(1);
         LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
-        family_label.setText(familyLocation.getLabel());
         familyLocation.setIconNum(0);
 
 
@@ -123,7 +114,6 @@ public class CompassActivity extends AppCompatActivity {
      * @param userOrientation user direction
      * @param directionMap Map that store the angle for each icons
      */
-
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
             int imageViewId = entry.getKey();
