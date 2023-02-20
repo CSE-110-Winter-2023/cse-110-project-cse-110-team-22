@@ -2,6 +2,7 @@ package edu.ucsd.cse110.cse110lab4part5;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.util.Pair;
 import android.widget.ImageView;
@@ -69,7 +70,7 @@ public class CompassActivity extends AppCompatActivity {
 
         userLocationService = UserLocationService.singleton(this);
         orientationService = UserOrientationService.singleton(this);
-
+        userLocation = UserLocation.singleton(0, 0, "you");
 
         userLocationService.getLocation().observe(this, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
