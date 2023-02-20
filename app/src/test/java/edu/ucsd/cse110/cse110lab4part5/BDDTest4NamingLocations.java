@@ -6,15 +6,11 @@ import static org.robolectric.Shadows.shadowOf;
 import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
-import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 
@@ -24,17 +20,22 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowApplication;
 
 @RunWith(RobolectricTestRunner.class)
 
-public class LabelTest {
-    /*
-     * user opens the app, enters data and the labels,
-     * user clicks submit, then the user can see his entered label
+public class BDDTest4NamingLocations {
+    /**
+     * 1. Julia opens the app.
+     * 2. Julia consents to the location tracking
+     * 3. Julia enters the coordinates of her friends and family
+     * 4. Julia clicks submit and was taken to the compass view page
+     * 5. The compass view will show the direction of the inputted locations with default names and default labels
+     * 6. Julia closes the app fully
      */
     @Test
-    public void Label_Update_Test() {
+    public void NamingLocationScenarioTest() {
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -75,6 +76,9 @@ public class LabelTest {
             assertEquals("Tom's home",actualFamHomeLabel.getText());
             assertEquals("John's home",actualOwnHomeLabel.getText());
             assertEquals("Peter's home",actualFriendHomeLabel.getText());
+
+            ActivityController<InputCoordinateActivity> controller = Robolectric.buildActivity(InputCoordinateActivity.class).create().start().resume();
+            controller.stop();
         });
     }
 }
