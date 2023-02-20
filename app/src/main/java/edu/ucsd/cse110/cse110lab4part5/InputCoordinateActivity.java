@@ -34,15 +34,27 @@ public class InputCoordinateActivity extends AppCompatActivity {
     public void submit_button(View view) {
         //TODO handle empty input boxes
         //Utilities.showAlert(this, "Testing");
-
-        Intent intent = new Intent(this, CompassActivity.class);
         List<Location> locations = getLocationsFromUI();
         double mockAngle = getMockAngleFromUI();
         intent.putExtra("mock_angle", mockAngle);
-        for(Location location : locations){
-            SharedPrefUtils.writeLocation(this, location);
+        if (locations.size() < 3){
+            showAlert("you should put 3 locations for now");
+        } else {
+            Intent intent = new Intent(this, CompassActivity.class);
+
+            for (Location location : locations) {
+                SharedPrefUtils.writeLocation(this, location);
+            }
+            //putIntent(intent);
+            startActivity(intent);
         }
-        startActivity(intent);
+    }
+    private void showAlert(String message) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(R.drawable.sad_android)
+                .show();
     }
 
     /**
