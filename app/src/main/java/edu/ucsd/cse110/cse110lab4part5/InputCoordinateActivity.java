@@ -126,6 +126,10 @@ public class InputCoordinateActivity extends AppCompatActivity {
         return locations;
     }
 
+    /**
+     * This method read the user mock angle
+     * @return the mock angle
+     */
     private double getMockAngleFromUI() {
         TextView mockAngleText = findViewById(R.id.mock_test);
         String mockAngleStr = mockAngleText.getText().toString();

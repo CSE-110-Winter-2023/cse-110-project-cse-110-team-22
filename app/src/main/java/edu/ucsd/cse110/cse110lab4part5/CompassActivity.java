@@ -87,6 +87,12 @@ public class CompassActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     * This method update the angle of icons in compass activity
+     * @param imageViewId ID of icons
+     * @param angle angle to update
+     */
     void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
@@ -94,9 +100,19 @@ public class CompassActivity extends AppCompatActivity {
         imageView.setLayoutParams(layoutParams);
     }
 
+    /**
+     * Bottom handler to clear data entered
+     * @param view
+     */
     public void clearDataClicked(View view) {
         SharedPrefUtils.clearLocationSharedPreferences(this);
     }
+
+    /**
+     * This method calculate the angle to be updated and call updateCircleAngle
+     * @param userOrientation user direction
+     * @param directionMap Map that store the angle for each icons
+     */
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
             int imageViewId = entry.getKey();
@@ -108,6 +124,11 @@ public class CompassActivity extends AppCompatActivity {
             updateCircleAngle(imageViewId, directionDegree);
         }
     }
+
+    /**
+     * Bottom handler for go back to inputCoordinateActivity
+     * @param view
+     */
     public void go_back(View view) {
         finish();
     }
