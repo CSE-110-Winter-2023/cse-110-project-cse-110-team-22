@@ -80,14 +80,6 @@ public class SharedPrefUtils {
         String label = location.getLabel();
         String existingLocations = preferences.getString(locationLabelsFile, "");
         // first location added
-        if (!existingLocations.equals("")){
-            for (String s: existingLocations.split("\u0000")) {
-                if (s.equals(label)) {
-                    rmLocationLabels(context, label);
-                }
-            }
-        }
-        existingLocations = preferences.getString(locationLabelsFile, "");
         if(existingLocations.equals("")){
             editor.putString(locationLabelsFile, (location.getLabel()));
         } else{
@@ -146,12 +138,7 @@ public class SharedPrefUtils {
             }
             newLocations = newLocations + s;
         }
-        if (newLocations.equals("")){
-            editor.clear();
-        }
-        else {
-            editor.putString(locationLabelsFile, newLocations);
-        }
+        editor.putString(locationLabelsFile, newLocations);
         editor.commit();
     }
 }
