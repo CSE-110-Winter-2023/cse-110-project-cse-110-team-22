@@ -6,6 +6,13 @@ public class UserLocation implements Location{
     private double latitude;
     private String label;
 
+    /**
+     * set an instance of userlocation object
+     * @param latitude
+     * @param longitude
+     * @param label
+     * @return
+     */
     public static UserLocation singleton(double latitude, double longitude, String label) {
         if(instance == null){
             instance = new UserLocation(latitude, longitude, label);
@@ -17,6 +24,12 @@ public class UserLocation implements Location{
         return instance;
     }
 
+    /**
+     * constructor for userlocation
+     * @param latitude
+     * @param longitude
+     * @param label
+     */
     public UserLocation(double latitude, double longitude, String label) {
         this.longitude = longitude;
         this.latitude = latitude;
