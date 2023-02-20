@@ -47,7 +47,9 @@ public class CompassActivity extends AppCompatActivity {
             mockAngle = 0;
         }
 
-        
+        TextView home_label = findViewById(R.id.home_label_text);
+        TextView friend_label = findViewById(R.id.friend_label_text);
+        TextView family_label = findViewById(R.id.family_label_text);
 
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
         LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
@@ -57,6 +59,9 @@ public class CompassActivity extends AppCompatActivity {
         LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
         familyLocation.setIconNum(0);
 
+        home_label.setText(homeLocation.getLabel());
+        friend_label.setText(friendLocation.getLabel());
+        family_label.setText(familyLocation.getLabel());
 
         List<Location> locList = new ArrayList<>();
         locList.add(familyLocation);
