@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +25,20 @@ import androidx.test.core.app.ApplicationProvider;
 @RunWith(RobolectricTestRunner.class)
 public class OrientationTest {
 
+    final float DELTA = 0.01f;
+    float orientation_num_1;
+    float orientation_num_2;
+
+    /* setup for all tests below */
+    @Before
+    public void setUp() {
+        orientation_num_1 = 90.0f;
+        orientation_num_2 = 0.01f;
+    }
+
+    /* Test with mock value = orientation_num_1 */
     @Test
-    public void Orientation_Test(){
+    public void Orientation_Test_1(){
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -35,15 +48,35 @@ public class OrientationTest {
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
             MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
-            Float val = (float) 123.32;
-            mockDataSource.setValue(val);
+            mockDataSource.setValue(orientation_num_1);
             UserOrientationService userOrientationService = UserOrientationService.singleton(activity);
             userOrientationService.setMockOrientationSource(mockDataSource);
 
             userOrientationService.getOrientation().observe(activity, dir ->{
-                assertEquals(Double.toString(dir), Double.toString(val));
+                assertEquals(orientation_num_1, dir, DELTA);
             });
         });
+    }
 
+    /* Test with mock value = orientation_num_2 */
+    @Test
+    public void Orientation_Test_2(){
+        Application application = ApplicationProvider.getApplicationContext();
+        ShadowApplication app = Shadows.shadowOf(application);
+        app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
+
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.onActivity(activity -> {
+            MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
+            mockDataSource.setValue(orientation_num_2);
+            UserOrientationService userOrientationService = UserOrientationService.singleton(activity);
+            userOrientationService.setMockOrientationSource(mockDataSource);
+
+            userOrientationService.getOrientation().observe(activity, dir ->{
+                assertEquals(orientation_num_2, dir, DELTA);
+            });
+        });
     }
 }
