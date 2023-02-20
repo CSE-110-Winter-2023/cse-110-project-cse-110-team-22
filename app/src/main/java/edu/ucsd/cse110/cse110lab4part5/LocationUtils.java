@@ -42,7 +42,11 @@ public class LocationUtils {
         }
         return idToAngleMap;
     }
-
+    /*
+     * find the id of the icons
+     * @param loc
+     * @return
+     */
     public static int findPicID(Location loc) {
         Map<Integer, Integer> map = new HashMap<>();
         map.put(FAMILYHOUSE, R.id.familyhouse);

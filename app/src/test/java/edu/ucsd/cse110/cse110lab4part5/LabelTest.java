@@ -30,7 +30,8 @@ import org.robolectric.shadows.ShadowApplication;
 
 public class LabelTest {
     /*
-     * test whether the label is customizable
+     * user opens the app, enters data and the labels,
+     * user clicks submit, then the user can see his entered label
      */
     @Test
     public void Label_Update_Test() {
