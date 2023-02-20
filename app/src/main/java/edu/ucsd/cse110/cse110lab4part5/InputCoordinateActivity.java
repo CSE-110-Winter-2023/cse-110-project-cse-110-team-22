@@ -48,6 +48,7 @@ public class InputCoordinateActivity extends AppCompatActivity {
         } else {
             Intent intent = new Intent(this, CompassActivity.class);
             intent.putExtra("mock_angle", mockAngle);
+            SharedPrefUtils.clearLocationSharedPreferences(this);
             for (Location location : locations) {
                 SharedPrefUtils.writeLocation(this, location);
             }
