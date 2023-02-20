@@ -45,7 +45,7 @@ public class  MainActivity extends AppCompatActivity {
 
         // check if locations exist already. If so pass a flag that will indicate to InputCoordinateActivity
         // that it should go straight to compass based on stored data
-        Intent intent = new Intent(this, CompassActivity.class);
+        Intent intent = new Intent(this, InputCoordinateActivity.class);
 
         if(SharedPrefUtils.hasStoredLocations(this)){
             intent.putExtra("activity_flag", 0);

@@ -19,6 +19,11 @@ import java.util.List;
 
 public class CompassActivity extends AppCompatActivity {
 
+    static final int FAMILYHOUSE = 0;
+    static final int FRIEND = 1;
+    static final int HOME = 2;
+    static final int NORTH = 3;
+
     private MutableLiveData<Pair<Double, Double>> locationValue;
     private UserLocationService userLocationService;
     private UserOrientationService orientationService;
@@ -100,6 +105,10 @@ public class CompassActivity extends AppCompatActivity {
         LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
         LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
         LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
+        homeLocation.setIconNum(HOME);
+        friendLocation.setIconNum(FRIEND);
+        familyLocation.setIconNum(FAMILYHOUSE);
+        northLocation.setIconNum(NORTH);
 
         List<Location> locList = new ArrayList<>();
         locList.add(familyLocation);
