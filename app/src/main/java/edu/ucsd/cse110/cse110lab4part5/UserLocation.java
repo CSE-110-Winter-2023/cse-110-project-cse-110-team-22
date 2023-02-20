@@ -9,7 +9,11 @@ public class UserLocation implements Location{
     public static UserLocation singleton(double latitude, double longitude, String label) {
         if(instance == null){
             instance = new UserLocation(latitude, longitude, label);
+            return instance;
         }
+        instance.setLabel(label);
+        instance.setLatitude(latitude);
+        instance.setLongitude(longitude);
         return instance;
     }
 

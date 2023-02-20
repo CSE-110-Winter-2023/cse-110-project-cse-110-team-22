@@ -6,12 +6,14 @@ import static java.util.Arrays.asList;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.core.location.LocationCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class SharedPrefUtils {
 
@@ -42,10 +44,15 @@ public class SharedPrefUtils {
      * @param context of the requester (ex some Activity)
      */
     public static void clearLocationSharedPreferences(Context context){
-        SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
-        editor.commit();
+        if(hasStoredLocations(context)){
+            Log.d("SharedPrefUtils", "cleared Shared Preferences Locations");
+            SharedPreferences preferences = context.getSharedPreferences(locationPreferencesFile, MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.commit();
+        } else{
+            Log.d("SharedPrefUtils", "attempted to clear empty Shared Preferences Locations");
+        }
     }
 
     /**
