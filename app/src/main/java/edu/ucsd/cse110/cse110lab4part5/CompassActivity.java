@@ -84,6 +84,8 @@ public class CompassActivity extends AppCompatActivity {
         TextView loca = (TextView)findViewById(R.id.loca);
 
 
+
+
         userLocationService = UserLocationService.singleton(this);
         orientationService = UserOrientationService.singleton(this);
         userLocation = UserLocation.singleton(0, 0, "you");

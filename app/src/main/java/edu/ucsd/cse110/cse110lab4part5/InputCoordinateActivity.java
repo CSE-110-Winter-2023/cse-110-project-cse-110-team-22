@@ -17,6 +17,7 @@ public class InputCoordinateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("lmoa", "lmoa");
         Bundle extras = getIntent().getExtras();
 
         try {
@@ -116,9 +117,9 @@ public class InputCoordinateActivity extends AppCompatActivity {
             double family_latitude_val = Double.parseDouble(family_latitude_str);
 
             // construct new locations, add to list
-            locations.add(new LandmarkLocation(home_longitude_val, home_latitude_val, home_label));
-            locations.add(new LandmarkLocation(friend_longitude_val, friend_latitude_val, friend_label));
-            locations.add(new LandmarkLocation(family_longitude_val, family_latitude_val, family_label));
+            locations.add(new LandmarkLocation(home_latitude_val, home_longitude_val, home_label));
+            locations.add(new LandmarkLocation(friend_latitude_val, friend_longitude_val, friend_label));
+            locations.add(new LandmarkLocation(family_latitude_val, family_longitude_val, family_label));
         } catch(java.lang.NumberFormatException e){
             Log.d("InputUI", "User hit enter without all coordinates");
         }
