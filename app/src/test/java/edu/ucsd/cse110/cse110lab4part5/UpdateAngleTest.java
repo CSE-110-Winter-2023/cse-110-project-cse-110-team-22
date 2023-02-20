@@ -38,7 +38,7 @@ public class UpdateAngleTest{
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
 
-        ActivityScenario scenario = ActivityScenario.launch(MainActivity.class);
+        ActivityScenario scenario = ActivityScenario.launch(InputCoordinateActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
