@@ -87,7 +87,7 @@ public class CompassActivity extends AppCompatActivity {
 
 
     }
-    private void updateCircleAngle(int imageViewId, float angle) {
+    void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
         layoutParams.circleAngle = angle;
