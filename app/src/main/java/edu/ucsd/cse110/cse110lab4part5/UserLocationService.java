@@ -58,7 +58,7 @@ public class UserLocationService implements LocationListener{
         return this.locationValue;
     }
 
-    public void setMockOrientationSource(MutableLiveData<Pair<Double,Double>>mockDataSource){
+    public void setMockLocationSource(MutableLiveData<Pair<Double,Double>>mockDataSource){
         unregisterLocationListener();
         this.locationValue = mockDataSource;
     }
