@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
@@ -35,13 +36,10 @@ public class  MainActivity extends AppCompatActivity {
         // Handle location permissions
         if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
+            Log.d("MainActivity", "Asking for location permissions");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
         }
 
-        // initialize services for location, orientation, and UserLocation
-        userLocationService = UserLocationService.singleton(this);
-        orientationService = new UserOrientationService(this);
-        userLocation = UserLocation.singleton(0, 0, "you");
 
         // check if locations exist already. If so pass a flag that will indicate to InputCoordinateActivity
         // that it should go straight to compass based on stored data

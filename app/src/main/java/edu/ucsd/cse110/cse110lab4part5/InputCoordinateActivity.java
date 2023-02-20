@@ -48,6 +48,7 @@ public class InputCoordinateActivity extends AppCompatActivity {
         } else {
             Intent intent = new Intent(this, CompassActivity.class);
             intent.putExtra("mock_angle", mockAngle);
+            SharedPrefUtils.clearLocationSharedPreferences(this);
             for (Location location : locations) {
                 SharedPrefUtils.writeLocation(this, location);
             }
@@ -126,6 +127,10 @@ public class InputCoordinateActivity extends AppCompatActivity {
         return locations;
     }
 
+    /**
+     * This method read the user mock angle
+     * @return the mock angle
+     */
     private double getMockAngleFromUI() {
         TextView mockAngleText = findViewById(R.id.mock_test);
         String mockAngleStr = mockAngleText.getText().toString();
