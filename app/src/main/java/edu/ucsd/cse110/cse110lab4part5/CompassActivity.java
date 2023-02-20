@@ -20,6 +20,11 @@ import java.util.List;
 
 public class CompassActivity extends AppCompatActivity {
 
+    static final int FAMILY = 0;
+    static final int FRIEND = 1;
+    static final int HOME = 2;
+    static final int NORTH = 3;
+
     private MutableLiveData<Pair<Double, Double>> locationValue;
     private UserLocationService userLocationService;
     private UserOrientationService orientationService;
@@ -51,13 +56,18 @@ public class CompassActivity extends AppCompatActivity {
         TextView friend_label = findViewById(R.id.friend_label_text);
         TextView family_label = findViewById(R.id.family_label_text);
 
+        //Landmark locations
         List<Location> locations = SharedPrefUtils.readAllLocations(this);
         LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
-        homeLocation.setIconNum(2);
+        homeLocation.setIconNum(HOME);
         LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
-        friendLocation.setIconNum(1);
+        friendLocation.setIconNum(FRIEND);
         LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
-        familyLocation.setIconNum(0);
+        familyLocation.setIconNum(FAMILY);
+
+        //north
+        LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
+        northLocation.setIconNum(NORTH);
 
         home_label.setText(homeLocation.getLabel());
         friend_label.setText(friendLocation.getLabel());
@@ -67,6 +77,7 @@ public class CompassActivity extends AppCompatActivity {
         locList.add(familyLocation);
         locList.add(friendLocation);
         locList.add(homeLocation);
+        locList.add(northLocation);
 
 
         TextView orienta = (TextView)findViewById(R.id.orienta);
@@ -89,9 +100,6 @@ public class CompassActivity extends AppCompatActivity {
             mockOrientationD = Math.toDegrees(mockOrientationR);
             update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
-
-
-
     }
 
     /**
