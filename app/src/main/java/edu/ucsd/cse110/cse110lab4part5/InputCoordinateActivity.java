@@ -2,9 +2,11 @@ package edu.ucsd.cse110.cse110lab4part5;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -36,12 +38,11 @@ public class InputCoordinateActivity extends AppCompatActivity {
         //Utilities.showAlert(this, "Testing");
         List<Location> locations = getLocationsFromUI();
         double mockAngle = getMockAngleFromUI();
-        intent.putExtra("mock_angle", mockAngle);
         if (locations.size() < 3){
-            showAlert("you should put 3 locations for now");
+            showAlert("You must enter coordinates for all 3 locations");
         } else {
             Intent intent = new Intent(this, CompassActivity.class);
-
+            intent.putExtra("mock_angle", mockAngle);
             for (Location location : locations) {
                 SharedPrefUtils.writeLocation(this, location);
             }
@@ -98,18 +99,24 @@ public class InputCoordinateActivity extends AppCompatActivity {
             friend_label = friend_view.getHint().toString();
         }
 
-        // convert long/lat to doubles
-        double home_longitude_val = Double.parseDouble(home_longitude_str);
-        double home_latitude_val = Double.parseDouble(home_latitude_str);
-        double friend_longitude_val = Double.parseDouble(friend_longitude_str);
-        double friend_latitude_val = Double.parseDouble(friend_latitude_str);
-        double family_longitude_val = Double.parseDouble(family_longitude_str);
-        double family_latitude_val = Double.parseDouble(family_latitude_str);
+        // try is to catch the user not entering all coordinates
+        try {
+            // convert long/lat to doubles
+            double home_longitude_val = Double.parseDouble(home_longitude_str);
+            double home_latitude_val = Double.parseDouble(home_latitude_str);
+            double friend_longitude_val = Double.parseDouble(friend_longitude_str);
+            double friend_latitude_val = Double.parseDouble(friend_latitude_str);
+            double family_longitude_val = Double.parseDouble(family_longitude_str);
+            double family_latitude_val = Double.parseDouble(family_latitude_str);
 
-        // construct new locations, add to list
-        locations.add(new LandmarkLocation(home_longitude_val, home_latitude_val, home_label));
-        locations.add(new LandmarkLocation(friend_longitude_val, friend_latitude_val, friend_label));
-        locations.add(new LandmarkLocation(family_longitude_val, family_latitude_val, family_label));
+            // construct new locations, add to list
+            locations.add(new LandmarkLocation(home_longitude_val, home_latitude_val, home_label));
+            locations.add(new LandmarkLocation(friend_longitude_val, friend_latitude_val, friend_label));
+            locations.add(new LandmarkLocation(family_longitude_val, family_latitude_val, family_label));
+        } catch(java.lang.NumberFormatException e){
+            Log.d("InputUI", "User hit enter without all coordinates");
+        }
+
 
         return locations;
     }
