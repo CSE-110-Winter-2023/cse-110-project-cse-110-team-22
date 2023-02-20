@@ -1,10 +1,35 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 public class UserLocation implements Location{
+    private static UserLocation instance;
     private double longitude;
     private double latitude;
     private String label;
 
+    /**
+     * set an instance of userlocation object
+     * @param latitude
+     * @param longitude
+     * @param label
+     * @return
+     */
+    public static UserLocation singleton(double latitude, double longitude, String label) {
+        if(instance == null){
+            instance = new UserLocation(latitude, longitude, label);
+            return instance;
+        }
+        instance.setLabel(label);
+        instance.setLatitude(latitude);
+        instance.setLongitude(longitude);
+        return instance;
+    }
+
+    /**
+     * constructor for userlocation
+     * @param latitude
+     * @param longitude
+     * @param label
+     */
     public UserLocation(double latitude, double longitude, String label) {
         this.longitude = longitude;
         this.latitude = latitude;

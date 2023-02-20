@@ -7,4 +7,6 @@ public interface Location {
     public void setLongitude(double longitude);
     public void setLatitude(double latitude);
     public void setLabel(String label);
+
+
 }

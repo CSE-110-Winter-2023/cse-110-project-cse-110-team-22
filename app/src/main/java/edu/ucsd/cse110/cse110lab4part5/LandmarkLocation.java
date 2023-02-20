@@ -4,6 +4,7 @@ public class LandmarkLocation implements Location{
     private double longitude;
     private double latitude;
     private String label;
+    private int icon_num;
 
     public LandmarkLocation(double latitude, double longitude, String label) {
         this.longitude = longitude;
@@ -36,4 +37,8 @@ public class LandmarkLocation implements Location{
 
     @Override
     public void setLabel(String label) { this.label = label; }
+
+    public void setIconNum(int num) {this.icon_num = num;}
+
+    public int getIconNum() {return icon_num;}
 }
