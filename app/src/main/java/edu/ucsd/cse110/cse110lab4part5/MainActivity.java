@@ -43,19 +43,14 @@ public class  MainActivity extends AppCompatActivity {
         orientationService = new UserOrientationService(this);
         userLocation = UserLocation.singleton(0, 0, "you");
 
-        // check if locations exist already. If so go straight to compass, otherwise to input UI
+        // check if locations exist already. If so pass a flag that will indicate to InputCoordinateActivity
+        // that it should go straight to compass based on stored data
+        Intent intent = new Intent(this, CompassActivity.class);
+
         if(SharedPrefUtils.hasStoredLocations(this)){
-
-            Intent intent = new Intent(this, CompassActivity.class);
             intent.putExtra("activity_flag", 0);
-            startActivity(intent);
-        } else{
-            Intent intent = new Intent(this, InputCoordinateActivity.class);
-            intent.putExtra("activity_flag", 1);
-            startActivity(intent);
         }
-
-
+        startActivity(intent);
 
     }
 }

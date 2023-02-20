@@ -19,10 +19,15 @@ public class InputCoordinateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
 
-        // check if we should go straight to compass UI based off of existing data
-        if(extras.getInt("activity_flag") == 0){
-            Intent intent = new Intent(this, CompassActivity.class);
-            startActivity(intent);
+        try {
+            // check if we should go straight to compass UI based off of existing data
+            if (extras.getInt("activity_flag") == 0) {
+                Log.d("InputCoordinateActivity", "onCreate going straight to compass");
+                Intent intent = new Intent(this, CompassActivity.class);
+                startActivity(intent);
+            }
+        } catch (NullPointerException e){
+            Log.d("InputCoordinateActivity", "onCreate staying on input UI");
         }
 
         setContentView(R.layout.activity_input_coordinate);

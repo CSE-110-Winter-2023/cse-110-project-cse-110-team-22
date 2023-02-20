@@ -25,7 +25,7 @@ public class InputUnitTest {
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
 
-        ActivityScenario scenario = ActivityScenario.launch(MainActivity.class);
+        ActivityScenario scenario = ActivityScenario.launch(InputCoordinateActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
@@ -40,7 +40,7 @@ public class InputUnitTest {
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
-        try(ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+        try(ActivityScenario<InputCoordinateActivity> scenario = ActivityScenario.launch(InputCoordinateActivity.class)) {
             scenario.onActivity(activity -> {
                 TextView textView = (TextView) activity.findViewById(R.id.longitude_home);
                 assertEquals(textView.getHint(),"Longitude");
@@ -52,7 +52,7 @@ public class InputUnitTest {
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
-        try(ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+        try(ActivityScenario<InputCoordinateActivity> scenario = ActivityScenario.launch(InputCoordinateActivity.class)) {
             scenario.onActivity(activity -> {
                 TextView textView = (TextView) activity.findViewById(R.id.label_family);
                 assertEquals(textView.getHint(),"Family Home");
@@ -65,7 +65,7 @@ public class InputUnitTest {
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
-        ActivityScenario scenario = ActivityScenario.launch(MainActivity.class);
+        ActivityScenario scenario = ActivityScenario.launch(InputCoordinateActivity.class);
         scenario.onActivity(activity -> {
             TextView lat_home = (TextView) activity.findViewById(R.id.latitude_home);
             lat_home.setText("123");
@@ -85,7 +85,7 @@ public class InputUnitTest {
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
-        ActivityScenario scenario = ActivityScenario.launch(MainActivity.class);
+        ActivityScenario scenario = ActivityScenario.launch(InputCoordinateActivity.class);
         scenario.onActivity(activity -> {
             TextView long_home = (TextView) activity.findViewById(R.id.longitude_home);
             long_home.setText("123");
