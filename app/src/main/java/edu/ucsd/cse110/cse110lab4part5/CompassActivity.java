@@ -46,22 +46,7 @@ public class CompassActivity extends AppCompatActivity {
             mockAngle = 0;
         }
 
-        
-
-        List<Location> locations = SharedPrefUtils.readAllLocations(this);
-        LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
-        homeLocation.setIconNum(2);
-        LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
-        friendLocation.setIconNum(1);
-        LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
-        familyLocation.setIconNum(0);
-
-
-        List<Location> locList = new ArrayList<>();
-        locList.add(familyLocation);
-        locList.add(friendLocation);
-        locList.add(homeLocation);
-
+        List<Location> locList = makeLocationList();
 
         TextView orienta = (TextView)findViewById(R.id.orienta);
         TextView loca = (TextView)findViewById(R.id.loca);
@@ -108,6 +93,22 @@ public class CompassActivity extends AppCompatActivity {
             updateCircleAngle(imageViewId, directionDegree);
         }
     }
+
+    public List<Location> makeLocationList() {
+        List<Location> locations = SharedPrefUtils.readAllLocations(this);
+        LandmarkLocation homeLocation = (LandmarkLocation) locations.get(0);
+        LandmarkLocation friendLocation = (LandmarkLocation) locations.get(1);
+        LandmarkLocation familyLocation = (LandmarkLocation) locations.get(2);
+        LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
+
+        List<Location> locList = new ArrayList<>();
+        locList.add(familyLocation);
+        locList.add(friendLocation);
+        locList.add(homeLocation);
+        locList.add(northLocation);
+        return locList;
+    }
+
     public void go_back(View view) {
         finish();
     }

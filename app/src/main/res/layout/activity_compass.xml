@@ -82,6 +82,23 @@
             tools:ignore="MissingConstraints" />
 
         <ImageView
+            android:id="@+id/letter_n"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="23dp"
+            android:layout_marginEnd="23dp"
+            android:layout_marginBottom="23dp"
+            app:layout_constraintBottom_toTopOf="@+id/clock_face"
+            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintCircleAngle="0"
+            app:layout_constraintCircleRadius="172dp"
+            app:layout_constraintEnd_toStartOf="@+id/clock_face"
+            app:layout_constraintStart_toEndOf="@+id/clock_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/letter_n"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
             android:id="@+id/clock_face"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
