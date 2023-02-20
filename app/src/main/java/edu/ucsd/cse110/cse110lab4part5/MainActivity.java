@@ -49,5 +49,6 @@ public class  MainActivity extends AppCompatActivity {
             intent.putExtra("activity_flag", 0);
         }
         startActivity(intent);
+
     }
 }
