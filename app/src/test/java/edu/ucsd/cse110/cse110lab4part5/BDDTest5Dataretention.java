@@ -27,7 +27,16 @@ import org.robolectric.shadows.ShadowApplication;
 
 @RunWith(RobolectricTestRunner.class)
 public class BDDTest5Dataretention {
-
+    /**
+     * Julia opens the app
+     * she has given consent to the location permission
+     * she enters the coordinates of her friends
+     * she shutdown her phone and reopen the app
+     * she continue filling out her family house coordinate and her apartment coordinate
+     * she clicks submit and was taken to the compass view page
+     * The compass view page correctly shows everything she entered
+     * she closes the app fully
+     */
     @Test
     public void test_on_data_retention(){
         Application application = ApplicationProvider.getApplicationContext();
@@ -67,6 +76,7 @@ public class BDDTest5Dataretention {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
             float test_float = layoutParams.circleAngle;
             assertEquals(expected, test_float, 0.01);
+
 
 
 
