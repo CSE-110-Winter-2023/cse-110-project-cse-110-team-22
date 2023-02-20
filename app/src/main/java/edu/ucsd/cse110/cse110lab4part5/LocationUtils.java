@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 public class LocationUtils {
+
+    static final int FAMILYHOUSE = 0;
+    static final int FRIEND = 1;
+    static final int HOME = 2;
+    static final int NORTH = 3;
     /**
      * Computes angle between locations
      * @param startLoc
@@ -39,13 +44,11 @@ public class LocationUtils {
     }
 
     public static int findPicID(Location loc) {
-        final int FAMILYHOUSE = 0;
-        final int FRIEND = 1;
-        final int HOME = 2;
         Map<Integer, Integer> map = new HashMap<>();
         map.put(FAMILYHOUSE, R.id.familyhouse);
         map.put(FRIEND, R.id.friend);
         map.put(HOME, R.id.home);
+        map.put(NORTH, R.id.letter_n);
         return map.get(((LandmarkLocation)loc).getIconNum());
     }
 }
