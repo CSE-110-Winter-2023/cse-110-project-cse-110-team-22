@@ -109,8 +109,7 @@ public class CompassActivity extends AppCompatActivity {
         }
     }
     public void go_back(View view) {
-        Intent intent = new Intent(this, InputCoordinateActivity.class);
-        startActivity(intent);
+        finish();
     }
 }
 
