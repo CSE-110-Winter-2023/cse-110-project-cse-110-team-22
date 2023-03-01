@@ -12,10 +12,6 @@ import okhttp3.RequestBody;
 
 public class ServerAPI {
 
-// TODO: Implement the API using OkHttp!
-    // TODO: Read the docs: https://square.github.io/okhttp/
-    // TODO: Read the docs: https://sharednotes.goto.ucsd.edu/docs
-
     private volatile static ServerAPI instance = null;
 
     private OkHttpClient client;
@@ -59,13 +55,13 @@ public class ServerAPI {
     }
 
 
-    public String getNote(String title){
+    public Friend getFriend(String uuid){
         // URLs cannot contain spaces, so we replace them with %20.
-        title = title.replace(" ", "%20");
+        uuid = uuid.replace(" ", "%20");
 
 
         Request request = new Request.Builder()
-                .url("https://sharednotes.goto.ucsd.edu/notes/" + title)
+                .url("https://sharednotes.goto.ucsd.edu/notes/" + uuid)
                 .method("GET", null)
                 .build();
 
@@ -73,11 +69,11 @@ public class ServerAPI {
             assert response.body() != null;
             String body = response.body().string();
             if(body.contains("Note not found.")){
-                Log.i("getNote", "note not in database");
+                Log.i("getFriend", "Friend " + uuid + " not found in database: ");
                 return null;
             }
-            Log.i("getNote", body);
-            return null; // TODO: from JSON here
+            Log.i("getFriend", "recieved response: " + body);
+            return Friend.fromJSON(body); // TODO: from JSON here
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -85,12 +81,12 @@ public class ServerAPI {
         return null;
     }
 
-    public void upsertNote(String title, String json){
+    public void upsertFriend(String uuid, String json){
 
         // URLs cannot contain spaces, so we replace them with %20.
-        title = title.replace(" ", "%20");
+        uuid = uuid.replace(" ", "%20");
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        String finalTitle = title;
+        String finalTitle = uuid;
         executor.submit(()->{
             RequestBody body = RequestBody.create(json, JSON);
             Request request = new Request.Builder()
@@ -101,7 +97,7 @@ public class ServerAPI {
             try (okhttp3.Response response = client.newCall(request).execute()) {
                 assert response.body() != null;
                 String responseBody = response.body().string();
-                Log.i("UpsertNote", responseBody);
+                Log.i("UpsertFriend", "Upserted friend with response: " + responseBody);
             } catch (Exception e) {
                 e.printStackTrace();
             }
