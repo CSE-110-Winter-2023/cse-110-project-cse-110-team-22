@@ -5,6 +5,11 @@ import android.util.Log;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+
 public class ServerAPI {
 
 // TODO: Implement the API using OkHttp!
@@ -19,13 +24,13 @@ public class ServerAPI {
             = MediaType.get("application/json; charset=utf-8");
 
 
-    public NoteAPI() {
+    public ServerAPI() {
         this.client = new OkHttpClient();
     }
 
-    public static NoteAPI provide() {
+    public static ServerAPI provide() {
         if (instance == null) {
-            instance = new NoteAPI();
+            instance = new ServerAPI();
         }
         return instance;
     }
@@ -39,14 +44,14 @@ public class ServerAPI {
         // URLs cannot contain spaces, so we replace them with %20.
         msg = msg.replace(" ", "%20");
 
-        var request = new Request.Builder()
+        Request request = new Request.Builder()
                 .url("https://sharednotes.goto.ucsd.edu/echo/" + msg)
                 .method("GET", null)
                 .build();
 
-        try (var response = client.newCall(request).execute()) {
+        try (okhttp3.Response response = client.newCall(request).execute()) {
             assert response.body() != null;
-            var body = response.body().string();
+            String body = response.body().string();
             Log.i("ECHO", body);
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,25 +59,25 @@ public class ServerAPI {
     }
 
 
-    public Note getNote(String title){
+    public String getNote(String title){
         // URLs cannot contain spaces, so we replace them with %20.
         title = title.replace(" ", "%20");
 
 
-        var request = new Request.Builder()
+        Request request = new Request.Builder()
                 .url("https://sharednotes.goto.ucsd.edu/notes/" + title)
                 .method("GET", null)
                 .build();
 
-        try (var response = client.newCall(request).execute()) {
+        try (okhttp3.Response response = client.newCall(request).execute()) {
             assert response.body() != null;
-            var body = response.body().string();
+            String body = response.body().string();
             if(body.contains("Note not found.")){
                 Log.i("getNote", "note not in database");
                 return null;
             }
             Log.i("getNote", body);
-            return Note.fromJSON(body);
+            return null; // TODO: from JSON here
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -88,14 +93,14 @@ public class ServerAPI {
         String finalTitle = title;
         executor.submit(()->{
             RequestBody body = RequestBody.create(json, JSON);
-            var request = new Request.Builder()
+            Request request = new Request.Builder()
                     .url("https://sharednotes.goto.ucsd.edu/notes/" + finalTitle)
                     .put(body)
                     .build();
 
-            try (var response = client.newCall(request).execute()) {
+            try (okhttp3.Response response = client.newCall(request).execute()) {
                 assert response.body() != null;
-                var responseBody = response.body().string();
+                String responseBody = response.body().string();
                 Log.i("UpsertNote", responseBody);
             } catch (Exception e) {
                 e.printStackTrace();
