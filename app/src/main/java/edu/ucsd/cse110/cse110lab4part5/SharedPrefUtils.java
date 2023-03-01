@@ -191,6 +191,14 @@ public class SharedPrefUtils {
     public static List<String> getAllID(Context context){
         // need to implement
         ArrayList<String> ids = new ArrayList<>();
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        String idString = preferences.getString(uuidFile, "");
+        if (idString.equals("")){
+            return ids;
+        }
+        for (String s:idString.split("/u0000")){
+            ids.add(s);
+        }
         return ids;
     }
 
@@ -211,9 +219,6 @@ public class SharedPrefUtils {
         }
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         String idString = preferences.getString(uuidFile, "");
-        if(id.length() == 0){
-            return false;
-        }
         for (String s:idString.split("/u0000")){
             if (s.equals(id)){
                 return true;
