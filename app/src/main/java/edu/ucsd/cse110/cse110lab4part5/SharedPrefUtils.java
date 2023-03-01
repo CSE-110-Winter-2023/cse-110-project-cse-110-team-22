@@ -19,9 +19,10 @@ public class SharedPrefUtils {
 
     private static final String locationPreferencesFile = "location_preferences";
     private static final String locationLabelsFile = "location_labels";
+    private static final String uuidPrefFile = "uuid_pref";
+    private static final String uuidFile = "uuids";
 
-
-
+    // Location methods
     /**
      *
      * @param context of the requester (ex some Activity)
@@ -153,5 +154,71 @@ public class SharedPrefUtils {
             editor.putString(locationLabelsFile, newLocations);
         }
         editor.commit();
+    }
+
+    // UUID Methods
+    public static void writeID(Context context, String id){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        String idString = preferences.getString(uuidFile, "");
+        // check if id is already present
+        if (hasID(context, id)){
+            return;
+        }
+        idString = idString + "/u0000" + id;
+        editor.putString(uuidFile, idString);
+        editor.commit();
+    }
+    public static void rmID(Context context, String id){
+        // check if id is present
+        if (hasID(context, id)){
+            SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            String idString = preferences.getString(uuidFile, "");
+            String newIdString = "";
+            for (String s:idString.split("/u0000")){
+                if (s.equals(id)){
+                    continue;
+                };
+                newIdString = newIdString + s;
+            }
+            if (newIdString.equals("")){
+                editor.remove(uuidFile);
+            }
+        }
+    }
+
+    public static List<String> getAllID(Context context){
+        // need to implement
+        ArrayList<String> ids = new ArrayList<>();
+        return ids;
+    }
+
+    // helper
+
+    /**
+     * Checks for presence of ID
+     * @param context
+     * @param id
+     * @return
+     */
+    private static boolean hasID(Context context, String id){
+        if (id == null){
+            throw new NullPointerException();
+        }
+        if (id == ""){
+            throw new IllegalArgumentException();
+        }
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        String idString = preferences.getString(uuidFile, "");
+        if(id.length() == 0){
+            return false;
+        }
+        for (String s:idString.split("/u0000")){
+            if (s.equals(id)){
+                return true;
+            };
+        }
+        return false;
     }
 }
