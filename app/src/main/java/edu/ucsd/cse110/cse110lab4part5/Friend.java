@@ -4,12 +4,13 @@ import com.google.gson.Gson;
 
 public class Friend {
     Location myLocation;
-    final String name;
+    String name;
     final String uuid;
 
     public Friend(String name, String uuid){
         this.name = name;
         this.uuid = uuid;
+        myLocation = null;
     }
     public void setLocation(Location l){
         if (l == null) {
@@ -20,6 +21,12 @@ public class Friend {
     public Location getLocation() {
         return myLocation;
     }
+
+    public void setName(String name) {this.name = name;};
+
+    public String getName() {return this.name;}
+
+    public String getUuid() {return this.uuid;}
 
     // TODO
     public static Friend fromJSON(String json) {
