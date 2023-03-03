@@ -15,6 +15,15 @@
         android:theme="@style/Theme.CSE110Lab4Part5"
         tools:targetApi="31">
         <activity
+            android:name=".input_name"
+            android:exported="false" />
+        <activity
+            android:name=".entering_friend_uid"
+            android:exported="false" />
+        <activity
+            android:name=".user_uid_showing"
+            android:exported="false" />
+        <activity
             android:name=".InputCoordinateActivity"
             android:exported="false" />
         <activity
