@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class FriendMediator {
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
+    private ServerAPI serverAPI = ServerAPI.getInstance();
 
     // TODO server stuff
 
@@ -30,8 +33,19 @@ public class FriendMediator {
     We also update GPS info, so the entire UI is updated after a new friend is added.
      */
     public void addFriend(String uuid) {
-        Friend friend = new Friend(null, uuid);
-        boolean friendIsValid = updateNewFriendStatus(friend);
+        //Friend friend = new Friend(null, uuid);
+        boolean friendIsValid;// = updateNewFriendStatus(friend);
+        Future<Friend> future = serverAPI.getFriendAsync(uuid);
+        Friend friend = null;
+        try {
+            friend = future.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        friendIsValid = (friend != null);
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             getAllServerUpdates();
@@ -42,13 +56,24 @@ public class FriendMediator {
         }
     }
 
-    private boolean updateNewFriendStatus(Friend friend) {
-        // TODO communicate with the server
-        // TODO check the return value from the server, check if the friend uid is valid
-        // TODO if valid, update friend with setName, setLocation
-        // TODO if notValid, simply return false
-        return false; // Put here for compilation to work
-    }
+//    private boolean updateNewFriendStatus(Friend friend) {
+//        // TODO communicate with the server
+//        // TODO check the return value from the server, check if the friend uid is valid
+//        // TODO if valid, update friend with setName, setLocation
+//        // TODO if notValid, simply return false
+//        Future<Boolean> future = serverAPI.uuidExistsAsync(friend.getUuid());
+//        boolean exists;
+//        try {
+//            exists = future.get();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        return false; // Put here for compilation to work
+//    }
 
     private void getAllServerUpdates() {
         // TODO uuidToFriendMap now have all valid friends. Get their current locations

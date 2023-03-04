@@ -42,7 +42,7 @@ public class ServerAPI {
     /**
      * Get a friend from the server
      * @param uuid of the friend
-     * @return a friend from the server
+     * @return a friend from the server, null if not found in server
      */
     @WorkerThread
     public Friend getFriend(String uuid){
@@ -75,6 +75,7 @@ public class ServerAPI {
      * Async call the server to get a friend's info.
      * @param uuid of the friend
      * @return a future which will contain the friend object upon thread completion
+     * will return null if server does not contain the uuid.
      */
     @AnyThread
     public Future<Friend> getFriendAsync(String uuid) {
@@ -132,7 +133,7 @@ public class ServerAPI {
      * to determine if a UUID is taken when making a new one, so err on side of caution.
      */
     @WorkerThread
-    public boolean uuidTaken(String uuid){
+    public boolean uuidExists(String uuid){
         // URLs cannot contain spaces, so we replace them with %20.
         uuid = uuid.replace(" ", "%20");
 
@@ -164,9 +165,9 @@ public class ServerAPI {
      * @return a future which will contain the result of checking the server
      */
     @AnyThread
-    public Future<Boolean> uuidTakenAsync(String uuid) {
+    public Future<Boolean> uuidExistsAsync(String uuid) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<Boolean> future = executor.submit(() -> uuidTaken(uuid));
+        Future<Boolean> future = executor.submit(() -> uuidExists(uuid));
 
         // We can use future.get(1, SECONDS) to wait for the result.
         return future;
