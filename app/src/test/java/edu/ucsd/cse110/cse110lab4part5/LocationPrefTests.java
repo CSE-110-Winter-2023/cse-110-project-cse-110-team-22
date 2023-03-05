@@ -7,20 +7,16 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
-import android.widget.TextView;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class SharedPrefTest {
+public class LocationPrefTests {
     private static final String locationPreferencesFile = "location_preferences";
     private static final String locationLabelsFile = "location_labels";
 
