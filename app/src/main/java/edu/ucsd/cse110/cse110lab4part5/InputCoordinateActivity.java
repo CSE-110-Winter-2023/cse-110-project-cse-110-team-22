@@ -17,6 +17,7 @@ public class InputCoordinateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_input_coordinate);
         Bundle extras = getIntent().getExtras();
 
         try {

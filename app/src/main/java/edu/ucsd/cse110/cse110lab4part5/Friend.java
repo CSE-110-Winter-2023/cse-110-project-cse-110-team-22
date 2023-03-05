@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import com.google.gson.Gson;
+
 public class Friend {
     Location myLocation;
     final String name;
@@ -18,4 +20,11 @@ public class Friend {
     public Location getLocation() {
         return myLocation;
     }
+
+    // TODO
+    public static Friend fromJSON(String json) {
+        return new Friend("", "");
+        //return new Gson().fromJson(json, Note.class);
+    }
+
 }

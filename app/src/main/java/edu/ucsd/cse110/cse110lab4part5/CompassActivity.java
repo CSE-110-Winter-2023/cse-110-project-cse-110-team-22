@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.util.Pair;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,13 +43,12 @@ public class CompassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compass);
 
 
-
         try {
-        // get orientation offset
-        Bundle extras = getIntent().getExtras();
-        //added junlin chen
+            // get orientation offset
+            Bundle extras = getIntent().getExtras();
+            //added junlin chen
             mockAngle = extras.getDouble("mock_angle");
-        } catch (Exception e){
+        } catch (Exception e) {
             mockAngle = 0;
         }
 
@@ -80,8 +80,8 @@ public class CompassActivity extends AppCompatActivity {
         locList.add(northLocation);
 
 
-        TextView orienta = (TextView)findViewById(R.id.orienta);
-        TextView loca = (TextView)findViewById(R.id.loca);
+        TextView orienta = (TextView) findViewById(R.id.orienta);
+        TextView loca = (TextView) findViewById(R.id.loca);
 
 
         userLocationService = UserLocationService.singleton(this);
@@ -94,12 +94,18 @@ public class CompassActivity extends AppCompatActivity {
         });
 
         orientationService.getOrientation().observe(this, orient -> {
-            userOrientation = Math.toDegrees((double)orient);
+            userOrientation = Math.toDegrees((double) orient);
             orienta.setText(Float.toString(orient));
             double mockOrientationR = Math.toRadians(userOrientation) + Math.toRadians(mockAngle);
             mockOrientationD = Math.toDegrees(mockOrientationR);
             update(mockOrientationD, LocationUtils.computeAllAngles(userLocation, locList));
         });
+
+        addFriendToCompass(12345, "jone");
+        updateCircleAngle(R.id.familyhouse, 12345, 100, 500);
+        addFriendToCompass(556789, "hile");
+        updateCircleAngle(R.id.familyhouse, 556789, 340, 400);
+
     }
 
     /**
@@ -140,11 +146,48 @@ public class CompassActivity extends AppCompatActivity {
     }
 
     /**
-     * Bottom handler for go back to inputCoordinateActivity
+     * Bottom handler for go back to enter_friend_uid
      * @param view
      */
     public void go_back(View view) {
         finish();
     }
+
+    void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
+        ImageView imageView = findViewById(imageViewId);
+        TextView textView = findViewById(textViewId);
+        ConstraintLayout.LayoutParams layoutParamsText = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
+        layoutParamsDot.circleAngle = angle;
+        layoutParamsText.circleAngle = angle;
+        layoutParamsText.circleRadius = distance;
+        textView.setLayoutParams(layoutParamsText);
+        imageView.setLayoutParams(layoutParamsDot);
+    }
+
+    public void addFriendToCompass(Integer id, String name){
+        ConstraintLayout constraintLayout = findViewById(R.id.clock);
+        TextView textView = new TextView(this);
+        textView.setId(id);
+        textView.setText(name);
+        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                50, // width
+                50 // height
+        );
+        layoutParams.circleConstraint = R.id.clock;
+        layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+        layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+        layoutParams.bottomToTop = R.id.clock_face;
+        layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+        layoutParams.setMargins(
+                23, // start margin
+                0, // top margin
+                23, // end margin
+                23 // bottom margin
+        );
+        textView.setLayoutParams(layoutParams);
+        constraintLayout.addView(textView);
+    }
+
 }
 
