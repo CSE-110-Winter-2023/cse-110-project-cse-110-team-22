@@ -224,7 +224,7 @@ public class ServerAPI {
      * @param longitude
      * @return
      */
-    public static String formatUpsertJSON(String privateUUID, String name, double latitude, double longitude){
+    public String formatUpsertJSON(String privateUUID, String name, double latitude, double longitude){
         String toReturn = "";
         toReturn += "{\n  \"private_code\": \"" + privateUUID + "\",";
         toReturn += "\n  \"label\": \"" + name + "\",";
