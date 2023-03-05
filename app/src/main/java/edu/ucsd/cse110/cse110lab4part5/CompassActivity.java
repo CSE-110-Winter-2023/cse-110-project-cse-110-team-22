@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.util.Pair;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -146,5 +147,7 @@ public class CompassActivity extends AppCompatActivity {
     public void go_back(View view) {
         finish();
     }
+
+
 }
 
