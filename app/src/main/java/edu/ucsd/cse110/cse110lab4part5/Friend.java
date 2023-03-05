@@ -34,4 +34,21 @@ public class Friend {
         //return new Gson().fromJson(json, Note.class);
     }
 
+    /**
+     * Checks for attribute equality between two friends
+     * @param other friend to compare to
+     * @return true if equal, false otherwise
+     */
+    public boolean equals(Friend other){
+        Location thisLocation = this.getLocation();
+        Location otherLocation = other.getLocation();
+        if(this.name.equals(other.name)
+                && this.uuid.equals(other.uuid)
+                && thisLocation.getLongitude() == otherLocation.getLongitude()
+                && thisLocation.getLatitude() == otherLocation.getLatitude()
+        ){
+            return true;
+        }
+        return false;
+    }
 }

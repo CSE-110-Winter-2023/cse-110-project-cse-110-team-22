@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ public class CompassActivity extends AppCompatActivity {
     private double mockOrientationD;
     private int count = 0;
     private double mockAngle = 0.0;
+    Map<String, Friend> uuidToFriendMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +147,41 @@ public class CompassActivity extends AppCompatActivity {
      */
     public void go_back(View view) {
         finish();
+    }
+
+
+    public void updateGPSStatus() {
+        // TODO
+    }
+
+    /**
+     * update uuidToFriendMap and update UI. This is called when the server updates or
+     * after a new friend uuid is verified and added by the mediator.
+     * @param uuidToFriendMap
+     */
+    public void updateFriendsMap(Map<String, Friend> uuidToFriendMap) {
+        this.uuidToFriendMap = uuidToFriendMap;
+        callUIUpdate();
+    }
+
+    /**
+     * prepare what is needed for the UI update, then call updateUI(...).
+     * Compute uuidToAngleMap, uuidToDistanceMap, uuidToNameMap inside
+     */
+    public void callUIUpdate() {
+        Map<String, Double> uuidToAngleMap = LocationUtils
+                .computeAllFriendAngles(userLocation, uuidToFriendMap);
+        Map<String, Double> uuidToDistanceMap = LocationUtils
+                .computeAllDistances(userLocation, uuidToFriendMap);
+
+        updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
+    }
+
+    public void updateUI(double userOrientation,
+                         Map<String, Double> uuidToAngleMap,
+                         Map<String, Double> uuidToDistanceMap,
+                         Map<String, Friend> uuidToFriendMap) {
+        // TODO Charlie
     }
 }
 

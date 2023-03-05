@@ -50,7 +50,7 @@ public class FriendMediator {
             uuidToFriendMap.put(uuid, friend);
             getAllServerUpdates();
             updateGPSUI();
-            updateCompassUI();
+            updateCompassUI(uuidToFriendMap);
         } else {
             // TODO something like a warning "invalid uuid"
         }
@@ -89,8 +89,8 @@ public class FriendMediator {
         // TODO update CompassActivity. Will this work?
     }
 
-    private void updateCompassUI() {
-        compassActivity.updateFriendsMap();
+    private void updateCompassUI(Map<String, Friend> uuidToFriendMap) {
+        compassActivity.updateFriendsMap(uuidToFriendMap);
         // TODO update CompassActivity. Will this work?
     }
 
