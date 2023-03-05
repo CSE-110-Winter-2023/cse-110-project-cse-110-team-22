@@ -102,6 +102,7 @@ public class IDPrefTests {
         SharedPrefUtils.rmID(context, "200", false);
         assertTrue(preferences.getString(uuidPublic, "").equals(""));
         assertTrue(preferences.getString(uuidPrivate, "").equals(""));
+        emptyTest();
     }
 
     @Test
