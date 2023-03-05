@@ -51,6 +51,7 @@ public class IDPrefTests {
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
 
         // write tests
+        assertFalse(SharedPrefUtils.hasName(context));
         SharedPrefUtils.writeName(context, "Max");
         SharedPrefUtils.writeID(context, "100", true);
         SharedPrefUtils.writeID(context, "200", false);
@@ -63,6 +64,7 @@ public class IDPrefTests {
         assertEquals(1, privID.size());
         assertEquals("200", privID.get(0));
         assertTrue(SharedPrefUtils.getName(context).equals("Max"));
+        assertTrue(SharedPrefUtils.hasName(context));
 
         SharedPrefUtils.writeID(context, "101", true);
         SharedPrefUtils.writeID(context, "201", false);
@@ -77,12 +79,33 @@ public class IDPrefTests {
         assertEquals("200", privID.get(0));
         assertEquals("201", privID.get(1));
 
+        // change name
+        SharedPrefUtils.writeName(context, "Jon");
+        assertTrue(SharedPrefUtils.hasName(context));
+        assertTrue(SharedPrefUtils.getName(context).equals("Jon"));
+
         SharedPrefUtils.clearIDPrefs(context);
         emptyTest();
     }
 
     @Test
-    public void removeTests(){
+    public void rmFromNoneOneTest(){
+        Context context = ApplicationProvider.getApplicationContext();
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        SharedPrefUtils.rmID(context, "100", true);
+        SharedPrefUtils.rmID(context, "200", false);
+        assertTrue(preferences.getString(uuidPublic, "").equals(""));
+        assertTrue(preferences.getString(uuidPrivate, "").equals(""));
+        SharedPrefUtils.writeID(context, "100", true);
+        SharedPrefUtils.writeID(context, "200", false);
+        SharedPrefUtils.rmID(context, "100", true);
+        SharedPrefUtils.rmID(context, "200", false);
+        assertTrue(preferences.getString(uuidPublic, "").equals(""));
+        assertTrue(preferences.getString(uuidPrivate, "").equals(""));
+    }
+
+    @Test
+    public void rmFromManyTest(){
         Context context = ApplicationProvider.getApplicationContext();
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         SharedPrefUtils.writeID(context, "100", true);
@@ -105,5 +128,7 @@ public class IDPrefTests {
         assertEquals("102", pubID.get(1));
         assertEquals("200", privID.get(0));
         assertEquals("202", privID.get(1));
+        SharedPrefUtils.clearIDPrefs(context);
+        emptyTest();
     }
 }
