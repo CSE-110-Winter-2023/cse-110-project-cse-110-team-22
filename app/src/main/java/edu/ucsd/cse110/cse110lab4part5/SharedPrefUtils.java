@@ -24,8 +24,8 @@ public class SharedPrefUtils {
     private static final String uuidPrivate = "uuidPriv";
     private static final String myName = "myName";
 
-    private static final String uuidSelf = "myUUID";
-
+    private static final String gpsPrefFile = "gps_pref";
+    private static final String GPSTime = "GPSTime";
 
     // Location methods
     /**
@@ -295,5 +295,29 @@ public class SharedPrefUtils {
             return name;
         }
         return null;
+    }
+
+    // GPS settings
+    public static void clearGPSPref(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(gpsPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+    public static void storeLastGPSTime(Context context, long time){
+        SharedPreferences preferences = context.getSharedPreferences(gpsPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(GPSTime, time);
+        editor.commit();
+    }
+
+    /**
+     *
+     * @param context
+     * @return the last GPS time, -1 if no last GPS time
+     */
+    public static long getLastGPSTime(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(gpsPrefFile, MODE_PRIVATE);
+        return preferences.getLong(GPSTime, -1);
     }
 }
