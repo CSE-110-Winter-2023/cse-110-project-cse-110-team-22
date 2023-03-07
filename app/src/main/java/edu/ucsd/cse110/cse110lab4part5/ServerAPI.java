@@ -231,7 +231,19 @@ public class ServerAPI {
         toReturn += "\n  \"label\": \"" + name + "\",";
         toReturn += "\n  \"latitude\": " + latitude + ",";
         toReturn += "\n  \"longitude\": " + longitude + "\n}";
-        return "";
+        return toReturn;
+    }
+
+    /**
+     * Check if upsert response indicates an error in upserting
+     * @param response of the upsert
+     * @return true if bad response, false otherwise
+     */
+    public boolean badUpsertResponse(String response){
+        if(response.contains("\"detail\":")){
+            return true;
+        }
+        return false;
     }
 
 

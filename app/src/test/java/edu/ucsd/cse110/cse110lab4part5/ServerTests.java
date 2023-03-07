@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,23 +42,23 @@ public class ServerTests {
     }
 
 
-    @Before
-    public void setUp() {
-        String publicUUID = getNewUUID();
-        String privateUUID = getNewUUID();
-
-        friend1 = new Friend("Julia", publicUUID);
-        friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
-        friend1PrivateCode = privateUUID;
-
-        friend1New = new Friend("Owen", publicUUID);
-        friend1New.setLocation(new LandmarkLocation(100, -100, "Owen's Location"));
-
-
-        friend2 = new Friend("Lisa", publicUUID);
-        friend2.setLocation(new LandmarkLocation(32.87986803114829,  -117.24313628066673, "Lisa's Location"));
-        friend2PrivateCode = privateUUID;
-    }
+//    @Before
+//    public void setUp() {
+//        String publicUUID = getNewUUID();
+//        String privateUUID = getNewUUID();
+//
+//        friend1 = new Friend("Julia", publicUUID);
+//        friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
+//        friend1PrivateCode = privateUUID;
+//
+//        friend1New = new Friend("Owen", publicUUID);
+//        friend1New.setLocation(new LandmarkLocation(100, -100, "Owen's Location"));
+//
+//
+//        friend2 = new Friend("Lisa", publicUUID);
+//        friend2.setLocation(new LandmarkLocation(32.87986803114829,  -117.24313628066673, "Lisa's Location"));
+//        friend2PrivateCode = privateUUID;
+//    }
 
 
     /**
@@ -82,7 +83,7 @@ public class ServerTests {
             throw new RuntimeException(e);
         }
 
-        assert(responseString.contains("200"));
+        assert(!serverAPI.badUpsertResponse(responseString));
 
         Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
 
@@ -207,6 +208,32 @@ public class ServerTests {
         Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
 
         //assert(!responseString.contains("200"));
+    }
+
+    @Test
+    public void ihatejson(){
+        String json = "";
+        String JSON_STRING = "{\"employee\":{\"name\":\"Abhishek Saini\",\"salary\":65000}}";
+        Friend friend = null;
+        try {
+            JSONObject obj = new JSONObject(JSON_STRING);
+            // fetch JSONObject named employee
+            JSONObject employee = obj.getJSONObject("employee");
+            // get employee name and salary
+            String name = employee.getString("name");
+            String salary = employee.getString("salary");
+            // set employee name and salary in TextView's
+
+            JSONObject responseJSON = new JSONObject(json);
+            //String name = responseJSON.getString("label");
+            String uuid = responseJSON.getString("public_code");
+            double latitude = responseJSON.getDouble("latitude");
+            double longitude = responseJSON.getDouble("longitude");
+            friend = new Friend(name, uuid);
+            friend.setLocation(new LandmarkLocation(latitude, longitude, name + "'s location"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
