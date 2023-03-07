@@ -60,11 +60,12 @@ public class ServerAPI {
             assert response.body() != null;
             String body = response.body().string();
             if(body.contains("Location not found")){
+                //TODO: Fix validation
                 Log.i("getFriend", "Friend " + uuid + " not found in database: ");
                 return null;
             }
             Log.i("getFriend", "recieved response: " + body);
-            return Friend.fromJSON(body); // TODO: from JSON here
+            return Friend.fromJSON(body);
         } catch (Exception e) {
             e.printStackTrace();
 
