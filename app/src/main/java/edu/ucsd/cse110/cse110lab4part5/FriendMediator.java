@@ -7,7 +7,9 @@ import android.view.View;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -31,6 +33,8 @@ public class FriendMediator {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
 
+    private List<Friend> waitingFriendsList;
+
     String publicUUID;
     String privateUUID;
     String name;
@@ -44,6 +48,10 @@ public class FriendMediator {
 
     public void setCompassActivity(CompassActivity compassActivity) {
         this.compassActivity = compassActivity;
+        for (Friend f : waitingFriendsList) {
+            compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
+        }
+        waitingFriendsList.clear();
     }
 
     public static FriendMediator getInstance() {
@@ -72,6 +80,7 @@ public class FriendMediator {
         publicUUID = String.valueOf(SharedPrefUtils.getPubUUID(context));
         privateUUID = String.valueOf(SharedPrefUtils.getPrivUUID(context));
         name = SharedPrefUtils.getName(context);
+        waitingFriendsList = new ArrayList<>();
 
         executor.scheduleAtFixedRate(() -> {
             for(String uuid: uuidToFriendMap.keySet()){
@@ -115,8 +124,13 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
-//            compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-  //          updateUI();
+            //TODO: Fix
+            if (compassActivity != null) {
+                compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
+            } else {
+
+            }
+            updateUI();
         } else {
             // TODO something like a warning "invalid uuid"
         }
@@ -178,6 +192,9 @@ public class FriendMediator {
     }
 
     public void updateUI() {
+        if(compassActivity == null){
+            return;
+        }
         updateUserForUI();
         updateGPSUI();
         updateCompassUI();
