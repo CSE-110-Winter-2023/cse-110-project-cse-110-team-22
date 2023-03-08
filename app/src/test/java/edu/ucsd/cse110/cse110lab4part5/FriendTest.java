@@ -75,8 +75,7 @@ public class FriendTest {
         String sampleUuid = "some_uuid";
         String sampleTime = "2023-02-18T18:30:00Z";
         String newLine = System.getProperty("line.separator");
-
-        friend1.setName(sampleName);
+        friend1 = new Friend(sampleName, sampleUuid);;
         friend1.setLocation(new LandmarkLocation(sampleLatitude, sampleLongitude, label));
 
         String json = "{"                                                       // {
@@ -88,6 +87,6 @@ public class FriendTest {
                     + "\t\"updated_at\": \"" + sampleTime + "\"" + newLine      //     "updated_at": "2023-02-18T18:30:00Z"
                     + "}";                                                      // }
         friend2 = Friend.fromJSON(json);
-        assertEquals(friend1, friend2);
+        assertTrue(friend1.equals(friend2));
     }
 }
