@@ -1,11 +1,11 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
-import android.content.Intent;
+import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
+
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.util.Pair;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,14 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import java.util.List;
-
 public class CompassActivity extends AppCompatActivity {
 
     static final int FAMILY = 0;
     static final int FRIEND = 1;
     static final int HOME = 2;
     static final int NORTH = 3;
+
+    private Map<Integer, Integer> nameToDot;
+
+    private int initial = 100;
 
     private MutableLiveData<Pair<Double, Double>> locationValue;
     private UserLocationService userLocationService;
@@ -34,6 +36,7 @@ public class CompassActivity extends AppCompatActivity {
     private double mockOrientationD;
     private int count = 0;
     private double mockAngle = 0.0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,17 +111,6 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * This method update the angle of icons in compass activity
-     * @param imageViewId ID of icons
-     * @param angle angle to update
-     */
-    void updateCircleAngle(int imageViewId, float angle) {
-        ImageView imageView = findViewById(imageViewId);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
-        layoutParams.circleAngle = angle;
-        imageView.setLayoutParams(layoutParams);
-    }
 
     /**
      * Bottom handler to clear data entered
@@ -128,21 +120,23 @@ public class CompassActivity extends AppCompatActivity {
         SharedPrefUtils.clearLocationSharedPreferences(this);
     }
 
-    /**
-     * This method calculate the angle to be updated and call updateCircleAngle
-     * @param userOrientation user direction
-     * @param directionMap Map that store the angle for each icons
-     */
-    public void update(double userOrientation, Map<Integer, Double> directionMap){
-        for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
-            int imageViewId = entry.getKey();
-            double direction = entry.getValue();
-            double directionRadians = Math.toRadians(direction);
-            directionRadians -= Math.toRadians(userOrientation);
-            float directionDegree = (float) Math.toDegrees(directionRadians);
 
-            updateCircleAngle(imageViewId, directionDegree);
+    public void update(double userOrientation, Map<String, Double> uuidToAngleMap, Map<String, Double> uuidToDistanceMap){
+        for (String uuid: uuidToAngleMap.keySet()) {
+
+            double angle = uuidToAngleMap.get(uuid);
+            double angleRadian = Math.toRadians(angle);
+            angleRadian -= Math.toRadians(userOrientation);
+            float angle_float = (float) Math.toDegrees(angleRadian);
+            int dist = uuidToDistanceMap.get(uuid).intValue();
+            int int_UUID = String_toUUID(uuid);
+            int dot_UUID = nameToDot.get(int_UUID);
+            updateCircleAngle(int_UUID, dot_UUID, angle_float, dist);
+
         }
+
+
+
     }
 
     /**
@@ -161,8 +155,17 @@ public class CompassActivity extends AppCompatActivity {
         layoutParamsDot.circleAngle = angle;
         layoutParamsText.circleAngle = angle;
         layoutParamsText.circleRadius = distance;
+        layoutParamsDot.circleRadius = initial;
         textView.setLayoutParams(layoutParamsText);
         imageView.setLayoutParams(layoutParamsDot);
+        if(distance > initial){
+            imageView.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.INVISIBLE);
+        }
+        else{
+            imageView.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void addFriendToCompass(Integer id, String name){
@@ -170,6 +173,12 @@ public class CompassActivity extends AppCompatActivity {
         TextView textView = new TextView(this);
         textView.setId(id);
         textView.setText(name);
+        ImageView myImage = new ImageView(this);
+        myImage.setImageResource(R.drawable.dot);
+        int imageID = View.generateViewId();
+        nameToDot.put(id, imageID);
+        myImage.setId(imageID);
+        textView.setTextColor(Color.BLACK);
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                 50, // width
                 50 // height
@@ -186,7 +195,9 @@ public class CompassActivity extends AppCompatActivity {
                 23 // bottom margin
         );
         textView.setLayoutParams(layoutParams);
+        myImage.setLayoutParams(layoutParams);
         constraintLayout.addView(textView);
+        constraintLayout.addView(myImage);
     }
 
 }
