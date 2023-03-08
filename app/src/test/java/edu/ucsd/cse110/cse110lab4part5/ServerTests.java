@@ -114,6 +114,8 @@ public class ServerTests {
                         , friend1.getLocation().getLatitude()
                         , friend1.getLocation().getLongitude()));
 
+        String responseString = response.get();
+
         // upsert friend again with values from friend 2
         Future<String> response2 = serverAPI.upsertUserAsync(friend1New.uuid
                 , serverAPI.formatUpsertJSON(friend1PrivateCode
