@@ -16,6 +16,7 @@ import java.util.Base64;
 import java.util.UUID;
 
 public class user_uid_showing extends AppCompatActivity {
+    private FriendMediator friendMediator = FriendMediator.getInstance();
 
 
     @Override
@@ -23,7 +24,7 @@ public class user_uid_showing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_uid_showing);
         TextView your_uid = (TextView) this.findViewById(R.id.your_uid);
-        int publicUUID = FriendMediator.getInstance().getOrGenerateUUID(this);
+        int publicUUID = friendMediator.getOrGenerateUUID(this);
         your_uid.setText(String.valueOf(publicUUID));
     }
 
