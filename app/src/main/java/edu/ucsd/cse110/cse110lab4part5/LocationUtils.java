@@ -42,7 +42,24 @@ public class LocationUtils {
         }
         return idToAngleMap;
     }
-    /*
+
+    /**
+     * compute display angle on compass
+     * @param userLoc
+     * @param uuidToFriendMap
+     * @return a Map<String, Double> containing (uuid -> bearing angle)
+     */
+    public static Map<String, Double> computeAllFriendAngles (Location userLoc, Map<String, Friend> uuidToFriendMap) {
+        Map<String, Double> uuidToAngleMap = new HashMap<>();
+        for (String uuid: uuidToFriendMap.keySet()) {
+            Location friendLoc = uuidToFriendMap.get(uuid).getLocation();
+            double angle = computeAngle(userLoc, friendLoc);
+            uuidToAngleMap.put(uuid, angle);
+        }
+        return uuidToAngleMap;
+    }
+
+    /**
      * find the id of the icons
      * @param loc
      * @return
@@ -56,9 +73,10 @@ public class LocationUtils {
         return map.get(((LandmarkLocation)loc).getIconNum());
     }
 
-    /*
+    /**
      * find the distance between two locations
-     * @param Location loc1, loc2
+     * @param loc1
+     * @param loc2
      * @return distance between loc1 and loc2
      */
     public static double computeDistance(Location loc1, Location loc2) {
@@ -74,13 +92,29 @@ public class LocationUtils {
         return 2 * RADIUS * Math.asin(Math.sqrt(tmp));
     }
 
-    /*
+    /**
      * find the distance between the user location and a friend
-     * @param Location loc1, Friend friend
+     * @param loc1
+     * @param friend
      * @return distance between the user and the friend
      */
     public static double computeDistance(Location loc1, Friend friend) {
         Location loc2 = friend.getLocation();
         return computeDistance(loc1, loc2);
+    }
+
+    /**
+     * find the distance between the user location and a friend
+     * @param loc1
+     * @param uuidToFriendMap
+     * @return a Map<String, Double> containing (uuid -> distance in miles)
+     */
+    public static Map<String, Double> computeAllDistances(Location loc1, Map<String, Friend> uuidToFriendMap) {
+        Map<String, Double> ret = new HashMap<>();
+        for(String uuid: uuidToFriendMap.keySet()) {
+            Friend f = uuidToFriendMap.get(uuid);
+            ret.put(uuid, computeDistance(loc1, f));
+        }
+        return ret;
     }
 }

@@ -7,12 +7,13 @@ import org.json.JSONObject;
 
 public class Friend {
     Location myLocation;
-    final String name;
+    String name;
     final String uuid;
 
     public Friend(String name, String uuid){
         this.name = name;
         this.uuid = uuid;
+        myLocation = null;
     }
     public void setLocation(Location l){
         if (l == null) {
@@ -23,6 +24,12 @@ public class Friend {
     public Location getLocation() {
         return myLocation;
     }
+
+    public void setName(String name) {this.name = name;};
+
+    public String getName() {return this.name;}
+
+    public String getUuid() {return this.uuid;}
 
     /**
      * Given a JSON string formatted like in the global server, try to construct a Friend object
@@ -64,7 +71,4 @@ public class Friend {
         }
         return false;
     }
-
-
-
 }
