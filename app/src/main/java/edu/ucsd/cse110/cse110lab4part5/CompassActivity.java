@@ -43,6 +43,8 @@ public class CompassActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_compass);
 
+        FriendMediator.getInstance().setCompassActivity(this);
+
 
         try {
             // get orientation offset

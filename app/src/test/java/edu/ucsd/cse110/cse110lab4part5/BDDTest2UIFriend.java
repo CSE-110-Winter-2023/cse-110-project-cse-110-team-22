@@ -100,6 +100,17 @@ public class BDDTest2UIFriend {
     @Test
     public void BDDTest2UIFriend(){
 
+        // init the friend mediator from main activity
+        ActivityScenario initScenario = ActivityScenario.launch(MainActivity.class);
+        initScenario.moveToState(Lifecycle.State.CREATED);
+        initScenario.moveToState(Lifecycle.State.STARTED);
+
+        initScenario.onActivity(activity -> {
+            FriendMediator.getInstance().init((MainActivity) activity);
+
+        });
+
+        // start from the input name activity
         ActivityScenario scenario = ActivityScenario.launch(input_name.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
