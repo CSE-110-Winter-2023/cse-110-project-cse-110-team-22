@@ -22,6 +22,17 @@ public class AddFriendUITest {
 
     @Test
     public void add_friend_UI_test() {
+        // init the friend mediator from main activity
+        ActivityScenario initScenario = ActivityScenario.launch(MainActivity.class);
+        initScenario.moveToState(Lifecycle.State.CREATED);
+        initScenario.moveToState(Lifecycle.State.STARTED);
+
+        initScenario.onActivity(activity -> {
+            FriendMediator.getInstance().init((MainActivity) activity);
+
+        });
+
+        // Actually start the testing
         ActivityScenario scenario = ActivityScenario.launch(input_name.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);

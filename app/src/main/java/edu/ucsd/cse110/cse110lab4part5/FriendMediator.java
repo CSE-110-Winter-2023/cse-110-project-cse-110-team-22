@@ -62,7 +62,7 @@ public class FriendMediator {
     }
 
     public void init(MainActivity context){
-        // TODO: Add back after fixing location permission issues on tests
+        // TODO: Important: Add back after fixing location permission issues on tests
         /*
         userLocation = UserLocation.singleton(0, 0, "You");
         userOrientation = 0.0;
@@ -196,7 +196,7 @@ public class FriendMediator {
             SharedPrefUtils.writeName(context, name);
         }
 
-        // TODO: Maybe update this in future user stories
+        // TODO: Update this for future stories to use actual services
         // Do initial upsert of Self
         Future<String> response = serverAPI.upsertUserAsync(publicUUID, serverAPI.formatUpsertJSON(privateUUID
                 , name
