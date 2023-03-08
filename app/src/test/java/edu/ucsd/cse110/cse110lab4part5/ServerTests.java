@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import static org.junit.Assert.assertNull;
+
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,23 +44,26 @@ public class ServerTests {
     }
 
 
-//    @Before
-//    public void setUp() {
-//        String publicUUID = getNewUUID();
-//        String privateUUID = getNewUUID();
-//
-//        friend1 = new Friend("Julia", publicUUID);
-//        friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
-//        friend1PrivateCode = privateUUID;
-//
-//        friend1New = new Friend("Owen", publicUUID);
-//        friend1New.setLocation(new LandmarkLocation(100, -100, "Owen's Location"));
-//
-//
-//        friend2 = new Friend("Lisa", publicUUID);
-//        friend2.setLocation(new LandmarkLocation(32.87986803114829,  -117.24313628066673, "Lisa's Location"));
-//        friend2PrivateCode = privateUUID;
-//    }
+    @Before
+    public void setUp() {
+        String publicUUID1 = getNewUUID();
+        String privateUUID1 = getNewUUID();
+        String publicUUID2 = getNewUUID();
+        String privateUUID2 = getNewUUID();
+
+
+        friend1 = new Friend("Julia", publicUUID1);
+        friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
+        friend1PrivateCode = privateUUID1;
+
+        friend1New = new Friend("Owen", publicUUID1);
+        friend1New.setLocation(new LandmarkLocation(100, -100, "Owen's Location"));
+
+
+        friend2 = new Friend("Lisa", publicUUID2);
+        friend2.setLocation(new LandmarkLocation(32.87986803114829,  -117.24313628066673, "Lisa's Location"));
+        friend2PrivateCode = privateUUID2;
+    }
 
 
     /**
@@ -133,6 +138,13 @@ public class ServerTests {
 
     }
 
+    /**
+     * Check that any attempt to update an existing location with the wrong private code will
+     * return the expected failure response, and the original data will remain unmodified on the
+     * server.
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Test
     public void testUpsertBadPrivateKey() throws ExecutionException, InterruptedException {
         // upsert first friend
@@ -151,7 +163,7 @@ public class ServerTests {
             throw new RuntimeException(e);
         }
 
-        assert(responseString.contains("200"));
+        assert(!serverAPI.badUpsertResponse(responseString));
 
         // upsert second friend with same public UUID, wrong private code
         Future<String> response2 = serverAPI.upsertUserAsync(friend1.uuid
@@ -160,7 +172,6 @@ public class ServerTests {
                         , friend1.getLocation().getLatitude()
                         , friend1.getLocation().getLongitude()));
 
-        // TODO: check that server rejected the upsert
         String responseString2;
         try {
             responseString2 = response2.get();
@@ -169,6 +180,8 @@ public class ServerTests {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        assert(serverAPI.badUpsertResponse(responseString2));
 
         // make sure original data remains after rejected call
         Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
@@ -193,47 +206,24 @@ public class ServerTests {
             throw new RuntimeException(e);
         }
 
-        assert(!responseString.contains("200"));
+        assert(serverAPI.badUpsertResponse(responseString));
 
         // make sure data was not added to server
         Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
 
-        assert(!responseString.contains("200"));
+        assertNull(serverFriend);
 
     }
 
-
-    public void testGetNonExistingFriend() throws ExecutionException, InterruptedException {
-        // TODO: Figure out later: Check for invalid uuid passed
-        Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
-
-        //assert(!responseString.contains("200"));
-    }
-
+    /**
+     * Check that we get a null friend when we call get on the server with a non existant UUID
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Test
-    public void ihatejson(){
-        String json = "";
-        String JSON_STRING = "{\"employee\":{\"name\":\"Abhishek Saini\",\"salary\":65000}}";
-        Friend friend = null;
-        try {
-            JSONObject obj = new JSONObject(JSON_STRING);
-            // fetch JSONObject named employee
-            JSONObject employee = obj.getJSONObject("employee");
-            // get employee name and salary
-            String name = employee.getString("name");
-            String salary = employee.getString("salary");
-            // set employee name and salary in TextView's
-
-            JSONObject responseJSON = new JSONObject(json);
-            //String name = responseJSON.getString("label");
-            String uuid = responseJSON.getString("public_code");
-            double latitude = responseJSON.getDouble("latitude");
-            double longitude = responseJSON.getDouble("longitude");
-            friend = new Friend(name, uuid);
-            friend.setLocation(new LandmarkLocation(latitude, longitude, name + "'s location"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void testGetNonExistingFriend() throws ExecutionException, InterruptedException {
+        Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
+        assertNull(serverFriend);
     }
 
 
