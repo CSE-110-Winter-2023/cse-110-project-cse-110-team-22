@@ -297,37 +297,37 @@ public class SharedPrefUtils {
     }
 
     // My own UUID stuff
-    public static void setPubUUID(Context context, long uuid){
+    public static void setPubUUID(Context context, int uuid){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(uuidPublic, uuid);
+        editor.putInt(uuidPublic, uuid);
         editor.commit();
     }
-    public static void setPrivUUID(Context context, long priv_uuid){
+    public static void setPrivUUID(Context context, int priv_uuid){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(uuidPrivate, priv_uuid);
+        editor.putInt(uuidPrivate, priv_uuid);
         editor.commit();
     }
     public static boolean hasPubUUID(Context context){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
-        long pubID = preferences.getLong(uuidPublic, -1);
+        int pubID = preferences.getInt(uuidPublic, -1);
         return pubID != -1;
     }
     public static boolean hasPrivUUID(Context context){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
-        long privID = preferences.getLong(uuidPrivate, -1);
+        int privID = preferences.getInt(uuidPrivate, -1);
         return privID != -1;
     }
 
-    public static long getPubUUID(Context context){
+    public static int getPubUUID(Context context){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
-        return preferences.getLong(uuidPublic, -1);
+        return preferences.getInt(uuidPublic, -1);
     }
 
-    public static long getPrivUUID(Context context){
+    public static int getPrivUUID(Context context){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
-        return preferences.getLong(uuidPrivate, -1);
+        return preferences.getInt(uuidPrivate, -1);
     }
 
     // GPS settings

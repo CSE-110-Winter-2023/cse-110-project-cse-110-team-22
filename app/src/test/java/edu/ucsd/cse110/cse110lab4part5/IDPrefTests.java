@@ -112,7 +112,7 @@ public class IDPrefTests {
         SharedPrefUtils.setPubUUID(context, 12345);
         assertTrue(SharedPrefUtils.hasPubUUID(context));
         assertEquals(12345, SharedPrefUtils.getPubUUID(context));
-        assertEquals(12345, preferences.getLong(uuidPublic, -1));
+        assertEquals(12345, preferences.getInt(uuidPublic, -1));
         SharedPrefUtils.clearIDPrefs(context);
         emptyTest();
     }
@@ -125,7 +125,7 @@ public class IDPrefTests {
         SharedPrefUtils.setPrivUUID(context, 12345);
         assertTrue(SharedPrefUtils.hasPrivUUID(context));
         assertEquals(12345, SharedPrefUtils.getPrivUUID(context));
-        assertEquals(12345, preferences.getLong(uuidPrivate, -1));
+        assertEquals(12345, preferences.getInt(uuidPrivate, -1));
         SharedPrefUtils.clearIDPrefs(context);
         emptyTest();
     }
