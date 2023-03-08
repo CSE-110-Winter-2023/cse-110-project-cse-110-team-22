@@ -37,6 +37,9 @@ public class CompassActivity extends AppCompatActivity {
     private double mockAngle = 0.0;
     Map<String, Friend> uuidToFriendMap;
 
+    private boolean GPSSignalGood;
+    private String GPSStatusStr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,8 +158,10 @@ public class CompassActivity extends AppCompatActivity {
         finish();
     }
 
-    public void updateGPSStatus() {
-        // TODO
+    public void updateGPSStatus(boolean GPSSignalGood, String GPSStatusStr) {
+        this.GPSSignalGood = GPSSignalGood;
+        this.GPSStatusStr = GPSStatusStr;
+        // TODO postRedisplay
     }
 
     /**

@@ -21,7 +21,8 @@ public class FriendMediator {
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-
+    private boolean GPSSignalGood;
+    private String GPSStatusStr;
 
     String publicUUID;
     String privateUUID;
@@ -29,7 +30,10 @@ public class FriendMediator {
 
     Location location;
 
-    // TODO server stuff
+    public void updateGPSStatus(boolean GPSSignalGood, String GPSStatusStr) {
+        this.GPSSignalGood = GPSSignalGood;
+        this.GPSStatusStr = GPSStatusStr;
+    }
 
     public void setCompassActivity(CompassActivity compassActivity) {
         this.compassActivity = compassActivity;
@@ -65,6 +69,8 @@ public class FriendMediator {
             }
             Log.d("Mediator", "Finished Updating round");
             // All friends updated, notify UI
+            updateCompassUI(uuidToFriendMap);
+            updateGPSUI();
         }, 0, 1, TimeUnit.SECONDS);
     }
 
@@ -92,6 +98,7 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
+            compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
             updateGPSUI();
             updateCompassUI(uuidToFriendMap);
         } else {
@@ -124,13 +131,11 @@ public class FriendMediator {
     }
 
     private void updateGPSUI() {
-        compassActivity.updateGPSStatus();
-        // TODO update CompassActivity. Will this work?
+        compassActivity.updateGPSStatus(GPSSignalGood, GPSStatusStr);
     }
 
     private void updateCompassUI(Map<String, Friend> uuidToFriendMap) {
         compassActivity.updateFriendsMap(uuidToFriendMap);
-        // TODO update CompassActivity. Will this work?
     }
 
     public void setName(Context context, String name){
@@ -151,7 +156,4 @@ public class FriendMediator {
             return Integer.valueOf(publicUUID);
         }
     }
-
-    // TODO get updates from server every few seconds
-
 }
