@@ -98,9 +98,9 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
-            compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-            updateGPSUI();
-            updateCompassUI(uuidToFriendMap);
+            //compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
+//            updateGPSUI();
+//            updateCompassUI(uuidToFriendMap);
         } else {
             // TODO something like a warning "invalid uuid"
         }
