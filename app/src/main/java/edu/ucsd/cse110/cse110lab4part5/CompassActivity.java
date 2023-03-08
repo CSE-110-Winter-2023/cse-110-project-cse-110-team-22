@@ -25,6 +25,7 @@ public class CompassActivity extends AppCompatActivity {
 
     private int initial = 100;
 
+
     private Location userLocation;
     private double userOrientation;
     private double mockOrientationD;
@@ -73,6 +74,7 @@ public class CompassActivity extends AppCompatActivity {
     }
 
 
+
     public void updateUI(double userOrientation, Map<String, Double> uuidToAngleMap,
                          Map<String, Double> uuidToDistanceMap, Map<String, Friend> uuidToFriendMap){
         for (String uuid: uuidToAngleMap.keySet()) {
@@ -114,9 +116,6 @@ public class CompassActivity extends AppCompatActivity {
             updateCircleAngle(int_UUID, dot_UUID, angle_float, dist);
 
         }
-
-
-
     }
     void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);

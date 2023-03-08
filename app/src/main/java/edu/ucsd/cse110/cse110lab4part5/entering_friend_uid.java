@@ -17,7 +17,7 @@ public class entering_friend_uid extends AppCompatActivity {
         setContentView(R.layout.activity_entering_friend_uid);
     }
 
-    public void add_friend_to_database(View view){
+    public void onAddFriendToDatabaseClicked(View view){
         TextView friendView = findViewById(R.id.enter_friend_id_blank);
         String friendName = friendView.getText().toString();
         friendMediator.addFriend(this,friendName);
