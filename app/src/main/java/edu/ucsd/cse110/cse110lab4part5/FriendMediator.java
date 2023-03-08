@@ -56,6 +56,7 @@ public class FriendMediator {
                 Future<Friend> friend = serverAPI.getFriendAsync(uuid);
                 try {
                     uuidToFriendMap.put(uuid, friend.get());
+                    // NOTE: FRIEND IS UPDATED
                 } catch (ExecutionException e) {
                     Log.e("Mediator", e.toString());
                 } catch (InterruptedException e) {
@@ -63,6 +64,7 @@ public class FriendMediator {
                 }
             }
             Log.d("Mediator", "Finished Updating round");
+            // All friends updated, notify UI
         }, 0, 1, TimeUnit.SECONDS);
     }
 
@@ -90,7 +92,6 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
-            getAllServerUpdates();
             updateGPSUI();
             updateCompassUI(uuidToFriendMap);
         } else {
@@ -117,13 +118,9 @@ public class FriendMediator {
 //        return false; // Put here for compilation to work
 //    }
 
-    private void getAllServerUpdates() {
-        // TODO uuidToFriendMap now have all valid friends. Get their current locations
-        // TODO and update this uuidToFriendMap
-    }
 
     private void updateServer() {
-        // TODO when new users get their uid and set their name, notify the server
+        // TODO update server on own info/location (US4)
     }
 
     private void updateGPSUI() {
