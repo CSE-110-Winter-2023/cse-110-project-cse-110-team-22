@@ -1,19 +1,27 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class FriendMediator {
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
     private ServerAPI serverAPI = ServerAPI.getInstance();
+
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+
 
     String publicUUID;
     String privateUUID;
@@ -42,6 +50,20 @@ public class FriendMediator {
         publicUUID = String.valueOf(SharedPrefUtils.getPubUUID(context));
         privateUUID = String.valueOf(SharedPrefUtils.getPrivUUID(context));
         name = SharedPrefUtils.getName(context);
+
+        executor.scheduleAtFixedRate(() -> {
+            for(String uuid: uuidToFriendMap.keySet()){
+                Future<Friend> friend = serverAPI.getFriendAsync(uuid);
+                try {
+                    uuidToFriendMap.put(uuid, friend.get());
+                } catch (ExecutionException e) {
+                    Log.e("Mediator", e.toString());
+                } catch (InterruptedException e) {
+                    Log.e("Mediator", e.toString());
+                }
+            }
+            Log.d("Mediator", "Finished Updating round");
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     /*
