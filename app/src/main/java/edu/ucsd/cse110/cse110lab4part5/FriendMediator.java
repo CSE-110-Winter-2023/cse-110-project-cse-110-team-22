@@ -18,6 +18,7 @@ public class FriendMediator {
     String publicUUID;
     String privateUUID;
     String name;
+
     Location location;
 
     // TODO server stuff
@@ -33,13 +34,23 @@ public class FriendMediator {
         return instance;
     }
 
+    public void init(Context context){
+        java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
+        for(String uuid: friendUUIDS){
+            uuidToFriendMap.put(uuid, new Friend("", uuid));
+        }
+        publicUUID = String.valueOf(SharedPrefUtils.getPubUUID(context));
+        privateUUID = String.valueOf(SharedPrefUtils.getPrivUUID(context));
+        name = SharedPrefUtils.getName(context);
+    }
+
     /*
     Try adding a new friend with the uuid provided. If uuid invalid, do nothing.
     If uuid is valid, add the friend to the HashMap, get their info from the server, then
     update compassUI. Always update CompassUI after checking with the server for the latest info.
     We also update GPS info, so the entire UI is updated after a new friend is added.
      */
-    public void addFriend(String uuid) {
+    public void addFriend(Context context, String uuid) {
         //Friend friend = new Friend(null, uuid);
         boolean friendIsValid;// = updateNewFriendStatus(friend);
         Future<Friend> future = serverAPI.getFriendAsync(uuid);
@@ -51,10 +62,12 @@ public class FriendMediator {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         friendIsValid = (friend != null);
+
+
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
+            SharedPrefUtils.writeID(context, uuid);
             getAllServerUpdates();
             updateGPSUI();
             updateCompassUI(uuidToFriendMap);
