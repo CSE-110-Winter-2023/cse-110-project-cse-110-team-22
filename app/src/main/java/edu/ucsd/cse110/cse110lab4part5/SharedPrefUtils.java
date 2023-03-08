@@ -20,8 +20,9 @@ public class SharedPrefUtils {
     private static final String locationPreferencesFile = "location_preferences";
     private static final String locationLabelsFile = "location_labels";
     private static final String uuidPrefFile = "uuid_pref";
+    private static final String uuidFriends = "uuidFriends";
     private static final String uuidPublic = "uuidPub";
-    private static final String uuidPrivate = "uuidPriv";
+    private static final String uuidPrivate = "uuidPrivate";
     private static final String myName = "myName";
 
     private static final String gpsPrefFile = "gps_pref";
@@ -174,15 +175,14 @@ public class SharedPrefUtils {
      *
      * @param context   context of the preference
      * @param id        the UUID to store
-     * @param option    true: public, false: private
      */
-    public static void writeID(Context context, String id, boolean option){
+    public static void writeID(Context context, String id){
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        String storeMethod = (option) ? uuidPublic : uuidPrivate;
+        String storeMethod = uuidFriends;
         String idString = preferences.getString(storeMethod, "");
         // check if id is already present
-        if (hasID(context, id, option)){
+        if (hasID(context, id)){
             return;
         }
         if (idString.equals("")){
@@ -199,12 +199,11 @@ public class SharedPrefUtils {
      *
      * @param context   context of the preference
      * @param id        the UUID to store
-     * @param option    true: public, false: private
      */
-    public static void rmID(Context context, String id, boolean option){
+    public static void rmID(Context context, String id){
         // check if id is present
-        String storeMethod = (option) ? uuidPublic : uuidPrivate;
-        if (hasID(context, id, option)){
+        String storeMethod = uuidFriends;
+        if (hasID(context, id)){
             SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             String idString = preferences.getString(storeMethod, "");
@@ -228,9 +227,9 @@ public class SharedPrefUtils {
         }
     }
 
-    public static List<String> getAllID(Context context, boolean option){
+    public static List<String> getAllID(Context context){
         // need to implement
-        String storeMethod = (option) ? uuidPublic : uuidPrivate;
+        String storeMethod = uuidFriends;
         ArrayList<String> ids = new ArrayList<>();
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         String idString = preferences.getString(storeMethod, "");
@@ -251,14 +250,14 @@ public class SharedPrefUtils {
      * @param id
      * @return
      */
-    private static boolean hasID(Context context, String id, boolean option){
+    private static boolean hasID(Context context, String id){
         if (id == null){
             throw new NullPointerException();
         }
         if (id == ""){
             throw new IllegalArgumentException();
         }
-        String storeMethod = (option) ? uuidPublic : uuidPrivate;
+        String storeMethod = uuidFriends;
         SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
         String idString = preferences.getString(storeMethod, "");
         if (idString.equals("")){
@@ -295,6 +294,40 @@ public class SharedPrefUtils {
             return name;
         }
         return null;
+    }
+
+    // My own UUID stuff
+    public static void setPubUUID(Context context, long uuid){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(uuidPublic, uuid);
+        editor.commit();
+    }
+    public static void setPrivUUID(Context context, long priv_uuid){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(uuidPrivate, priv_uuid);
+        editor.commit();
+    }
+    public static boolean hasPubUUID(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        long pubID = preferences.getLong(uuidPublic, -1);
+        return pubID != -1;
+    }
+    public static boolean hasPrivUUID(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        long privID = preferences.getLong(uuidPrivate, -1);
+        return privID != -1;
+    }
+
+    public static long getPubUUID(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        return preferences.getLong(uuidPublic, -1);
+    }
+
+    public static long getPrivUUID(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(uuidPrefFile, MODE_PRIVATE);
+        return preferences.getLong(uuidPrivate, -1);
     }
 
     // GPS settings
