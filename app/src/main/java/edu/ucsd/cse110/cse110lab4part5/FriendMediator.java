@@ -1,7 +1,9 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import androidx.lifecycle.LiveData;
 
@@ -20,6 +22,11 @@ public class FriendMediator {
     private ServerAPI serverAPI = ServerAPI.getInstance();
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+    private UserLocationService userLocationService;
+    private UserOrientationService orientationService;
+    private double userOrientation;
+    private Location userLocation;
 
     private boolean GPSSignalGood;
     private String GPSStatusStr;
@@ -46,7 +53,18 @@ public class FriendMediator {
         return instance;
     }
 
-    public void init(Context context){
+    public void init(MainActivity context){
+        userLocation = UserLocation.singleton(0, 0, "You");
+        userOrientation = 0.0;
+        userLocationService = UserLocationService.singleton(context);
+        orientationService = UserOrientationService.singleton(context);
+        userLocationService.getLocation().observe(context, loc -> {
+            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+        });
+        orientationService.getOrientation().observe(context, orient -> {
+            userOrientation = Math.toDegrees((double) orient);
+        });
+
         java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
@@ -69,8 +87,7 @@ public class FriendMediator {
             }
             Log.d("Mediator", "Finished Updating round");
             // All friends updated, notify UI
-            updateCompassUI(uuidToFriendMap);
-            updateGPSUI();
+            updateUI();
         }, 0, 1, TimeUnit.SECONDS);
     }
 
@@ -98,9 +115,8 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
-            //compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-//            updateGPSUI();
-//            updateCompassUI(uuidToFriendMap);
+//            compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
+  //          updateUI();
         } else {
             // TODO something like a warning "invalid uuid"
         }
@@ -130,11 +146,15 @@ public class FriendMediator {
         // TODO update server on own info/location (US4)
     }
 
+    private void updateUserForUI() {
+        compassActivity.updateUser(userLocation, userOrientation);
+    }
+
     private void updateGPSUI() {
         compassActivity.updateGPSStatus(GPSSignalGood, GPSStatusStr);
     }
 
-    private void updateCompassUI(Map<String, Friend> uuidToFriendMap) {
+    private void updateCompassUI() {
         compassActivity.updateFriendsMap(uuidToFriendMap);
     }
 
@@ -155,5 +175,12 @@ public class FriendMediator {
             SharedPrefUtils.setPrivUUID(context, Integer.valueOf(privateUUID));
             return Integer.valueOf(publicUUID);
         }
+    }
+
+    public void updateUI() {
+        updateUserForUI();
+        updateGPSUI();
+        updateCompassUI();
+        compassActivity.display();
     }
 }
