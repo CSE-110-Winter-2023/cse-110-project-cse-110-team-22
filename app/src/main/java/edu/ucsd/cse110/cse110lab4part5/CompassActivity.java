@@ -98,9 +98,25 @@ public class CompassActivity extends AppCompatActivity {
             double directionRadians = Math.toRadians(direction);
             directionRadians -= Math.toRadians(userOrientation);
             float directionDegree = (float) Math.toDegrees(directionRadians);
-
-            updateCircleAngle(imageViewId, directionDegree);
         }
+    }
+
+    public void update(double userOrientation, Map<String, Double> uuidToAngleMap, Map<String, Double> uuidToDistanceMap){
+        for (String uuid: uuidToAngleMap.keySet()) {
+
+            double angle = uuidToAngleMap.get(uuid);
+            double angleRadian = Math.toRadians(angle);
+            angleRadian -= Math.toRadians(userOrientation);
+            float angle_float = (float) Math.toDegrees(angleRadian);
+            int dist = uuidToDistanceMap.get(uuid).intValue();
+            int int_UUID = String_toUUID(uuid);
+            int dot_UUID = nameToDot.get(int_UUID);
+            updateCircleAngle(int_UUID, dot_UUID, angle_float, dist);
+
+        }
+
+
+
     }
     void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);
