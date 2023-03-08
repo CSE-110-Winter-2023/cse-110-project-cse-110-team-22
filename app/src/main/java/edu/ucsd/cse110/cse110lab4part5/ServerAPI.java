@@ -6,6 +6,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -243,6 +244,25 @@ public class ServerAPI {
             return true;
         }
         return false;
+    }
+
+    public String getNewUUID(){
+        String uuid;
+        while(true){
+            uuid = String.valueOf(UserUUID.generate_own_uid());
+            boolean exists = true;
+            try {
+                exists = uuidExistsAsync(uuid).get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if(exists == false){
+                break;
+            }
+        }
+        return uuid;
     }
 
 

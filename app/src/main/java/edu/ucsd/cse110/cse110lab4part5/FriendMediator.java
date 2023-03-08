@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 
 import java.util.HashMap;
@@ -13,13 +15,18 @@ public class FriendMediator {
     private CompassActivity compassActivity;
     private ServerAPI serverAPI = ServerAPI.getInstance();
 
+    String publicUUID;
+    String privateUUID;
+    String name;
+    Location location;
+
     // TODO server stuff
 
     public void setCompassActivity(CompassActivity compassActivity) {
         this.compassActivity = compassActivity;
     }
 
-    public FriendMediator getInstance() {
+    public static FriendMediator getInstance() {
         if (instance == null) {
             instance = new FriendMediator();
         }
@@ -92,6 +99,25 @@ public class FriendMediator {
     private void updateCompassUI(Map<String, Friend> uuidToFriendMap) {
         compassActivity.updateFriendsMap(uuidToFriendMap);
         // TODO update CompassActivity. Will this work?
+    }
+
+    public void setName(Context context, String name){
+        if(!SharedPrefUtils.hasName(context)){
+            this.name = name;
+            SharedPrefUtils.writeName(context, name);
+        }
+    }
+
+    public int getOrGenerateUUID(Context context){
+        if(SharedPrefUtils.hasPubUUID(context)){
+            return SharedPrefUtils.getPubUUID(context);
+        } else{
+            String publicUUID = serverAPI.getNewUUID();
+            String privateUUID = serverAPI.getNewUUID();
+            SharedPrefUtils.setPubUUID(context, Integer.valueOf(publicUUID));
+            SharedPrefUtils.setPrivUUID(context, Integer.valueOf(privateUUID));
+            return Integer.valueOf(publicUUID);
+        }
     }
 
     // TODO get updates from server every few seconds

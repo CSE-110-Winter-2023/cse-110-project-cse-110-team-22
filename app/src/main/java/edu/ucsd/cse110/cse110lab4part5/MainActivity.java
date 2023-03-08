@@ -51,7 +51,12 @@ public class  MainActivity extends AppCompatActivity {
 //        }
 //        startActivity(intent);
 
-        Intent intent = new Intent(this, input_name.class);
-        startActivity(intent);
+        if(SharedPrefUtils.hasName(this)){
+            Intent intent = new Intent(this, user_uid_showing.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, input_name.class);
+            startActivity(intent);
+        }
     }
 }
