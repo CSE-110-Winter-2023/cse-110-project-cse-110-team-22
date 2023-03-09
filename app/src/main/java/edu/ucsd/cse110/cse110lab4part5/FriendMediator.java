@@ -7,7 +7,9 @@ import android.view.View;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -31,6 +33,8 @@ public class FriendMediator {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
 
+    private List<Friend> waitingFriendsList;
+
     String publicUUID;
     String privateUUID;
     String name;
@@ -44,6 +48,10 @@ public class FriendMediator {
 
     public void setCompassActivity(CompassActivity compassActivity) {
         this.compassActivity = compassActivity;
+        for (Friend f : waitingFriendsList) {
+            compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
+        }
+        waitingFriendsList.clear();
     }
 
     public static FriendMediator getInstance() {
@@ -54,6 +62,8 @@ public class FriendMediator {
     }
 
     public void init(MainActivity context){
+        // TODO: Important: Add back after fixing location permission issues on tests
+        /*
         userLocation = UserLocation.singleton(0, 0, "You");
         userOrientation = 0.0;
         userLocationService = UserLocationService.singleton(context);
@@ -65,13 +75,30 @@ public class FriendMediator {
             userOrientation = Math.toDegrees((double) orient);
         });
 
+         */
+
         java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
         }
+
+
+        // If no existing uuids, generate them
+        if(!SharedPrefUtils.hasPubUUID(context)){
+            String publicUUID = serverAPI.getNewUUID();
+            String privateUUID = serverAPI.getNewUUID();
+            SharedPrefUtils.setPubUUID(context, Integer.valueOf(publicUUID));
+            SharedPrefUtils.setPrivUUID(context, Integer.valueOf(privateUUID));
+        }
+
+        // get uuids
         publicUUID = String.valueOf(SharedPrefUtils.getPubUUID(context));
         privateUUID = String.valueOf(SharedPrefUtils.getPrivUUID(context));
+
+
+
         name = SharedPrefUtils.getName(context);
+        waitingFriendsList = new ArrayList<>();
 
         executor.scheduleAtFixedRate(() -> {
             for(String uuid: uuidToFriendMap.keySet()){
@@ -115,8 +142,13 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
-//            compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-  //          updateUI();
+            //TODO: Fix
+            if (compassActivity != null) {
+                compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
+            } else {
+
+            }
+            updateUI();
         } else {
             // TODO something like a warning "invalid uuid"
         }
@@ -163,21 +195,31 @@ public class FriendMediator {
             this.name = name;
             SharedPrefUtils.writeName(context, name);
         }
-    }
 
-    public int getOrGenerateUUID(Context context){
-        if(SharedPrefUtils.hasPubUUID(context)){
-            return SharedPrefUtils.getPubUUID(context);
-        } else{
-            String publicUUID = serverAPI.getNewUUID();
-            String privateUUID = serverAPI.getNewUUID();
-            SharedPrefUtils.setPubUUID(context, Integer.valueOf(publicUUID));
-            SharedPrefUtils.setPrivUUID(context, Integer.valueOf(privateUUID));
-            return Integer.valueOf(publicUUID);
+        // TODO: Update this for future stories to use actual services
+        // Do initial upsert of Self
+        Future<String> response = serverAPI.upsertUserAsync(publicUUID, serverAPI.formatUpsertJSON(privateUUID
+                , name
+                , 0.0
+                , 0.0));
+
+        try {
+            response.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
+    public int getOrGenerateUUID(Context context){
+        return Integer.valueOf(publicUUID);
+    }
+
     public void updateUI() {
+        if(compassActivity == null){
+            return;
+        }
         updateUserForUI();
         updateGPSUI();
         updateCompassUI();
