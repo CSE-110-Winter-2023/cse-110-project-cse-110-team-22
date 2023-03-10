@@ -23,7 +23,7 @@ public class GPSStatus implements LocationListener{
     private Context context;
     private Long lastActiveTime; //sharedPref stores this
     public boolean hasGPSService; //pass the boolean to Mediator
-    public String timeSpanDisconnected; //Count the second since last connected
+    public String timeSpanDisconnected = "0 m."; //Count the second since last connected
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private LocationManager locationManager;
 
@@ -65,7 +65,8 @@ public class GPSStatus implements LocationListener{
      */
     private void timeSpanDisconnected(){
         getLastActiveTime();
-        Long currentTime=System.currentTimeMillis()/60000000; //get current time in milliseconds
+        Long currentTime=System.currentTimeMillis()/60000; //get current time in milliseconds
+        if(this.lastActiveTime == -1) lastActiveTime=currentTime;
         long timeSpanDisconnectedLong = currentTime-lastActiveTime;
         if(timeSpanDisconnectedLong<60){
             timeSpanDisconnected = String.valueOf(timeSpanDisconnectedLong)+" m.";
