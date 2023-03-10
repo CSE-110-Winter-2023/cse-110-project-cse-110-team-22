@@ -34,7 +34,6 @@ public class FriendMediator {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
 
-    private List<Friend> waitingFriendsList;
 
     String publicUUID;
     String privateUUID;
@@ -50,10 +49,10 @@ public class FriendMediator {
     public void setCompassActivity(CompassActivity compassActivity) {
         Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
-        for (Friend f : waitingFriendsList) {
+        for (String uuid: uuidToFriendMap.keySet()) {
+            Friend f = uuidToFriendMap.get(uuid);
             compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
         }
-        waitingFriendsList.clear();
     }
 
     public static FriendMediator getInstance() {
@@ -98,7 +97,6 @@ public class FriendMediator {
 
 
         name = SharedPrefUtils.getName(context);
-        waitingFriendsList = new ArrayList<>();
 
         executor.scheduleAtFixedRate(() -> {
             try{
@@ -150,8 +148,6 @@ public class FriendMediator {
             //TODO: Fix
             if (compassActivity != null) {
                 compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-            } else {
-                waitingFriendsList.add(friend);
             }
             updateUI();
         } else {
@@ -226,6 +222,7 @@ public class FriendMediator {
         if(compassActivity == null){
             return;
         }
+        Log.d("Mediator", "updateUI called");
         updateUserForUI();
         updateGPSUI();
         updateCompassUI();

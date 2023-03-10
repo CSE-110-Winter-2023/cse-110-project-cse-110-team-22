@@ -90,7 +90,7 @@ public class LocationUtils {
                 * Math.cos(lat2 * p) * (1 - Math.cos((lon2 - lon1) * p))/2;
 
         //return 2 * RADIUS * Math.asin(Math.sqrt(tmp));
-        return 50.0;
+        return 200.0;
     }
 
     /**
@@ -115,7 +115,7 @@ public class LocationUtils {
         for(String uuid: uuidToFriendMap.keySet()) {
             Friend f = uuidToFriendMap.get(uuid);
             // ret.put(uuid, computeDistance(loc1, f));
-            ret.put(uuid, 50.0);
+            ret.put(uuid, 200.0);
         }
         return ret;
     }
