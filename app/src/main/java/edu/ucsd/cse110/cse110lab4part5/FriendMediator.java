@@ -21,6 +21,7 @@ public class FriendMediator {
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
+    private MainActivity mainActivity;
     private ServerAPI serverAPI = ServerAPI.getInstance();
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -62,6 +63,7 @@ public class FriendMediator {
     }
 
     public void init(MainActivity context){
+        this.mainActivity = context;
         // TODO: Important: Add back after fixing location permission issues on tests
         /*
         userLocation = UserLocation.singleton(0, 0, "You");
@@ -77,7 +79,7 @@ public class FriendMediator {
 
          */
 
-        java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
+        List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
         }
@@ -146,11 +148,12 @@ public class FriendMediator {
             if (compassActivity != null) {
                 compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
             } else {
-
+                waitingFriendsList.add(friend);
             }
             updateUI();
         } else {
             // TODO something like a warning "invalid uuid"
+            Utilities.showAlert((Activity)context, "invalid uuid");
         }
     }
 
