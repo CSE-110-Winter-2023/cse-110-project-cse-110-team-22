@@ -19,17 +19,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GPSStatus implements LocationListener,GPSStatusSubject{
+public class GPSStatus implements LocationListener{
     private Context context;
-    private List<GPSStatusObserver> observers;
-    private Long lastActiveTime;
-    public boolean hasGPSService;
-    public String timeSpanDisconnected;
+    private Long lastActiveTime; //sharedPref stores this
+    public boolean hasGPSService; //pass the boolean to Mediator
+    public String timeSpanDisconnected; //Count the second since last connected
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private LocationManager locationManager;
 
     /**
-     * call executor to ping GPS service every 60 seconds for 1 hour.
+     * call executor to ping GPS service every 3 seconds
      * @param context
      */
     public GPSStatus(Context context) {
@@ -38,6 +37,7 @@ public class GPSStatus implements LocationListener,GPSStatusSubject{
         executor.scheduleAtFixedRate(() -> {
             Log.d("ExecutorTest", "1");
             onStatusChanged(LocationManager.GPS_PROVIDER, 0, null);
+            Log.d("timeSinceDisconnected", timeSpanDisconnected);
         }, 0, 3, TimeUnit.SECONDS);
     }
 
@@ -62,11 +62,11 @@ public class GPSStatus implements LocationListener,GPSStatusSubject{
         this.lastActiveTime=lastActiveTime; //mock
     }
     /**
-     * update the timespan of GPS service being disconnected to timeDisconnected
+     * update the time span of GPS service being disconnected to timeDisconnected
      */
     private void timeSpanDisconnected(){
         getLastActiveTime();
-        Long currentTime=System.currentTimeMillis()/60000; //get current time in minutes
+        Long currentTime=System.currentTimeMillis()/60000000; //get current time in milliseconds
         long timeSpanDisconnectedLong = currentTime-lastActiveTime;
         if(timeSpanDisconnectedLong<60){
             timeSpanDisconnected = String.valueOf(timeSpanDisconnectedLong)+" m.";
@@ -105,6 +105,7 @@ public class GPSStatus implements LocationListener,GPSStatusSubject{
             hasGPSService=true;
             storeLastActiveTime(lastActiveTime);
             Log.d("hasGPSService",String.valueOf(hasGPSService));
+
         }
         else{
             //update timeSpanDisconnected,inform mediator hasGPSService=false
@@ -124,15 +125,5 @@ public class GPSStatus implements LocationListener,GPSStatusSubject{
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
     }
-    @Override
-    public void registerObserver(GPSStatusObserver observer) {
-        observers.add(observer);
-    }
 
-    @Override
-    public void notifyObservers() {
-        for (GPSStatusObserver observer : observers) {
-            observer.onGPSStatusChanged(this);
-        }
-    }
 }
