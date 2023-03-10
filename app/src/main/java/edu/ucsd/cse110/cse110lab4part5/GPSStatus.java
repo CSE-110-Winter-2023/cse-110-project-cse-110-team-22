@@ -19,9 +19,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GPSStatus implements LocationListener,GPSStatusSubject{
+public class GPSStatus implements LocationListener{
     private Context context;
-    private List<GPSStatusObserver> observers;
     private Long lastActiveTime;
     public boolean hasGPSService;
     public String timeSpanDisconnected;
@@ -111,7 +110,6 @@ public class GPSStatus implements LocationListener,GPSStatusSubject{
             timeSpanDisconnected();
             hasGPSService=false;
         }
-//        notifyObservers();
         Log.d("GPSStatus",String.valueOf(hasGPSService));
     }
 
@@ -123,16 +121,5 @@ public class GPSStatus implements LocationListener,GPSStatusSubject{
     @Override
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
-    }
-    @Override
-    public void registerObserver(GPSStatusObserver observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        for (GPSStatusObserver observer : observers) {
-            observer.onGPSStatusChanged(this);
-        }
     }
 }
