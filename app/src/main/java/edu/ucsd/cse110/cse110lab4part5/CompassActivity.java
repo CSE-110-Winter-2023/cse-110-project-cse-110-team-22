@@ -25,6 +25,7 @@ public class CompassActivity extends AppCompatActivity {
 
     private int initial = 430;
 
+    private FriendMediator friendMediator = FriendMediator.getInstance();
 
     private Location userLocation;
     private double userOrientation;
@@ -169,6 +170,8 @@ public class CompassActivity extends AppCompatActivity {
         Map<String, Double> uuidToDistanceMap = LocationUtils
                 .computeAllDistances(userLocation, uuidToFriendMap);
 
+        TextView textView = findViewById(R.id.orienta);
+        textView.setText("Orientation: "+String.valueOf(userOrientation));
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
     }
 

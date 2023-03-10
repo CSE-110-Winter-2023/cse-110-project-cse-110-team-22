@@ -48,6 +48,7 @@ public class FriendMediator {
     }
 
     public void setCompassActivity(CompassActivity compassActivity) {
+        Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
         for (Friend f : waitingFriendsList) {
             compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
@@ -100,21 +101,26 @@ public class FriendMediator {
         waitingFriendsList = new ArrayList<>();
 
         executor.scheduleAtFixedRate(() -> {
-            for(String uuid: uuidToFriendMap.keySet()){
-                Future<Friend> friend = serverAPI.getFriendAsync(uuid);
-                try {
-                    uuidToFriendMap.put(uuid, friend.get());
-                    // NOTE: FRIEND IS UPDATED
-                } catch (ExecutionException e) {
-                    Log.e("Mediator", e.toString());
-                } catch (InterruptedException e) {
-                    Log.e("Mediator", e.toString());
+            try{
+                Log.d("FriendMediator", "Started task");
+                for(String uuid: uuidToFriendMap.keySet()){
+                    Future<Friend> friend = serverAPI.getFriendAsync(uuid);
+                    try {
+                        uuidToFriendMap.put(uuid, friend.get());
+                        // NOTE: FRIEND IS UPDATED
+                    } catch (ExecutionException e) {
+                        Log.e("Mediator", e.toString());
+                    } catch (InterruptedException e) {
+                        Log.e("Mediator", e.toString());
+                    }
                 }
+                Log.d("Mediator", "Finished Updating round");
+                // All friends updated, notify UI
+                updateUI();
+            } catch(Exception e){
+                Log.d("Mediator Error", e.toString());
             }
-            Log.d("Mediator", "Finished Updating round");
-            // All friends updated, notify UI
-            updateUI();
-        }, 0, 1, TimeUnit.SECONDS);
+            }, 0, 1, TimeUnit.SECONDS);
     }
 
     /*
