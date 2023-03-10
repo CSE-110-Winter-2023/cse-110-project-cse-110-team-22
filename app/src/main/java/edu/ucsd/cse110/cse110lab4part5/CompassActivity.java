@@ -23,7 +23,7 @@ public class CompassActivity extends AppCompatActivity {
 
     private Map<Integer, Integer> nameToDot;
 
-    private int initial = 0;
+    private int initial = 430;
 
 
     private Location userLocation;
@@ -43,6 +43,7 @@ public class CompassActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_compass);
 
+        nameToDot = new HashMap<>();
         FriendMediator.getInstance().setCompassActivity(this);
 
 
@@ -56,14 +57,25 @@ public class CompassActivity extends AppCompatActivity {
         }
 
         //Landmark locations
-        List<Location> locations = SharedPrefUtils.readAllLocations(this);
+        //List<Location> locations = SharedPrefUtils.readAllLocations(this);
 
 
+        ImageView imageView1 = findViewById(R.id.home);
+        imageView1.setVisibility(View.INVISIBLE);
+        ImageView imageView2 = findViewById(R.id.friend);
+        imageView2.setVisibility(View.INVISIBLE);
+        ImageView imageView3 = findViewById(R.id.familyhouse);
+        imageView3.setVisibility(View.INVISIBLE);
+        ImageView imageView4 = findViewById(R.id.me);
+        imageView4.setVisibility(View.INVISIBLE);
         //north
         LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
         List<Location> locList = new ArrayList<>();
         locList.add(northLocation);
+        addFriendToCompass(123456, "jone");
+        updateCircleAngle(nameToDot.get(123456),123456,60,50);
+
     }
 
 
@@ -172,15 +184,16 @@ public class CompassActivity extends AppCompatActivity {
         layoutParamsText.circleRadius = distance;
         layoutParamsDot.circleRadius = initial;
         textView.setLayoutParams(layoutParamsText);
+
         imageView.setLayoutParams(layoutParamsDot);
-        if(distance > initial){
-            imageView.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.INVISIBLE);
-        }
-        else{
-            imageView.setVisibility(View.INVISIBLE);
-            textView.setVisibility(View.VISIBLE);
-        }
+//        if(distance > initial){
+//            imageView.setVisibility(View.VISIBLE);
+//            textView.setVisibility(View.INVISIBLE);
+//        }
+//        else{
+//            imageView.setVisibility(View.INVISIBLE);
+//            textView.setVisibility(View.VISIBLE);
+//        }
     }
 
     public void addFriendToCompass(Integer id, String name){
@@ -195,8 +208,8 @@ public class CompassActivity extends AppCompatActivity {
         myImage.setId(imageID);
         textView.setTextColor(Color.BLACK);
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                50, // width
-                50 // height
+                100, // width
+                100 // height
         );
         layoutParams.circleConstraint = R.id.clock;
         layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;

@@ -89,7 +89,8 @@ public class LocationUtils {
         double tmp = 0.5 - Math.cos((lat2 - lat1) * p)/2 +  Math.cos(lat1 * p)
                 * Math.cos(lat2 * p) * (1 - Math.cos((lon2 - lon1) * p))/2;
 
-        return 2 * RADIUS * Math.asin(Math.sqrt(tmp));
+        //return 2 * RADIUS * Math.asin(Math.sqrt(tmp));
+        return 50.0;
     }
 
     /**
