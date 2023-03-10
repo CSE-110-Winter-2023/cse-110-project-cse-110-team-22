@@ -51,15 +51,14 @@ public class GPSStatus implements LocationListener{
      * TODO: get the last active time from SharedPrefUti
      */
     public void getLastActiveTime() {
-        lastActiveTime = 100L; //mock
-        return;
+        this.lastActiveTime = SharedPrefUtils.getLastGPSTime(this.context);
     }
     /**
      * store the current active time to SharedPrefUtil
      */
-    private void storeLastActiveTime(long lastActiveTime){
+    private void storeLastActiveTime(Long lastActiveTime){
         //sharedPreUtil
-        this.lastActiveTime=lastActiveTime; //mock
+        SharedPrefUtils.storeLastGPSTime(this.context,lastActiveTime);
     }
     /**
      * update the time span of GPS service being disconnected to timeDisconnected
