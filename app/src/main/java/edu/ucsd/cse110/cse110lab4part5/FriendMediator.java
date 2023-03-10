@@ -62,8 +62,6 @@ public class FriendMediator {
     }
 
     public void init(MainActivity context){
-        // TODO: Important: Add back after fixing location permission issues on tests
-        /*
         userLocation = UserLocation.singleton(0, 0, "You");
         userOrientation = 0.0;
         userLocationService = UserLocationService.singleton(context);
@@ -74,8 +72,6 @@ public class FriendMediator {
         orientationService.getOrientation().observe(context, orient -> {
             userOrientation = Math.toDegrees((double) orient);
         });
-
-         */
 
         java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
         for(String uuid: friendUUIDS){
