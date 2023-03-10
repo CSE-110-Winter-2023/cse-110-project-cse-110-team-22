@@ -23,7 +23,7 @@ public class CompassActivity extends AppCompatActivity {
 
     private Map<Integer, Integer> nameToDot;
 
-    private int initial = 100;
+    private int initial = 0;
 
 
     private Location userLocation;

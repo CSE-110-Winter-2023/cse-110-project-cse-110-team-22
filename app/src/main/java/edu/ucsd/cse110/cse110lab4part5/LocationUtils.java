@@ -113,7 +113,8 @@ public class LocationUtils {
         Map<String, Double> ret = new HashMap<>();
         for(String uuid: uuidToFriendMap.keySet()) {
             Friend f = uuidToFriendMap.get(uuid);
-            ret.put(uuid, computeDistance(loc1, f));
+            // ret.put(uuid, computeDistance(loc1, f));
+            ret.put(uuid, 50.0);
         }
         return ret;
     }
