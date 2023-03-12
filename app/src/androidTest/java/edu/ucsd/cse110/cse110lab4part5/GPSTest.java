@@ -46,7 +46,7 @@ public class GPSTest {
     @Test
     public void testMockNotHasGPSStatus_2() {
         test_gpsStatus.storeLastActiveTime(System.currentTimeMillis()/60000);
-        ScheduledFuture<?> future = test_gpsStatus.setMockNotHaveGPSStatus(6, 10);
+        ScheduledFuture<?> future = test_gpsStatus.setMockNotHaveGPSStatus(8, 10);
         assertFalse(test_gpsStatus.hasGPSService);
         try {
             future.get();
