@@ -233,6 +233,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.125" />
 
+
     <ImageView
         android:id="@+id/green"
         android:layout_width="55dp"
@@ -264,10 +265,17 @@
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginEnd="197dp"
+        android:layout_marginBottom="123dp"
         android:text="TextView"
-        tools:layout_editor_absoluteX="79dp"
-        tools:layout_editor_absoluteY="34dp" />
+        app:layout_constraintBottom_toTopOf="@+id/clock"
+        app:layout_constraintEnd_toStartOf="@+id/friend_label"
+        app:layout_constraintStart_toEndOf="@+id/green"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
