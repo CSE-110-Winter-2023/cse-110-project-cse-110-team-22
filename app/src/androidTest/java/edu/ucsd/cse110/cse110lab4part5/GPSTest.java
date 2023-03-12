@@ -24,11 +24,11 @@ import java.util.concurrent.ScheduledFuture;
 @RunWith(AndroidJUnit4.class)
 public class GPSTest {
 
-    private GPSStatus test_gpsStatus;
+    private GPSStatusMock test_gpsStatus;
     @Before
     public void setUp() {
         Context context = ApplicationProvider.getApplicationContext();
-        test_gpsStatus = new GPSStatus(context);
+        test_gpsStatus = new GPSStatusMock(context);
     }
 
     @Test
