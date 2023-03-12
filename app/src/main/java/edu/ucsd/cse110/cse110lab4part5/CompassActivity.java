@@ -4,6 +4,7 @@ import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.util.Pair;
@@ -168,16 +169,25 @@ public class CompassActivity extends AppCompatActivity {
     void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
         ImageView imageView = findViewById(imageViewId);
 
+        // Set UI icons to border if their distance would bring them past it
+        // TODO: should be changed when zooming in/out implemented
+        if(distance > initial){
+            distance = initial;
+        }
+
         TextView textView = findViewById(textViewId);
         ConstraintLayout.LayoutParams layoutParamsText = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
         layoutParamsText.circleAngle = angle;
         layoutParamsText.circleRadius = distance;
         textView.setLayoutParams(layoutParamsText);
         ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
+        //TODO: This seems to update the text layout params,
         layoutParamsDot.circleAngle = angle;
+        layoutParamsDot.circleRadius = distance;
         imageView.setLayoutParams(layoutParamsDot);
 
-        if(distance > initial){
+
+        if(distance >= initial){
             imageView.setVisibility(View.VISIBLE);
             textView.setVisibility(View.INVISIBLE);
         }
@@ -185,6 +195,8 @@ public class CompassActivity extends AppCompatActivity {
             imageView.setVisibility(View.INVISIBLE);
             textView.setVisibility(View.VISIBLE);
         }
+
+
     }
 
     public void addFriendToCompass(Integer id, String name){

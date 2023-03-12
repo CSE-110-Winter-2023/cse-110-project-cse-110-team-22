@@ -113,8 +113,10 @@ public class FriendMediator {
                     }
                 }
                 Log.d("Mediator", "Finished Updating round");
-                // All friends updated, notify UI
-                updateUI();
+                // All friends updated, notify UI by calling the main thread
+
+                compassActivity.runOnUiThread(this::updateUI);
+                //updateUI();
             } catch(Exception e){
                 Log.d("Mediator Error", e.toString());
             }
