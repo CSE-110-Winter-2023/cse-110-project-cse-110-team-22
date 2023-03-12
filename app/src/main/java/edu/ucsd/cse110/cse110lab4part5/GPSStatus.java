@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GPSStatus implements LocationListener{
@@ -57,7 +58,7 @@ public class GPSStatus implements LocationListener{
     /**
      * store the current active time to SharedPrefUtil
      */
-    private void storeLastActiveTime(Long lastActiveTime){
+    public void storeLastActiveTime(Long lastActiveTime){
         //sharedPreUtil
         SharedPrefUtils.storeLastGPSTime(this.context,lastActiveTime);
     }
@@ -120,6 +121,21 @@ public class GPSStatus implements LocationListener{
         }
 //        notifyObservers();
         Log.d("GPSStatus",String.valueOf(hasGPSService));
+    }
+    public ScheduledFuture<?> setMockNotHaveGPSStatus(int max_iteration, int period){
+        hasGPSService = false;
+        ScheduledFuture<?> toReturn = executor.scheduleAtFixedRate(new Runnable() {
+            int count = 0;
+            @Override
+            public void run() {
+                timeSpanDisconnected();
+                count++;
+                if(count == max_iteration){
+                    executor.shutdown();
+                }
+            }
+        }, 0, period, TimeUnit.SECONDS);
+        return toReturn;
     }
 
     @Override
