@@ -48,7 +48,7 @@ public class CompassActivity extends AppCompatActivity {
 
         nameToDot = new HashMap<>();
         FriendMediator.getInstance().setCompassActivity(this);
-
+        GPSStatus gpsStatus = new GPSStatus(this);
 
         try {
             // get orientation offset
@@ -136,8 +136,24 @@ public class CompassActivity extends AppCompatActivity {
         finish();
     }
 
-    public void updateGPSStatus() {
-        // TODO
+    public void updateGPS(){
+        ImageView green = findViewById(R.id.green);
+        ImageView red = findViewById(R.id.red);
+        TextView time = findViewById(R.id.time);
+        Boolean status = this.GPSSignalGood;
+        String timedisplay = this.GPSStatusStr;
+        time.setText(timedisplay);
+        if(status == true){
+            green.setVisibility(View.VISIBLE);
+            red.setVisibility(View.INVISIBLE);
+            time.setVisibility(View.INVISIBLE);
+        }
+        else{
+            green.setVisibility(View.INVISIBLE);
+            red.setVisibility(View.VISIBLE);
+            time.setVisibility(View.VISIBLE);
+        }
+
     }
 
     /**
@@ -162,6 +178,7 @@ public class CompassActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.orienta);
         textView.setText("Orientation: "+String.valueOf(userOrientation));
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
+        updateGPS();
     }
 
 
@@ -197,12 +214,6 @@ public class CompassActivity extends AppCompatActivity {
         }
 
 
-    }
-    public void test_GPS_Service(View view) {
-        GPSStatus gpsStatus = new GPSStatus(this);
-        TextView textView = findViewById(R.id.testGPSview);
-        Log.d("UIres",String.valueOf(gpsStatus.hasGPSService));
-        textView.setText(String.valueOf(gpsStatus.hasGPSService));
     }
     public void addFriendToCompass(Integer id, String name){
         ConstraintLayout constraintLayout = findViewById(R.id.clock);
