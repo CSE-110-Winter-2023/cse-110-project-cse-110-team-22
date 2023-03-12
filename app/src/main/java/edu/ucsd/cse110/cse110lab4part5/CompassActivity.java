@@ -39,6 +39,8 @@ public class CompassActivity extends AppCompatActivity {
     Map<String, Friend> uuidToFriendMap;
     LandmarkLocation northLocation;
 
+    int OUTER_THRES = 1000; // The distance of the biggest circle
+    int STATE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,25 +139,6 @@ public class CompassActivity extends AppCompatActivity {
         finish();
     }
 
-    public void updateGPS(){
-        ImageView green = findViewById(R.id.green);
-        ImageView red = findViewById(R.id.red);
-        TextView time = findViewById(R.id.time);
-        Boolean status = this.GPSSignalGood;
-        String timedisplay = this.GPSStatusStr;
-        time.setText(timedisplay);
-        if(status == true){
-            green.setVisibility(View.VISIBLE);
-            red.setVisibility(View.INVISIBLE);
-            time.setVisibility(View.INVISIBLE);
-        }
-        else{
-            green.setVisibility(View.INVISIBLE);
-            red.setVisibility(View.VISIBLE);
-            time.setVisibility(View.VISIBLE);
-        }
-
-    }
 
     /**
      * update uuidToFriendMap and update UI. This is called when the server updates or
@@ -294,5 +277,55 @@ public class CompassActivity extends AppCompatActivity {
 
     public void display() {
         callUIUpdate();
+    }
+
+    public int calculateIntDistance(double miles, int state) {
+        double outerCircle = 430.0;
+        double dist = 0;
+        switch (state) {
+            case 0: { // 0-1 :1 circle
+                dist = 430.0 * miles;
+            }
+            case 1: { // 1-10 : 2 circles
+                double inner = outerCircle / 2;
+                double outer = outerCircle / 2;
+                if (miles < 1) {
+                    dist = inner * miles;
+                    break;
+                }
+                dist = inner + outer / (10 - 1) * (miles - 1);
+            }
+            case 3: { // 10-500 : 3 circles
+                double inner1 = outerCircle / 3;
+                double inner2 = outerCircle / 3;
+                double outer = outerCircle / 3;
+                if (miles < 1) {
+                    dist = inner1 * miles;
+                    break;
+                } else if (miles < 10) {
+                    dist = inner1 + inner2 / (10 - 1) * (miles - 1);
+                    break;
+                }
+                dist = inner1 + inner2 + outer / (10 - 1) * (miles - 1);
+            }
+            case 4: { // 500+ : 4 circles
+                double inner1 = outerCircle / 4;
+                double inner2 = outerCircle / 4;
+                double inner3 = outerCircle / 4;
+                double outer = outerCircle / 4;
+                if (miles < 1) {
+                    dist = inner1 * miles;
+                    break;
+                } else if (miles < 10) {
+                    dist = inner1 + inner2 / (10 - 1) * (miles - 1);
+                    break;
+                } else if (miles < 500) {
+                    dist = inner1 + inner2 + inner3 / (500 - 10) * (miles - 10);
+                    break;
+                }
+                dist = inner1 + inner2 + inner3 + outer / (OUTER_THRES - 10) * (miles - 1);
+            }
+        }
+        return (int)dist;
     }
 }
