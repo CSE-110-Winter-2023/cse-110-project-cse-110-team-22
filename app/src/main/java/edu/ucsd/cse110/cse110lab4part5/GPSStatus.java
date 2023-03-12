@@ -26,6 +26,7 @@ public class GPSStatus implements LocationListener{
     public String timeSpanDisconnected = "0 m."; //Count the second since last connected
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private LocationManager locationManager;
+    private  FriendMediator friendMediator = FriendMediator.getInstance();
 
     /**
      * call executor to ping GPS service every 3 seconds
@@ -108,12 +109,14 @@ public class GPSStatus implements LocationListener{
             hasGPSService=true;
             storeLastActiveTime(lastActiveTime);
             Log.d("hasGPSService",String.valueOf(hasGPSService));
+            friendMediator.updateGPSStatus(this.hasGPSService,"0");
 
         }
         else{
             //update timeSpanDisconnected,inform mediator hasGPSService=false
             timeSpanDisconnected();
             hasGPSService=false;
+            friendMediator.updateGPSStatus(this.hasGPSService,this.timeSpanDisconnected);
         }
 //        notifyObservers();
         Log.d("GPSStatus",String.valueOf(hasGPSService));
@@ -128,4 +131,5 @@ public class GPSStatus implements LocationListener{
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
     }
+
 }
