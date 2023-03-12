@@ -21,6 +21,7 @@ public class FriendMediator {
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
+    private MainActivity mainActivity;
     private ServerAPI serverAPI = ServerAPI.getInstance();
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -33,7 +34,6 @@ public class FriendMediator {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
 
-    private List<Friend> waitingFriendsList;
 
     String publicUUID;
     String privateUUID;
@@ -47,11 +47,12 @@ public class FriendMediator {
     }
 
     public void setCompassActivity(CompassActivity compassActivity) {
+        Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
-        for (Friend f : waitingFriendsList) {
+        for (String uuid: uuidToFriendMap.keySet()) {
+            Friend f = uuidToFriendMap.get(uuid);
             compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
         }
-        waitingFriendsList.clear();
     }
 
     public static FriendMediator getInstance() {
@@ -62,6 +63,7 @@ public class FriendMediator {
     }
 
     public void init(MainActivity context){
+        this.mainActivity = context;
         userLocation = UserLocation.singleton(0, 0, "You");
         userOrientation = 0.0;
         userLocationService = UserLocationService.singleton(context);
@@ -73,7 +75,8 @@ public class FriendMediator {
             userOrientation = Math.toDegrees((double) orient);
         });
 
-        java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
+        List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
+
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
         }
@@ -94,24 +97,30 @@ public class FriendMediator {
 
 
         name = SharedPrefUtils.getName(context);
-        waitingFriendsList = new ArrayList<>();
 
         executor.scheduleAtFixedRate(() -> {
-            for(String uuid: uuidToFriendMap.keySet()){
-                Future<Friend> friend = serverAPI.getFriendAsync(uuid);
-                try {
-                    uuidToFriendMap.put(uuid, friend.get());
-                    // NOTE: FRIEND IS UPDATED
-                } catch (ExecutionException e) {
-                    Log.e("Mediator", e.toString());
-                } catch (InterruptedException e) {
-                    Log.e("Mediator", e.toString());
+            try{
+                Log.d("FriendMediator", "Started task");
+                for(String uuid: uuidToFriendMap.keySet()){
+                    Future<Friend> friend = serverAPI.getFriendAsync(uuid);
+                    try {
+                        uuidToFriendMap.put(uuid, friend.get());
+                        // NOTE: FRIEND IS UPDATED
+                    } catch (ExecutionException e) {
+                        Log.e("Mediator", e.toString());
+                    } catch (InterruptedException e) {
+                        Log.e("Mediator", e.toString());
+                    }
                 }
+                Log.d("Mediator", "Finished Updating round");
+                // All friends updated, notify UI by calling the main thread
+
+                compassActivity.runOnUiThread(this::updateUI);
+                //updateUI();
+            } catch(Exception e){
+                Log.d("Mediator Error", e.toString());
             }
-            Log.d("Mediator", "Finished Updating round");
-            // All friends updated, notify UI
-            updateUI();
-        }, 0, 1, TimeUnit.SECONDS);
+            }, 0, 1, TimeUnit.SECONDS);
     }
 
     /*
@@ -141,12 +150,11 @@ public class FriendMediator {
             //TODO: Fix
             if (compassActivity != null) {
                 compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-            } else {
-
             }
             updateUI();
         } else {
             // TODO something like a warning "invalid uuid"
+            Utilities.showAlert((Activity)context, "invalid uuid");
         }
     }
 
@@ -216,6 +224,7 @@ public class FriendMediator {
         if(compassActivity == null){
             return;
         }
+        Log.d("Mediator", "updateUI called");
         updateUserForUI();
         updateGPSUI();
         updateCompassUI();
