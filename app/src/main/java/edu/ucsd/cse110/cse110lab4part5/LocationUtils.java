@@ -89,8 +89,8 @@ public class LocationUtils {
         double tmp = 0.5 - Math.cos((lat2 - lat1) * p)/2 +  Math.cos(lat1 * p)
                 * Math.cos(lat2 * p) * (1 - Math.cos((lon2 - lon1) * p))/2;
 
-        //return 2 * RADIUS * Math.asin(Math.sqrt(tmp));
-        return 200.0;
+        return 2 * RADIUS * Math.asin(Math.sqrt(tmp));
+        //return 200.0;
     }
 
     /**
@@ -114,8 +114,8 @@ public class LocationUtils {
         Map<String, Double> ret = new HashMap<>();
         for(String uuid: uuidToFriendMap.keySet()) {
             Friend f = uuidToFriendMap.get(uuid);
-            // ret.put(uuid, computeDistance(loc1, f));
-            ret.put(uuid, 200.0);
+            ret.put(uuid, computeDistance(loc1, f));
+            //ret.put(uuid, 200.0);
         }
         return ret;
     }
