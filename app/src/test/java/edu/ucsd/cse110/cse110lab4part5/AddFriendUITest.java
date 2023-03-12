@@ -3,6 +3,8 @@ package edu.ucsd.cse110.cse110lab4part5;
 import static org.junit.Assert.assertEquals;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,18 +12,38 @@ import android.widget.TextView;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowApplication;
 
 @RunWith(RobolectricTestRunner.class)
 public class AddFriendUITest {
-
+    @Before
+    public void setUp() {
+        Application application = ApplicationProvider.getApplicationContext();
+        ShadowApplication app = Shadows.shadowOf(application);
+        app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
+    }
     @Test
     public void add_friend_UI_test() {
+        // init the friend mediator from main activity
+        ActivityScenario initScenario = ActivityScenario.launch(MainActivity.class);
+        initScenario.moveToState(Lifecycle.State.CREATED);
+        initScenario.moveToState(Lifecycle.State.STARTED);
+
+        initScenario.onActivity(activity -> {
+            FriendMediator.getInstance().init((MainActivity) activity);
+
+        });
+
+        // Actually start the testing
         ActivityScenario scenario = ActivityScenario.launch(input_name.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);

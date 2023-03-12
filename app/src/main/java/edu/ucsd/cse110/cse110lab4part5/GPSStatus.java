@@ -128,5 +128,4 @@ public class GPSStatus implements LocationListener{
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
     }
-
 }
