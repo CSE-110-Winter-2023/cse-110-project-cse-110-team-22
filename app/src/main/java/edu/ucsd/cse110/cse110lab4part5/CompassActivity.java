@@ -198,7 +198,12 @@ public class CompassActivity extends AppCompatActivity {
 
 
     }
-
+    public void test_GPS_Service(View view) {
+        GPSStatus gpsStatus = new GPSStatus(this);
+        TextView textView = findViewById(R.id.testGPSview);
+        Log.d("UIres",String.valueOf(gpsStatus.hasGPSService));
+        textView.setText(String.valueOf(gpsStatus.hasGPSService));
+    }
     public void addFriendToCompass(Integer id, String name){
         ConstraintLayout constraintLayout = findViewById(R.id.clock);
         TextView textView = new TextView(this);
