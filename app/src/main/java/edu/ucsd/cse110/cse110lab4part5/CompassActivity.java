@@ -37,6 +37,7 @@ public class CompassActivity extends AppCompatActivity {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
     Map<String, Friend> uuidToFriendMap;
+    LandmarkLocation northLocation;
 
 
     @Override
@@ -72,7 +73,7 @@ public class CompassActivity extends AppCompatActivity {
         ImageView imageView4 = findViewById(R.id.me);
         imageView4.setVisibility(View.INVISIBLE);
         //north
-        LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
+        northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
         List<Location> locList = new ArrayList<>();
         locList.add(northLocation);
@@ -107,7 +108,7 @@ public class CompassActivity extends AppCompatActivity {
 
         }
 
-
+        updateCircleAngle(R.id.letter_n, -(float)userOrientation);
 
     }
     public void update(double userOrientation, Map<Integer, Double> directionMap){
@@ -180,6 +181,25 @@ public class CompassActivity extends AppCompatActivity {
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
         updateGPS();
     }
+    
+    public void updateGPS(){
+        ImageView green = findViewById(R.id.green);
+        ImageView red = findViewById(R.id.red);
+        TextView time = findViewById(R.id.time);
+        Boolean status = this.GPSSignalGood;
+        String timedisplay = this.GPSStatusStr;
+        time.setText(timedisplay);
+        if(status == true){
+            green.setVisibility(View.VISIBLE);
+            red.setVisibility(View.INVISIBLE);
+            time.setVisibility(View.INVISIBLE);
+        }
+        else{
+            green.setVisibility(View.INVISIBLE);
+            red.setVisibility(View.VISIBLE);
+            time.setVisibility(View.VISIBLE);
+        }
+    }
 
 
 
@@ -215,6 +235,7 @@ public class CompassActivity extends AppCompatActivity {
 
 
     }
+
     public void addFriendToCompass(Integer id, String name){
         ConstraintLayout constraintLayout = findViewById(R.id.clock);
         TextView textView = new TextView(this);
@@ -269,6 +290,7 @@ public class CompassActivity extends AppCompatActivity {
         this.GPSSignalGood = GPSSignalGood;
         this.GPSStatusStr = GPSStatusStr;
     }
+
 
     public void display() {
         callUIUpdate();

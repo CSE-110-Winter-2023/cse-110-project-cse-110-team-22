@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class  MainActivity extends AppCompatActivity {
+//    private UserOrientationService orientationService;
+//    private UserLocationService userLocationService;
+//    private Location userLocation;
+//    private double userOrientation;
 
 //    private MutableLiveData<Pair<Double, Double>> locationValue;
 //    private UserLocationService userLocationService;
@@ -35,11 +39,11 @@ public class  MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Handle location permissions
-//        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
-//            Log.d("MainActivity", "Asking for location permissions");
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
-//        }
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
+            Log.d("MainActivity", "Asking for location permissions");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
+        }
 
 
         // check if locations exist already. If so pass a flag that will indicate to InputCoordinateActivity
