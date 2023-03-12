@@ -37,6 +37,7 @@ public class CompassActivity extends AppCompatActivity {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
     Map<String, Friend> uuidToFriendMap;
+    LandmarkLocation northLocation;
 
 
     @Override
@@ -72,7 +73,7 @@ public class CompassActivity extends AppCompatActivity {
         ImageView imageView4 = findViewById(R.id.me);
         imageView4.setVisibility(View.INVISIBLE);
         //north
-        LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
+        northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
         List<Location> locList = new ArrayList<>();
         locList.add(northLocation);
@@ -107,7 +108,7 @@ public class CompassActivity extends AppCompatActivity {
 
         }
 
-
+        updateCircleAngle(R.id.letter_n, -(float)userOrientation);
 
     }
     public void update(double userOrientation, Map<Integer, Double> directionMap){

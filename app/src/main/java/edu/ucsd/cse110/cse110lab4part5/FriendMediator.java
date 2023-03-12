@@ -49,6 +49,18 @@ public class FriendMediator {
     public void setCompassActivity(CompassActivity compassActivity) {
         Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
+        userLocation = UserLocation.singleton(0, 0, "You");
+        userOrientation = 0.0;
+        userLocationService = UserLocationService.singleton(compassActivity);
+        orientationService = UserOrientationService.singleton(compassActivity);
+        userLocationService.getLocation().observe(compassActivity, loc -> {
+            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            Log.d("LocationService", String.valueOf(userLocation.getLatitude()) + " " + String.valueOf(userLocation.getLongitude()));
+        });
+        orientationService.getOrientation().observe(compassActivity, orient -> {
+            userOrientation = Math.toDegrees((double) orient);
+            Log.d("OrientationService", String.valueOf(userOrientation));
+        });
         for (String uuid: uuidToFriendMap.keySet()) {
             Friend f = uuidToFriendMap.get(uuid);
             compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
@@ -64,16 +76,7 @@ public class FriendMediator {
 
     public void init(MainActivity context){
         this.mainActivity = context;
-        userLocation = UserLocation.singleton(0, 0, "You");
-        userOrientation = 0.0;
-        userLocationService = UserLocationService.singleton(context);
-        orientationService = UserOrientationService.singleton(context);
-        userLocationService.getLocation().observe(context, loc -> {
-            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
-        });
-        orientationService.getOrientation().observe(context, orient -> {
-            userOrientation = Math.toDegrees((double) orient);
-        });
+
 
         List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
 
@@ -114,8 +117,9 @@ public class FriendMediator {
                 }
                 Log.d("Mediator", "Finished Updating round");
                 // All friends updated, notify UI by calling the main thread
-
-                compassActivity.runOnUiThread(this::updateUI);
+                if(compassActivity != null) {
+                    compassActivity.runOnUiThread(this::updateUI);
+                }
                 //updateUI();
             } catch(Exception e){
                 Log.d("Mediator Error", e.toString());
