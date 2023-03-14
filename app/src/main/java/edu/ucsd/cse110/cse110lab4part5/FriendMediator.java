@@ -49,8 +49,6 @@ public class FriendMediator {
     public void setCompassActivity(CompassActivity compassActivity) {
         Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
-        userLocation = UserLocation.singleton(0, 0, "You");
-        userOrientation = 0.0;
         userLocationService = UserLocationService.singleton(compassActivity);
         orientationService = UserOrientationService.singleton(compassActivity);
         userLocationService.getLocation().observe(compassActivity, loc -> {
