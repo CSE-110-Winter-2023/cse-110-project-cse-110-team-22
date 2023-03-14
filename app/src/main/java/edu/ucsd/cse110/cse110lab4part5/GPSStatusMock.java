@@ -26,7 +26,9 @@ public class GPSStatusMock implements LocationListener{
     public boolean hasGPSService; //pass the boolean to Mediator
     public String timeSpanDisconnected = "0 m."; //Count the second since last connected
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
     private LocationManager locationManager;
+
     private  FriendMediator friendMediator = FriendMediator.getInstance();
 
     /**
@@ -36,11 +38,6 @@ public class GPSStatusMock implements LocationListener{
     public GPSStatusMock(Context context) {
         this.context = context;
     }
-
-    /**
-     * run onStatus change in the background
-     */
-//    private Runnable statusCheckRunnable = () -> onStatusChanged(LocationManager.GPS_PROVIDER, 0, null);
 
 
     /**
@@ -95,6 +92,22 @@ public class GPSStatusMock implements LocationListener{
             @Override
             public void run() {
                 timeSpanDisconnected();
+                count++;
+                if(count == max_iteration){
+                    executor.shutdown();
+                }
+            }
+        }, 0, period, TimeUnit.SECONDS);
+        return toReturn;
+    }
+
+    public ScheduledFuture<?> setMockHaveGPSStatus(int max_iteration, int period){
+        hasGPSService = true;
+        ScheduledFuture<?> toReturn = executor.scheduleAtFixedRate(new Runnable() {
+            int count = 0;
+            @Override
+            public void run() {
+                storeLastActiveTime(System.currentTimeMillis());
                 count++;
                 if(count == max_iteration){
                     executor.shutdown();
