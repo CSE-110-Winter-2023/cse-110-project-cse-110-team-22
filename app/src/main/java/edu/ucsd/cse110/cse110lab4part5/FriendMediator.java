@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
@@ -231,5 +232,10 @@ public class FriendMediator {
         updateGPSUI();
         updateCompassUI();
         compassActivity.display();
+    }
+
+    @VisibleForTesting
+    public void setUserLocation(Location location){
+        this.userLocation = location;
     }
 }

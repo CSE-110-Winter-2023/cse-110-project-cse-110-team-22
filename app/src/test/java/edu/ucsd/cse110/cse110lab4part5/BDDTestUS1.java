@@ -14,6 +14,7 @@ import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Lifecycle;
@@ -43,7 +44,9 @@ public class BDDTestUS1 {
     String friend1PrivateCode;
     Friend friend2;
     String friend2PrivateCode;
-    /*
+
+    MutableLiveData<Pair<Double, Double>> mockLocationData = new MutableLiveData<>(new Pair<>(32.88014354083708, -117.2318005216365));
+
 
     private String getNewUUID(){
         String uuid;
@@ -70,16 +73,12 @@ public class BDDTestUS1 {
         String privateUUID1 = getNewUUID();
         String publicUUID2 = getNewUUID();
         String privateUUID2 = getNewUUID();
-        friend1 = new Friend("Julia", publicUUID1);
-        friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
+        friend1 = new Friend("Bill", publicUUID1);
+        friend1.setLocation(new LandmarkLocation(32.905088554461926, -117.12111266246087, "Bill's Location"));
         friend1PrivateCode = privateUUID1;
 
-        friend1New = new Friend("Owen", publicUUID1);
-        friend1New.setLocation(new LandmarkLocation(100, -100, "Owen's Location"));
-
-
-        friend2 = new Friend("Lisa", publicUUID2);
-        friend2.setLocation(new LandmarkLocation(32.87986803114829,  -117.24313628066673, "Lisa's Location"));
+        friend2 = new Friend("Peter", publicUUID2);
+        friend2.setLocation(new LandmarkLocation(32.86804329909429,  -117.25037729620158, "Peter's Location")); // scripps institute
         friend2PrivateCode = privateUUID2;
 
         Future<String> response = serverAPI.upsertUserAsync(friend1.uuid
@@ -88,11 +87,11 @@ public class BDDTestUS1 {
                         , friend1.getLocation().getLatitude()
                         , friend1.getLocation().getLongitude()));
 
-        Future<String> response_2 = serverAPI.upsertUserAsync(friend1New.uuid
-                , serverAPI.formatUpsertJSON(friend1PrivateCode
-                        , friend1New.name
-                        , friend1New.getLocation().getLatitude()
-                        , friend1New.getLocation().getLongitude()));
+        Future<String> response_2 = serverAPI.upsertUserAsync(friend2.uuid
+                , serverAPI.formatUpsertJSON(friend2PrivateCode
+                        , friend2.name
+                        , friend2.getLocation().getLatitude()
+                        , friend2.getLocation().getLongitude()));
 
         try {
             response.get();
@@ -121,7 +120,10 @@ public class BDDTestUS1 {
         initScenario.onActivity(activity -> {
             // init mediator and mock the location and orientation services
             FriendMediator.getInstance().init((MainActivity) activity);
-            UserLocationService.singleton(activity).setMockLocationSource(new MutableLiveData<>(new Pair<>(32.0, -117.0)));
+            UserLocationService.singleton(activity).setMockLocationSource(mockLocationData);
+            UserLocation.singleton(0, 0, "You");
+            mockLocationData.postValue(mockLocationData.getValue());
+
 
         });
 
@@ -146,29 +148,39 @@ public class BDDTestUS1 {
             Intent actual_1 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(entering_friend_uid.class, actual_1).create().get();
             EditText enter_id = activity.findViewById(R.id.enter_friend_id_blank);
-            enter_id.setText(friend1New.uuid);
+            enter_id.setText(friend1.uuid);
             Button add_button = activity.findViewById(R.id.add_friend_to_database);
             add_button.performClick();
-
-            SharedPreferences preferences = activity.getSharedPreferences("uuid_pref", MODE_PRIVATE);
-            String storedFriends = preferences.getString("uuidFriends", "");
-            assertTrue(preferences.getString("uuidFriends", "").equals(friend1New.uuid));
-            try {
-                Friend serverFriend = serverAPI.getFriendAsync(friend2.uuid).get();
-                assertNull(serverFriend);
-            }
-            catch (Exception e){};
-
-            enter_id = activity.findViewById(R.id.enter_friend_id_blank);
             enter_id.setText(friend2.uuid);
-            add_button = activity.findViewById(R.id.add_friend_to_database);
             add_button.performClick();
-            assertTrue(preferences.getString("uuidFriends", "").equals(friend1New.uuid));
+
+            Button backButton = activity.findViewById(R.id.back_to_your_uid);
+            backButton.performClick();
+            Intent actual_2 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(user_uid_showing.class, actual_2).create().get();
+
+            Button toCompass = activity.findViewById(R.id.to_compass_activity);
+            toCompass.performClick();
+            Intent actual_3 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(CompassActivity.class, actual_3).create().get();
+
+            //mockLocationData.postValue(mockLocationData.getValue());
+
+            FriendMediator.getInstance().setUserLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Mock UCSD User Location"));
+            FriendMediator.getInstance().updateUI();
+
+
+
+            // assert angles in the compass UI exist and are set properly
+            assertTrue(assertTextViewRotation((CompassActivity) activity, Integer.valueOf((friend1.uuid)), 74.946434f, .5f));
+            assertTrue(assertTextViewRotation((CompassActivity) activity, Integer.valueOf((friend2.uuid)), -127.790596f, .5f));
+
+
         });
 
     }
 
-     */
+
 
     /**
      * Helper
@@ -178,9 +190,9 @@ public class BDDTestUS1 {
      * @param delta
      * @return
      */
-    boolean assertIconRotation(CompassActivity compassActivity, int imageViewId, float expected, float delta){
-        ImageView imageView = (ImageView) compassActivity.findViewById(imageViewId);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
+    boolean assertTextViewRotation(CompassActivity compassActivity, int imageViewId, float expected, float delta){
+        TextView textView = compassActivity.findViewById(imageViewId);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
         float test_float = layoutParams.circleAngle;
         float max = expected + delta;
         float min = expected - delta;
