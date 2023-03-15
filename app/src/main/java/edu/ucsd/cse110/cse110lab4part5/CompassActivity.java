@@ -43,6 +43,7 @@ public class CompassActivity extends AppCompatActivity {
     private final int Fourth = 4;
 
     private FriendMediator friendMediator = FriendMediator.getInstance();
+    GPSStatus gpsStatus = new GPSStatus(this);
 
     private Location userLocation;
     private double userOrientation;
