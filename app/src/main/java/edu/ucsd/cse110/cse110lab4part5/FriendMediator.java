@@ -54,6 +54,8 @@ public class FriendMediator {
         orientationService = UserOrientationService.singleton(compassActivity);
         userLocationService.getLocation().observe(compassActivity, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            // upsert new location data to server
+            serverAPI.upsertUserAsync(this.publicUUID, serverAPI.formatUpsertJSON(this.privateUUID, this.name, userLocation.getLatitude(), userLocation.getLongitude()));
             Log.d("LocationService", String.valueOf(userLocation.getLatitude()) + " " + String.valueOf(userLocation.getLongitude()));
         });
         orientationService.getOrientation().observe(compassActivity, orient -> {
@@ -202,9 +204,7 @@ public class FriendMediator {
             this.name = name;
             SharedPrefUtils.writeName(context, name);
         }
-
-        // TODO: Update this for future stories to use actual services
-        // Do initial upsert of Self
+        // Do initial upsert of self to get name in database with default long/lat values
         Future<String> response = serverAPI.upsertUserAsync(publicUUID, serverAPI.formatUpsertJSON(privateUUID
                 , name
                 , 0.0
