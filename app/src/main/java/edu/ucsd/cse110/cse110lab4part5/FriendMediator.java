@@ -30,7 +30,7 @@ public class FriendMediator {
     private UserLocationService userLocationService;
     private UserOrientationService orientationService;
     private double userOrientation;
-    private Location userLocation;
+    private Location userLocation = UserLocation.singleton(0,0,"you");
 
     private boolean GPSSignalGood;
     private String GPSStatusStr;
