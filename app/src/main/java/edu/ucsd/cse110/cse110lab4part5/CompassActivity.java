@@ -63,14 +63,14 @@ public class CompassActivity extends AppCompatActivity {
         //List<Location> locations = SharedPrefUtils.readAllLocations(this);
 
 
-        ImageView imageView1 = findViewById(R.id.home);
-        imageView1.setVisibility(View.INVISIBLE);
-        ImageView imageView2 = findViewById(R.id.friend);
-        imageView2.setVisibility(View.INVISIBLE);
-        ImageView imageView3 = findViewById(R.id.familyhouse);
-        imageView3.setVisibility(View.INVISIBLE);
-        ImageView imageView4 = findViewById(R.id.me);
-        imageView4.setVisibility(View.INVISIBLE);
+//        ImageView imageView1 = findViewById(R.id.home);
+//        imageView1.setVisibility(View.INVISIBLE);
+//        ImageView imageView2 = findViewById(R.id.friend);
+//        imageView2.setVisibility(View.INVISIBLE);
+//        ImageView imageView3 = findViewById(R.id.familyhouse);
+//        imageView3.setVisibility(View.INVISIBLE);
+//        ImageView imageView4 = findViewById(R.id.me);
+//        imageView4.setVisibility(View.INVISIBLE);
         //north
         LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
@@ -211,7 +211,7 @@ public class CompassActivity extends AppCompatActivity {
         myImage.setId(imageID);
         textView.setTextColor(Color.BLACK);
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                100, // width
+                1000, // width
                 100 // height
         );
         layoutParams.circleConstraint = R.id.clock;
