@@ -2,4 +2,8 @@
 plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
+//    apply plugin: 'com.android.application'
+//    dependencies {
+//        implementation 'com.google.android.gms:play-services-location:21.0.1'
+//    }
 }
