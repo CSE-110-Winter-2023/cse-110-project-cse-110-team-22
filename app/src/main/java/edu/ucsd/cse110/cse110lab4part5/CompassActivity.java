@@ -37,6 +37,10 @@ public class CompassActivity extends AppCompatActivity {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
     Map<String, Friend> uuidToFriendMap;
+    Map<String, Integer> uuidToDisplayDistMap = new HashMap<>();
+    Map<String, TextRect> uuidToTextRectMap = new HashMap<>();
+
+
     LandmarkLocation northLocation;
 
     int OUTER_THRES = 1000; // The distance of the biggest circle
@@ -279,14 +283,14 @@ public class CompassActivity extends AppCompatActivity {
         callUIUpdate();
     }
 
-    public int calculateIntDistance(double miles, int state) {
+    public void updateDisplayMaps(String uuid, String name, double angle, double miles, int state) {
         double outerCircle = 430.0;
         double dist = 0;
         switch (state) {
-            case 0: { // 0-1 :1 circle
+            case 1: { // 0-1 :1 circle
                 dist = 430.0 * miles;
             }
-            case 1: { // 1-10 : 2 circles
+            case 2: { // 1-10 : 2 circles
                 double inner = outerCircle / 2;
                 double outer = outerCircle / 2;
                 if (miles < 1) {
@@ -326,6 +330,29 @@ public class CompassActivity extends AppCompatActivity {
                 dist = inner1 + inner2 + inner3 + outer / (OUTER_THRES - 10) * (miles - 1);
             }
         }
-        return (int)dist;
+        uuidToTextRectMap.put(uuid, new TextRect(name, (int)dist, angle));
     }
+
+    private void avoidCollisions(Map<String, TextRect> uuidToTextRectMap, int iteration){
+        int maxIteration = 50;
+        if (iteration >= maxIteration) return;
+        iteration += 1;
+        List<TextRect> textRectslist = new ArrayList<TextRect>(uuidToTextRectMap.values());
+        boolean needIter = false;
+        for (int i = 0; i < textRectslist.size(); i++) {
+            for (int j = i; j < textRectslist.size(); j++) {
+                TextRect tr1 = textRectslist.get(i);
+                TextRect tr2 = textRectslist.get(j);
+                if (!TextRect.intersect(tr1, tr2)) continue;
+                needIter = true;
+                boolean truncateSuccess = false;
+                if (tr1.truncate() == true) truncateSuccess = true;
+                if (tr2.truncate() == true) truncateSuccess = true;
+                if (!truncateSuccess) {
+                    TextRect.nudge(tr1, tr2);
+                }
+            }
+        }
+        if (needIter) avoidCollisions(uuidToTextRectMap, iteration);
+    };
 }
