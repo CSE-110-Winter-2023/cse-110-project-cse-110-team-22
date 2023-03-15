@@ -122,21 +122,22 @@ public class GPSStatus implements LocationListener{
 //        notifyObservers();
         Log.d("GPSStatus",String.valueOf(hasGPSService));
     }
-    public ScheduledFuture<?> setMockNotHaveGPSStatus(int max_iteration, int period){
-        hasGPSService = false;
-        ScheduledFuture<?> toReturn = executor.scheduleAtFixedRate(new Runnable() {
-            int count = 0;
-            @Override
-            public void run() {
-                timeSpanDisconnected();
-                count++;
-                if(count == max_iteration){
-                    executor.shutdown();
-                }
-            }
-        }, 0, period, TimeUnit.SECONDS);
-        return toReturn;
-    }
+
+//    public ScheduledFuture<?> setMockNotHaveGPSStatus(int max_iteration, int period){
+//        hasGPSService = false;
+//        ScheduledFuture<?> toReturn = executor.scheduleAtFixedRate(new Runnable() {
+//            int count = 0;
+//            @Override
+//            public void run() {
+//                timeSpanDisconnected();
+//                count++;
+//                if(count == max_iteration){
+//                    executor.shutdown();
+//                }
+//            }
+//        }, 0, period, TimeUnit.SECONDS);
+//        return toReturn;
+//    }
 
     @Override
     public void onProviderEnabled(@NonNull String provider) {

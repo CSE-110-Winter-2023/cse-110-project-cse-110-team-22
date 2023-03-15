@@ -44,14 +44,14 @@ public class GPSStatusMock implements LocationListener{
      * TODO: get the last active time from SharedPrefUti
      */
     public void getLastActiveTime() {
-        this.lastActiveTime = SharedPrefUtils.getLastGPSTime(this.context);
+        this.lastActiveTime = SharedPrefUtils.getLastMockGPSTime(this.context);
     }
     /**
      * store the current active time to SharedPrefUtil
      */
     public void storeLastActiveTime(Long lastActiveTime){
         //sharedPreUtil
-        SharedPrefUtils.storeLastGPSTime(this.context,lastActiveTime);
+        SharedPrefUtils.storeLastMockGPSTime(this.context,lastActiveTime);
     }
     /**
      * update the time span of GPS service being disconnected to timeDisconnected
@@ -92,6 +92,7 @@ public class GPSStatusMock implements LocationListener{
             @Override
             public void run() {
                 timeSpanDisconnected();
+                friendMediator.updateGPSStatus(false,timeSpanDisconnected);
                 count++;
                 if(count == max_iteration){
                     executor.shutdown();
@@ -108,6 +109,7 @@ public class GPSStatusMock implements LocationListener{
             @Override
             public void run() {
                 storeLastActiveTime(System.currentTimeMillis());
+                friendMediator.updateGPSStatus(true,"");
                 count++;
                 if(count == max_iteration){
                     executor.shutdown();
