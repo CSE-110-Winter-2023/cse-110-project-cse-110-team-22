@@ -66,9 +66,9 @@ public class LocationUtils {
      */
     public static int findPicID(Location loc) {
         Map<Integer, Integer> map = new HashMap<>();
-        map.put(FAMILYHOUSE, R.id.familyhouse);
-        map.put(FRIEND, R.id.friend);
-        map.put(HOME, R.id.home);
+//        map.put(FAMILYHOUSE, R.id.familyhouse);
+//        map.put(FRIEND, R.id.friend);
+//        map.put(HOME, R.id.home);
         map.put(NORTH, R.id.letter_n);
         return map.get(((LandmarkLocation)loc).getIconNum());
     }
