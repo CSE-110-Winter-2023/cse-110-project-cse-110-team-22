@@ -163,8 +163,7 @@ public class BDDTestUS1 {
             toCompass.performClick();
             Intent actual_3 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(CompassActivity.class, actual_3).create().get();
-
-            //mockLocationData.postValue(mockLocationData.getValue());
+            mockLocationData.postValue(mockLocationData.getValue());
 
             FriendMediator.getInstance().setUserLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Mock UCSD User Location"));
             FriendMediator.getInstance().updateUI();
