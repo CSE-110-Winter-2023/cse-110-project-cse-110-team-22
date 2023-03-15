@@ -163,6 +163,26 @@ public class CompassActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.orienta);
         textView.setText("Orientation: "+String.valueOf(userOrientation));
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
+        updateGPS();
+    }
+    public void updateGPS(){
+        ImageView green = findViewById(R.id.green);
+        ImageView red = findViewById(R.id.red);
+        TextView time = findViewById(R.id.time);
+        Boolean status = this.GPSSignalGood;
+        String timedisplay = this.GPSStatusStr;
+        time.setText(timedisplay);
+        if(status == true){
+            green.setVisibility(View.VISIBLE);
+            red.setVisibility(View.INVISIBLE);
+            time.setVisibility(View.INVISIBLE);
+        }
+        else{
+            green.setVisibility(View.INVISIBLE);
+            red.setVisibility(View.VISIBLE);
+            time.setVisibility(View.VISIBLE);
+        }
+
     }
 
 
@@ -254,6 +274,7 @@ public class CompassActivity extends AppCompatActivity {
         this.GPSSignalGood = GPSSignalGood;
         this.GPSStatusStr = GPSStatusStr;
     }
+
 
     public void display() {
         callUIUpdate();
