@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GPSStatus implements LocationListener{
@@ -27,7 +26,6 @@ public class GPSStatus implements LocationListener{
     public String timeSpanDisconnected = "0 m."; //Count the second since last connected
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private LocationManager locationManager;
-    private  FriendMediator friendMediator = FriendMediator.getInstance();
 
     /**
      * call executor to ping GPS service every 3 seconds
@@ -58,7 +56,7 @@ public class GPSStatus implements LocationListener{
     /**
      * store the current active time to SharedPrefUtil
      */
-    public void storeLastActiveTime(Long lastActiveTime){
+    private void storeLastActiveTime(Long lastActiveTime){
         //sharedPreUtil
         SharedPrefUtils.storeLastGPSTime(this.context,lastActiveTime);
     }
@@ -110,32 +108,15 @@ public class GPSStatus implements LocationListener{
             hasGPSService=true;
             storeLastActiveTime(lastActiveTime);
             Log.d("hasGPSService",String.valueOf(hasGPSService));
-            friendMediator.updateGPSStatus(this.hasGPSService,"0");
 
         }
         else{
             //update timeSpanDisconnected,inform mediator hasGPSService=false
             timeSpanDisconnected();
             hasGPSService=false;
-            friendMediator.updateGPSStatus(this.hasGPSService,this.timeSpanDisconnected);
         }
 //        notifyObservers();
         Log.d("GPSStatus",String.valueOf(hasGPSService));
-    }
-    public ScheduledFuture<?> setMockNotHaveGPSStatus(int max_iteration, int period){
-        hasGPSService = false;
-        ScheduledFuture<?> toReturn = executor.scheduleAtFixedRate(new Runnable() {
-            int count = 0;
-            @Override
-            public void run() {
-                timeSpanDisconnected();
-                count++;
-                if(count == max_iteration){
-                    executor.shutdown();
-                }
-            }
-        }, 0, period, TimeUnit.SECONDS);
-        return toReturn;
     }
 
     @Override
@@ -147,5 +128,4 @@ public class GPSStatus implements LocationListener{
     public void onProviderDisabled(@NonNull String provider) {
         LocationListener.super.onProviderDisabled(provider);
     }
-
 }

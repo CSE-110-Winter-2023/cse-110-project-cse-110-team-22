@@ -49,7 +49,7 @@ public class CompassActivity extends AppCompatActivity {
 
         nameToDot = new HashMap<>();
         FriendMediator.getInstance().setCompassActivity(this);
-        GPSStatus gpsStatus = new GPSStatus(this);
+
 
         try {
             // get orientation offset
@@ -137,24 +137,8 @@ public class CompassActivity extends AppCompatActivity {
         finish();
     }
 
-    public void updateGPS(){
-        ImageView green = findViewById(R.id.green);
-        ImageView red = findViewById(R.id.red);
-        TextView time = findViewById(R.id.time);
-        Boolean status = this.GPSSignalGood;
-        String timedisplay = this.GPSStatusStr;
-        time.setText(timedisplay);
-        if(status == true){
-            green.setVisibility(View.VISIBLE);
-            red.setVisibility(View.INVISIBLE);
-            time.setVisibility(View.INVISIBLE);
-        }
-        else{
-            green.setVisibility(View.INVISIBLE);
-            red.setVisibility(View.VISIBLE);
-            time.setVisibility(View.VISIBLE);
-        }
-
+    public void updateGPSStatus() {
+        // TODO
     }
 
     /**
@@ -181,7 +165,6 @@ public class CompassActivity extends AppCompatActivity {
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
         updateGPS();
     }
-    
     public void updateGPS(){
         ImageView green = findViewById(R.id.green);
         ImageView red = findViewById(R.id.red);
@@ -199,6 +182,7 @@ public class CompassActivity extends AppCompatActivity {
             red.setVisibility(View.VISIBLE);
             time.setVisibility(View.VISIBLE);
         }
+
     }
 
 
