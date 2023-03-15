@@ -108,8 +108,7 @@ public class GPSStatus implements LocationListener {
      */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-//        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Long currentTimeMillS = System.currentTimeMillis() / 60000;
+        Long currentTimeMills = System.currentTimeMillis()/6000;
         Long currentTime = System.currentTimeMillis() / 60000; //get current time in minutes
         Log.d("before checkPermission", String.valueOf(currentTime));
         if (ActivityCompat.checkSelfPermission(this.context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -122,9 +121,8 @@ public class GPSStatus implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Long gpsTime = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getTime();
-        Log.d("gpsTime",String.valueOf(gpsTime));
-        if (gpsTime == currentTime) {
+        Long gpsTime = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getTime()/6000;
+        if (gpsTime.equals(currentTimeMills)) {
             //update lastActiveTime and store it to SharePrefUtil
             lastActiveTime = currentTime;
             hasGPSService = true;
