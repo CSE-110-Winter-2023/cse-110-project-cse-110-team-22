@@ -4,6 +4,8 @@ import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.util.Pair;
 import android.widget.ImageView;
@@ -23,8 +25,9 @@ public class CompassActivity extends AppCompatActivity {
 
     private Map<Integer, Integer> nameToDot;
 
-    private int initial = 100;
+    private int initial = 430;
 
+    private FriendMediator friendMediator = FriendMediator.getInstance();
 
     private Location userLocation;
     private double userOrientation;
@@ -34,6 +37,7 @@ public class CompassActivity extends AppCompatActivity {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
     Map<String, Friend> uuidToFriendMap;
+    LandmarkLocation northLocation;
 
 
     @Override
@@ -43,6 +47,7 @@ public class CompassActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_compass);
 
+        nameToDot = new HashMap<>();
         FriendMediator.getInstance().setCompassActivity(this);
 
 
@@ -56,14 +61,25 @@ public class CompassActivity extends AppCompatActivity {
         }
 
         //Landmark locations
-        List<Location> locations = SharedPrefUtils.readAllLocations(this);
+        //List<Location> locations = SharedPrefUtils.readAllLocations(this);
 
 
+        ImageView imageView1 = findViewById(R.id.home);
+        imageView1.setVisibility(View.INVISIBLE);
+        ImageView imageView2 = findViewById(R.id.friend);
+        imageView2.setVisibility(View.INVISIBLE);
+        ImageView imageView3 = findViewById(R.id.familyhouse);
+        imageView3.setVisibility(View.INVISIBLE);
+        ImageView imageView4 = findViewById(R.id.me);
+        imageView4.setVisibility(View.INVISIBLE);
         //north
-        LandmarkLocation northLocation = new LandmarkLocation(90, 10, "North_Pole");
+        northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
         List<Location> locList = new ArrayList<>();
         locList.add(northLocation);
+//        addFriendToCompass(123456, "jone");
+//        updateCircleAngle(nameToDot.get(123456),123456,60,150);
+
     }
 
 
@@ -88,11 +104,11 @@ public class CompassActivity extends AppCompatActivity {
             int dist = uuidToDistanceMap.get(uuid).intValue();
             int int_UUID = String_toUUID(uuid);
             int dot_UUID = nameToDot.get(int_UUID);
-            updateCircleAngle(int_UUID, dot_UUID, angle_float, dist);
+            updateCircleAngle(dot_UUID, int_UUID, angle_float, dist);
 
         }
 
-
+        updateCircleAngle(R.id.letter_n, -(float)userOrientation);
 
     }
     public void update(double userOrientation, Map<Integer, Double> directionMap){
@@ -105,20 +121,7 @@ public class CompassActivity extends AppCompatActivity {
         }
     }
 
-    public void update(double userOrientation, Map<String, Double> uuidToAngleMap, Map<String, Double> uuidToDistanceMap){
-        for (String uuid: uuidToAngleMap.keySet()) {
 
-            double angle = uuidToAngleMap.get(uuid);
-            double angleRadian = Math.toRadians(angle);
-            angleRadian -= Math.toRadians(userOrientation);
-            float angle_float = (float) Math.toDegrees(angleRadian);
-            int dist = uuidToDistanceMap.get(uuid).intValue();
-            int int_UUID = String_toUUID(uuid);
-            int dot_UUID = nameToDot.get(int_UUID);
-            updateCircleAngle(int_UUID, dot_UUID, angle_float, dist);
-
-        }
-    }
     void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
@@ -157,23 +160,55 @@ public class CompassActivity extends AppCompatActivity {
         Map<String, Double> uuidToDistanceMap = LocationUtils
                 .computeAllDistances(userLocation, uuidToFriendMap);
 
+        TextView textView = findViewById(R.id.orienta);
+        textView.setText("Orientation: "+String.valueOf(userOrientation));
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
+        updateGPS();
+    }
+    public void updateGPS(){
+        ImageView green = findViewById(R.id.green);
+        ImageView red = findViewById(R.id.red);
+        TextView time = findViewById(R.id.time);
+        Boolean status = this.GPSSignalGood;
+        String timedisplay = this.GPSStatusStr;
+        time.setText(timedisplay);
+        if(status == true){
+            green.setVisibility(View.VISIBLE);
+            red.setVisibility(View.INVISIBLE);
+            time.setVisibility(View.INVISIBLE);
+        }
+        else{
+            green.setVisibility(View.INVISIBLE);
+            red.setVisibility(View.VISIBLE);
+            time.setVisibility(View.VISIBLE);
+        }
+
     }
 
 
 
     void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
         ImageView imageView = findViewById(imageViewId);
+
+        // Set UI icons to border if their distance would bring them past it
+        // TODO: should be changed when zooming in/out implemented
+        if(distance > initial){
+            distance = initial;
+        }
+
         TextView textView = findViewById(textViewId);
         ConstraintLayout.LayoutParams layoutParamsText = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
-        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
-        layoutParamsDot.circleAngle = angle;
         layoutParamsText.circleAngle = angle;
         layoutParamsText.circleRadius = distance;
-        layoutParamsDot.circleRadius = initial;
         textView.setLayoutParams(layoutParamsText);
+        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
+        //TODO: This seems to update the text layout params,
+        layoutParamsDot.circleAngle = angle;
+        layoutParamsDot.circleRadius = distance;
         imageView.setLayoutParams(layoutParamsDot);
-        if(distance > initial){
+
+
+        if(distance >= initial){
             imageView.setVisibility(View.VISIBLE);
             textView.setVisibility(View.INVISIBLE);
         }
@@ -181,6 +216,8 @@ public class CompassActivity extends AppCompatActivity {
             imageView.setVisibility(View.INVISIBLE);
             textView.setVisibility(View.VISIBLE);
         }
+
+
     }
 
     public void addFriendToCompass(Integer id, String name){
@@ -195,14 +232,16 @@ public class CompassActivity extends AppCompatActivity {
         myImage.setId(imageID);
         textView.setTextColor(Color.BLACK);
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                50, // width
-                50 // height
+                100, // width
+                100 // height
         );
         layoutParams.circleConstraint = R.id.clock;
         layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
         layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
         layoutParams.bottomToTop = R.id.clock_face;
         layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+        layoutParams.circleRadius = 50;
+
         layoutParams.setMargins(
                 23, // start margin
                 0, // top margin
@@ -213,6 +252,17 @@ public class CompassActivity extends AppCompatActivity {
         myImage.setLayoutParams(layoutParams);
         constraintLayout.addView(textView);
         constraintLayout.addView(myImage);
+
+        //TODO: This works but other stuff doesn't
+        TextView textView2 = findViewById(id);
+        ConstraintLayout.LayoutParams layoutParamsText = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
+        layoutParamsText.circleAngle = 90;
+        layoutParamsText.circleRadius = 100;
+        textView.setLayoutParams(layoutParamsText);
+
+
+
+
     }
 
     public void updateUser(Location userLocation, double userOrientation) {
@@ -224,6 +274,7 @@ public class CompassActivity extends AppCompatActivity {
         this.GPSSignalGood = GPSSignalGood;
         this.GPSStatusStr = GPSStatusStr;
     }
+
 
     public void display() {
         callUIUpdate();

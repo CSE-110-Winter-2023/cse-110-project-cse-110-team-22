@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class FriendMediator {
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
+    private MainActivity mainActivity;
     private ServerAPI serverAPI = ServerAPI.getInstance();
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -28,12 +30,11 @@ public class FriendMediator {
     private UserLocationService userLocationService;
     private UserOrientationService orientationService;
     private double userOrientation;
-    private Location userLocation;
+    private Location userLocation = UserLocation.singleton(0,0,"you");
 
     private boolean GPSSignalGood;
     private String GPSStatusStr;
 
-    private List<Friend> waitingFriendsList;
 
     String publicUUID;
     String privateUUID;
@@ -47,11 +48,22 @@ public class FriendMediator {
     }
 
     public void setCompassActivity(CompassActivity compassActivity) {
+        Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
-        for (Friend f : waitingFriendsList) {
+        userLocationService = UserLocationService.singleton(compassActivity);
+        orientationService = UserOrientationService.singleton(compassActivity);
+        userLocationService.getLocation().observe(compassActivity, loc -> {
+            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            Log.d("LocationService", String.valueOf(userLocation.getLatitude()) + " " + String.valueOf(userLocation.getLongitude()));
+        });
+        orientationService.getOrientation().observe(compassActivity, orient -> {
+            userOrientation = Math.toDegrees((double) orient);
+            Log.d("OrientationService", String.valueOf(userOrientation));
+        });
+        for (String uuid: uuidToFriendMap.keySet()) {
+            Friend f = uuidToFriendMap.get(uuid);
             compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
         }
-        waitingFriendsList.clear();
     }
 
     public static FriendMediator getInstance() {
@@ -62,22 +74,11 @@ public class FriendMediator {
     }
 
     public void init(MainActivity context){
-        // TODO: Important: Add back after fixing location permission issues on tests
-        /*
-        userLocation = UserLocation.singleton(0, 0, "You");
-        userOrientation = 0.0;
-        userLocationService = UserLocationService.singleton(context);
-        orientationService = UserOrientationService.singleton(context);
-        userLocationService.getLocation().observe(context, loc -> {
-            userLocation = UserLocation.singleton(loc.first, loc.second, "You");
-        });
-        orientationService.getOrientation().observe(context, orient -> {
-            userOrientation = Math.toDegrees((double) orient);
-        });
+        this.mainActivity = context;
 
-         */
 
-        java.util.List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
+        List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
+
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
         }
@@ -98,24 +99,31 @@ public class FriendMediator {
 
 
         name = SharedPrefUtils.getName(context);
-        waitingFriendsList = new ArrayList<>();
 
         executor.scheduleAtFixedRate(() -> {
-            for(String uuid: uuidToFriendMap.keySet()){
-                Future<Friend> friend = serverAPI.getFriendAsync(uuid);
-                try {
-                    uuidToFriendMap.put(uuid, friend.get());
-                    // NOTE: FRIEND IS UPDATED
-                } catch (ExecutionException e) {
-                    Log.e("Mediator", e.toString());
-                } catch (InterruptedException e) {
-                    Log.e("Mediator", e.toString());
+            try{
+                Log.d("FriendMediator", "Started task");
+                for(String uuid: uuidToFriendMap.keySet()){
+                    Future<Friend> friend = serverAPI.getFriendAsync(uuid);
+                    try {
+                        uuidToFriendMap.put(uuid, friend.get());
+                        // NOTE: FRIEND IS UPDATED
+                    } catch (ExecutionException e) {
+                        Log.e("Mediator", e.toString());
+                    } catch (InterruptedException e) {
+                        Log.e("Mediator", e.toString());
+                    }
                 }
+                Log.d("Mediator", "Finished Updating round");
+                // All friends updated, notify UI by calling the main thread
+                if(compassActivity != null) {
+                    compassActivity.runOnUiThread(this::updateUI);
+                }
+                //updateUI();
+            } catch(Exception e){
+                Log.d("Mediator Error", e.toString());
             }
-            Log.d("Mediator", "Finished Updating round");
-            // All friends updated, notify UI
-            updateUI();
-        }, 0, 1, TimeUnit.SECONDS);
+            }, 0, 1, TimeUnit.SECONDS);
     }
 
     /*
@@ -145,12 +153,11 @@ public class FriendMediator {
             //TODO: Fix
             if (compassActivity != null) {
                 compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
-            } else {
-
             }
             updateUI();
         } else {
             // TODO something like a warning "invalid uuid"
+            Utilities.showAlert((Activity)context, "invalid uuid");
         }
     }
 
@@ -220,9 +227,15 @@ public class FriendMediator {
         if(compassActivity == null){
             return;
         }
+        Log.d("Mediator", "updateUI called");
         updateUserForUI();
         updateGPSUI();
         updateCompassUI();
         compassActivity.display();
+    }
+
+    @VisibleForTesting
+    public void setUserLocation(Location location){
+        this.userLocation = location;
     }
 }

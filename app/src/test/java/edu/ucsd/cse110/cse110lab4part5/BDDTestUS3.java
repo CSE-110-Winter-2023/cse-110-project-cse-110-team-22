@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Button;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowApplication;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -54,7 +59,9 @@ public class BDDTestUS3 {
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
-
+        Application application = ApplicationProvider.getApplicationContext();
+        ShadowApplication app = Shadows.shadowOf(application);
+        app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     @Test
