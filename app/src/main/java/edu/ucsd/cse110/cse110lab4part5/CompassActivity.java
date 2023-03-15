@@ -2,12 +2,15 @@ package edu.ucsd.cse110.cse110lab4part5;
 
 import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.util.Pair;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,11 +24,17 @@ import java.util.List;
 import java.util.Map;
 
 public class CompassActivity extends AppCompatActivity {
+    private int stage = 1;
     static final int NORTH = 3;
 
     private Map<Integer, Integer> nameToDot;
 
-    private int initial = 430;
+    private final int initial = 430;
+
+    private final int First = 1;
+    private final int Second = 2;
+    private final int Third = 3;
+    private final int Fourth = 4;
 
     private FriendMediator friendMediator = FriendMediator.getInstance();
 
@@ -279,4 +288,59 @@ public class CompassActivity extends AppCompatActivity {
     public void display() {
         callUIUpdate();
     }
+
+
+
+
+    public void zoom_in(View view) {
+        if(this.stage > First){
+            this.stage -= First;}
+
+    }
+
+    public void zoom_out(View view) {
+        if(this.stage < Fourth){
+            this.stage += First;
+            updateRingUI();
+        }
+    }
+
+    public void updateRingUI(){
+        int stage = this.stage;
+        ImageView ring12 = findViewById(R.id.ring12);
+        ImageView ring14 = findViewById(R.id.ring14);
+        ImageView ring34 = findViewById(R.id.ring34);
+        ImageView ring13 = findViewById(R.id.ring13);
+        ImageView ring23 = findViewById(R.id.ring23);
+        if(stage == First){
+            ring12.setVisibility(View.INVISIBLE);
+            ring14.setVisibility(View.INVISIBLE);
+            ring34.setVisibility(View.INVISIBLE);
+            ring13.setVisibility(View.INVISIBLE);
+            ring23.setVisibility(View.INVISIBLE);
+        }
+        if(stage == Second){
+            ring12.setVisibility(View.VISIBLE);
+            ring14.setVisibility(View.INVISIBLE);
+            ring34.setVisibility(View.INVISIBLE);
+            ring13.setVisibility(View.INVISIBLE);
+            ring23.setVisibility(View.INVISIBLE);
+        }
+        if(stage == Third){
+            ring12.setVisibility(View.INVISIBLE);
+            ring14.setVisibility(View.INVISIBLE);
+            ring34.setVisibility(View.INVISIBLE);
+            ring13.setVisibility(View.VISIBLE);
+            ring23.setVisibility(View.VISIBLE);
+        }
+        if(stage == Fourth){
+            ring12.setVisibility(View.VISIBLE);
+            ring14.setVisibility(View.VISIBLE);
+            ring34.setVisibility(View.VISIBLE);
+            ring13.setVisibility(View.INVISIBLE);
+            ring23.setVisibility(View.INVISIBLE);
+        }
+    }
+
+
 }
