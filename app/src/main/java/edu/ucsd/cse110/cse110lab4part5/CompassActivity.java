@@ -2,7 +2,12 @@ package edu.ucsd.cse110.cse110lab4part5;
 
 import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
 
+
 import android.annotation.SuppressLint;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
@@ -16,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -52,6 +58,13 @@ public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Handle location permissions
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
+            Log.d("MainActivity", "Asking for location permissions");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
+        }
+
         userLocation = UserLocation.singleton(0, 0, "You");
 
         setContentView(R.layout.activity_compass);
@@ -193,7 +206,6 @@ public class CompassActivity extends AppCompatActivity {
         }
 
     }
-
 
 
     void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
