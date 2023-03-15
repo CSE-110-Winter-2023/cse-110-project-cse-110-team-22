@@ -186,7 +186,6 @@ public class CompassActivity extends AppCompatActivity {
     }
 
 
-
     void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
         ImageView imageView = findViewById(imageViewId);
 
