@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
@@ -49,8 +50,6 @@ public class FriendMediator {
     public void setCompassActivity(CompassActivity compassActivity) {
         Log.d("CompassActivity", "Set");
         this.compassActivity = compassActivity;
-        userLocation = UserLocation.singleton(0, 0, "You");
-        userOrientation = 0.0;
         userLocationService = UserLocationService.singleton(compassActivity);
         orientationService = UserOrientationService.singleton(compassActivity);
         userLocationService.getLocation().observe(compassActivity, loc -> {
@@ -233,5 +232,10 @@ public class FriendMediator {
         updateGPSUI();
         updateCompassUI();
         compassActivity.display();
+    }
+
+    @VisibleForTesting
+    public void setUserLocation(Location location){
+        this.userLocation = location;
     }
 }
