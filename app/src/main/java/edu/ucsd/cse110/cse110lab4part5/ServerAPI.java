@@ -258,10 +258,15 @@ public class ServerAPI {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if(exists == false){
+
+            if(uuid == null){
+                Log.d("BadUUIDCall", "Server returned null on get new UUID");
+            }
+            if(exists == false && uuid != null){
                 break;
             }
         }
+        Log.d("ServerAPIUUID", uuid);
         return uuid;
     }
 

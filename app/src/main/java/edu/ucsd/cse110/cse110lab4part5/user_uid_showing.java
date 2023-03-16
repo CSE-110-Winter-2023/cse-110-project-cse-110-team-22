@@ -27,8 +27,8 @@ public class user_uid_showing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_uid_showing);
         TextView your_uid = (TextView) this.findViewById(R.id.your_uid);
-        int publicUUID = friendMediator.getOrGenerateUUID(this);
-        your_uid.setText(String.valueOf(publicUUID));
+        String publicUUID = friendMediator.getOrGenerateUUID(this);
+        your_uid.setText(publicUUID);
         // Handle location permissions
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
