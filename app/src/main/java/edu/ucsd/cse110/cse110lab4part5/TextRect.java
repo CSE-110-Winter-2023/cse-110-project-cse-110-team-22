@@ -11,7 +11,7 @@ public class TextRect {
     TextRect(String name, int dist, double angle) {
         this.name = name;
         this.centerDist = dist;
-        this.centerAngle = 90 - centerAngle; // horizontal to the right is 0 degrees.
+        this.centerAngle = 90 - angle; // horizontal to the right is 0 degrees.
         r = makeRect();
     }
 
@@ -19,15 +19,16 @@ public class TextRect {
      * Create a new Rect object when called
      * @return an updated Rect object
      */
-    private Rect makeRect(){
+    public Rect makeRect(){
         int l, r, u, b;
         int centerX = (int)(centerDist * Math.cos(Math.toRadians(centerAngle)));
         int centerY = (int)(centerDist * Math.sin(Math.toRadians(centerAngle)));
         l = centerX - name.length() * 13;
         r = centerX + name.length() * 13;
-        u = centerY + name.length() * 18;
-        b = centerY - name.length() * 18;
-        return new Rect(l, u, r, b);
+        u = centerY - 18;
+        b = centerY + 18; // top less than bottom
+        Rect rect = new Rect(l, u, r, b);
+        return rect;
     }
 
     /**
