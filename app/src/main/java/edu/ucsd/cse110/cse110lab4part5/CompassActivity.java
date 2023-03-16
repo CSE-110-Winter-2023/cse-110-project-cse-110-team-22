@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CompassActivity extends AppCompatActivity {
-    private int stage = 1;
+    private int stage = 2;
     static final int NORTH = 3;
 
     private Map<Integer, Integer> nameToDot;
@@ -59,12 +59,6 @@ public class CompassActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        // Handle location permissions
-//        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
-//            Log.d("MainActivity", "Asking for location permissions");
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
-//        }
 
         userLocation = UserLocation.singleton(0, 0, "You");
 
@@ -83,25 +77,15 @@ public class CompassActivity extends AppCompatActivity {
             mockAngle = 0;
         }
 
-        //Landmark locations
-        //List<Location> locations = SharedPrefUtils.readAllLocations(this);
 
-
-//        ImageView imageView1 = findViewById(R.id.home);
-//        imageView1.setVisibility(View.INVISIBLE);
-//        ImageView imageView2 = findViewById(R.id.friend);
-//        imageView2.setVisibility(View.INVISIBLE);
-//        ImageView imageView3 = findViewById(R.id.familyhouse);
-//        imageView3.setVisibility(View.INVISIBLE);
-//        ImageView imageView4 = findViewById(R.id.me);
-//        imageView4.setVisibility(View.INVISIBLE);
         //north
         northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
         List<Location> locList = new ArrayList<>();
         locList.add(northLocation);
-//        addFriendToCompass(123456, "jone");
-//        updateCircleAngle(nameToDot.get(123456),123456,60,150);
+
+        updateRingUI();
+
 
     }
 
@@ -308,7 +292,10 @@ public class CompassActivity extends AppCompatActivity {
 
     public void zoom_in(View view) {
         if(this.stage > First){
-            this.stage -= First;}
+            this.stage -= First;
+            updateRingUI();
+        }
+
 
     }
 
