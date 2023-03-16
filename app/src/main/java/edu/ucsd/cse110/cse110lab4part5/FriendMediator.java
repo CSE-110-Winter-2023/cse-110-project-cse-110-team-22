@@ -3,10 +3,12 @@ package edu.ucsd.cse110.cse110lab4part5;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -236,8 +238,27 @@ public class FriendMediator {
         compassActivity.display();
     }
 
+    /**
+     * Testing method which mocks a location update from the LocationService to the Mediator
+     * @param location update
+     */
     @VisibleForTesting
-    public void setUserLocation(Location location){
-        this.userLocation = location;
+    public void mockLocationChange(Location location){
+        if(userLocationService != null){
+            userLocationService.setMockLocationSource(new MutableLiveData<>(new Pair<>(location.getLatitude(), location.getLongitude())));
+        }
+        this.userLocation = UserLocation.singleton(location.getLatitude(), location.getLongitude(), "You");
+    }
+
+    /**
+     * Testing method which mocks an orientation update from the OrientationService to the Mediator
+     * @param degree update
+     */
+    @VisibleForTesting
+    public void mockOrientationChange(Float degree){
+        if(orientationService != null){
+            orientationService.setMockOrientationSource(new MutableLiveData<>(degree));
+        }
+        this.userOrientation = degree;
     }
 }
