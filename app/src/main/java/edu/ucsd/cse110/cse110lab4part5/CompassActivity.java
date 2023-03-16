@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.util.Pair;
 import android.widget.Button;
@@ -246,6 +247,7 @@ public class CompassActivity extends AppCompatActivity {
         TextView textView = new TextView(this);
         textView.setId(id);
         textView.setText(name);
+        textView.setGravity(Gravity.CENTER);
         ImageView myImage = new ImageView(this);
         myImage.setImageResource(R.drawable.dot);
         int imageID = View.generateViewId();
@@ -253,7 +255,7 @@ public class CompassActivity extends AppCompatActivity {
         myImage.setId(imageID);
         textView.setTextColor(Color.BLACK);
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                1000, // width
+                400, // width
                 100 // height
         );
         layoutParams.circleConstraint = R.id.clock;
