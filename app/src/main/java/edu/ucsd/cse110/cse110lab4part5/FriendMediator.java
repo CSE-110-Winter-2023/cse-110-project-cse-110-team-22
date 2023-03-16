@@ -88,8 +88,6 @@ public class FriendMediator {
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
         }
-
-
         // If no existing uuids, generate them
         if(!SharedPrefUtils.hasPubUUID(context)){
             String publicUUID = serverAPI.getNewUUID();
@@ -105,7 +103,6 @@ public class FriendMediator {
 
 
         name = SharedPrefUtils.getName(context);
-
         executor.scheduleAtFixedRate(() -> {
             try{
                 Log.d("FriendMediator", "Started task");
@@ -122,6 +119,7 @@ public class FriendMediator {
                 }
                 Log.d("Mediator", "Finished Updating round");
                 // All friends updated, notify UI by calling the main thread
+//                GPSStatus gpsStatus = new GPSStatus(compassActivity);
                 if(compassActivity != null) {
                     compassActivity.runOnUiThread(this::updateUI);
                 }
