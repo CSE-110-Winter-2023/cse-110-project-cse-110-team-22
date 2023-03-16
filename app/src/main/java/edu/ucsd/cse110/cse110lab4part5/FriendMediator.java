@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -66,7 +68,7 @@ public class FriendMediator {
         });
         for (String uuid: uuidToFriendMap.keySet()) {
             Friend f = uuidToFriendMap.get(uuid);
-            compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
+            compassActivity.addFriendToCompass(String_toUUID(f.getUuid()), f.getName());
         }
     }
 
@@ -156,7 +158,7 @@ public class FriendMediator {
             SharedPrefUtils.writeID(context, uuid);
             //TODO: Fix
             if (compassActivity != null) {
-                compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
+                compassActivity.addFriendToCompass(String_toUUID(uuid), friend.getName()); // new
             }
             updateUI();
         } else {
