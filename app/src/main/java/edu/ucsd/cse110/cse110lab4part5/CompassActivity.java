@@ -74,6 +74,7 @@ public class CompassActivity extends AppCompatActivity {
         userLocation = UserLocation.singleton(0, 0, "You");
 
         setContentView(R.layout.activity_compass);
+        updateRingUI();
 
         nameToDot = new HashMap<>();
         FriendMediator.getInstance().setCompassActivity(this);
@@ -391,17 +392,19 @@ public class CompassActivity extends AppCompatActivity {
 
 
 
-    public void zoom_in() {
+    public void zoom_in(View view) {
         if(STATE > First){
             STATE -= First;
             updateRingUI();
+            display();
         }
     }
 
-    public void zoom_out() {
+    public void zoom_out(View view) {
         if(STATE < Fourth){
             STATE += First;
             updateRingUI();
+            display();
         }
     }
 
