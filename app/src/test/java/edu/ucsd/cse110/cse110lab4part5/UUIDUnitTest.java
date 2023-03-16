@@ -48,4 +48,17 @@ public class UUIDUnitTest {
         assertEquals(uuid_str, goal);
         assertEquals(uuid, String_toUUID(goal));
     }
+    @Test
+    public void Test_UUID_Conversion_5(){
+        String uuid = "c81d4e2e-bcf2-11e6-869b-7df92533d2db";
+        int goal = 843331641;
+        assertEquals(goal, String_toUUID(uuid));
+    }
+
+    @Test
+    public void Test_UUID_Conversion_6(){
+        String uuid = "test";
+        int goal = 3556498;
+        assertEquals(goal, String_toUUID(uuid));
+    }
 }

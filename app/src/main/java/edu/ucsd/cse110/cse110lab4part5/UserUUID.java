@@ -31,6 +31,12 @@ public class UserUUID {
     }
 
     public static int String_toUUID(String uuid_str){
-        return Integer.parseInt(uuid_str);
+        int upperbound = 999999999;
+        try {
+            return Integer.parseInt(uuid_str);
+        } catch (NumberFormatException e) {
+            return Math.abs(uuid_str.hashCode() % upperbound);
+        }
+
     }
 }
