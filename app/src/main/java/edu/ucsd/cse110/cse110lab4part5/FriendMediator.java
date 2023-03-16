@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class FriendMediator {
+    public boolean flag = false;
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
@@ -54,6 +55,7 @@ public class FriendMediator {
         orientationService = UserOrientationService.singleton(compassActivity);
         userLocationService.getLocation().observe(compassActivity, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            flag = true;
             // upsert new location data to server
             serverAPI.upsertUserAsync(this.publicUUID, serverAPI.formatUpsertJSON(this.privateUUID, this.name, userLocation.getLatitude(), userLocation.getLongitude()));
             Log.d("LocationService", String.valueOf(userLocation.getLatitude()) + " " + String.valueOf(userLocation.getLongitude()));

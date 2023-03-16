@@ -10,12 +10,14 @@ import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
@@ -23,6 +25,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -36,6 +39,10 @@ import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
 public class BDDTestUS1 {
+    // Try commenting out this rule and running the test, it will fail!
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     ServerAPI serverAPI = ServerAPI.getInstance();
     Friend friend1;
 
@@ -120,9 +127,6 @@ public class BDDTestUS1 {
         initScenario.onActivity(activity -> {
             // init mediator and mock the location and orientation services
             FriendMediator.getInstance().init((MainActivity) activity);
-            UserLocationService.singleton(activity).setMockLocationSource(mockLocationData);
-            UserLocation.singleton(0, 0, "You");
-            mockLocationData.postValue(mockLocationData.getValue());
 
 
         });
@@ -163,10 +167,12 @@ public class BDDTestUS1 {
             toCompass.performClick();
             Intent actual_3 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(CompassActivity.class, actual_3).create().get();
+            UserLocationService.singleton(activity).setMockLocationSource(mockLocationData);
+            UserLocation.singleton(0, 0, "You");
             mockLocationData.postValue(mockLocationData.getValue());
 
-            FriendMediator.getInstance().setUserLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Mock UCSD User Location"));
-            FriendMediator.getInstance().updateUI();
+//            FriendMediator.getInstance().setUserLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Mock UCSD User Location"));
+//            FriendMediator.getInstance().updateUI();
 
 
 
