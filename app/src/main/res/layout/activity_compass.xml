@@ -7,15 +7,163 @@
     tools:context=".CompassActivity">
 
 
-    <ImageView
-        android:id="@+id/me"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/me" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/loca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="？"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".8"
+            />
+
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="go_back"
+            android:text="back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".9"/>
+
+        <Button
+            android:id="@+id/clear_data_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="clearDataClicked"
+            android:text="Clear Location Data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".82"/>
+
+        <TextView
+            android:id="@+id/orienta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextViewTextViewTextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".2"/>
+
+        <ImageView
+            android:id="@+id/me"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/me" />
+
+        <ImageButton
+            android:id="@+id/zoom_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="563dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginBottom="117dp"
+            android:onClick="zoom_in"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/clear_data_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_zoom" />
+
+        <ImageButton
+            android:id="@+id/zoom_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="569dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="135dp"
+            android:onClick="zoom_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clear_data_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/button_onoff_indicator_off" />
+
+        <ImageView
+            android:id="@+id/ring12"
+            android:layout_width="174dp"
+            android:layout_height="174dp"
+            android:layout_marginStart="118dp"
+            android:layout_marginTop="110dp"
+            android:layout_marginEnd="118dp"
+            android:layout_marginBottom="100dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/clear_data_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orienta"
+            app:srcCompat="@drawable/ring" />
+
+        <ImageView
+            android:id="@+id/ring14"
+            android:layout_width="87dp"
+            android:layout_height="87dp"
+            android:layout_marginBottom="-10dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/clear_data_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orienta"
+            app:srcCompat="@drawable/ring" />
+
+        <ImageView
+            android:id="@+id/ring34"
+            android:layout_width="261dp"
+            android:layout_height="261dp"
+            android:layout_marginBottom="-10dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/clear_data_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orienta"
+            app:srcCompat="@drawable/ring" />
+
+        <ImageView
+            android:id="@+id/ring13"
+            android:layout_width="116dp"
+            android:layout_height="116dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/clear_data_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orienta"
+            app:srcCompat="@drawable/ring" />
+
+        <ImageView
+            android:id="@+id/ring23"
+            android:layout_width="232dp"
+            android:layout_height="232dp"
+            android:layout_marginStart="-5dp"
+            android:layout_marginBottom="-10dp"
+            app:layout_constraintBottom_toTopOf="@+id/clear_data_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/orienta"
+            app:srcCompat="@drawable/ring" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clock"
@@ -31,207 +179,81 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/familyhouse"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/clock_face"
-            app:layout_constraintCircle="@+id/clock"
-            app:layout_constraintCircleAngle="210"
-            app:layout_constraintCircleRadius="173dp"
-            app:layout_constraintEnd_toStartOf="@+id/clock_face"
-            app:layout_constraintStart_toEndOf="@+id/clock_face"
-            app:layout_constraintTop_toBottomOf="@+id/clock_face"
-            app:srcCompat="@drawable/familyhouse"
-            tools:ignore="MissingConstraints" />
 
         <ImageView
-            android:id="@+id/friend"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="18dp"
-            app:layout_constraintBottom_toTopOf="@+id/clock_face"
-            app:layout_constraintCircle="@+id/clock"
-            app:layout_constraintCircleAngle="0"
-            app:layout_constraintCircleRadius="170dp"
-            app:layout_constraintEnd_toStartOf="@+id/home"
-            app:layout_constraintStart_toEndOf="@+id/home"
+            android:id="@+id/clock_face"
+            android:layout_width="345dp"
+            android:layout_height="348dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/friend"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintVertical_bias=".5"
+            app:srcCompat="@drawable/compass_face" />
 
-        <ImageView
-            android:id="@+id/home"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="23dp"
-            android:layout_marginEnd="23dp"
-            android:layout_marginBottom="23dp"
-            app:layout_constraintBottom_toTopOf="@+id/clock_face"
-            app:layout_constraintCircle="@+id/clock"
-            app:layout_constraintCircleAngle="0"
-            app:layout_constraintCircleRadius="172dp"
-            app:layout_constraintEnd_toStartOf="@+id/clock_face"
-            app:layout_constraintStart_toEndOf="@+id/clock_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/home"
-            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clock_outside"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/letter_n"
+            android:elevation="1dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="23dp"
             android:layout_marginEnd="23dp"
             android:layout_marginBottom="23dp"
-            app:layout_constraintBottom_toTopOf="@+id/clock_face"
-            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintBottom_toTopOf="@+id/clock_face2"
+            app:layout_constraintCircle="@+id/clock_outside"
             app:layout_constraintCircleAngle="0"
             app:layout_constraintCircleRadius="172dp"
-            app:layout_constraintEnd_toStartOf="@+id/clock_face"
-            app:layout_constraintStart_toEndOf="@+id/clock_face"
+            app:layout_constraintEnd_toStartOf="@+id/clock_face2"
+            app:layout_constraintStart_toEndOf="@+id/clock_face2"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/letter_n"
             tools:ignore="MissingConstraints" />
 
         <ImageView
-            android:id="@+id/clock_face"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:id="@+id/walls"
+            android:layout_width="660dp"
+            android:layout_height="635dp"
+            android:layout_marginTop="-8dp"
+            android:elevation="1dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/missingmiddle" />
+
+        <ImageView
+            android:id="@+id/clock_face2"
+            android:layout_width="345dp"
+            android:layout_height="348dp"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".5"
             app:srcCompat="@drawable/compass_face" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/clear_data_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="clearDataClicked"
-        android:text="Clear Location Data"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clock" />
-
-    <TextView
-        android:id="@+id/orienta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
-        android:text="TextViewTextViewTextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/loca"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="？"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/orienta" />
-
-    <Button
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="go_back"
-        android:text="back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clock"
-        app:layout_constraintVertical_bias="0.875" />
-    <ImageView
-        android:id="@+id/home_label"
-        android:layout_width="57dp"
-        android:layout_height="31dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.015"
-        app:srcCompat="@drawable/home" />
-
-    <ImageView
-        android:id="@+id/friend_label"
-        android:layout_width="59dp"
-        android:layout_height="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06"
-        app:srcCompat="@drawable/friend" />
-
-    <ImageView
-        android:id="@+id/family_label"
-        android:layout_width="58dp"
-        android:layout_height="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.954"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117"
-        app:srcCompat="@drawable/familyhouse" />
-
-    <TextView
-        android:id="@+id/home_label_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.754"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
-
-    <TextView
-        android:id="@+id/friend_label_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.754"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.074" />
-
-    <TextView
-        android:id="@+id/family_label_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.754"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.125" />
 
 
     <ImageView
@@ -275,7 +297,6 @@
         app:layout_constraintEnd_toStartOf="@+id/friend_label"
         app:layout_constraintStart_toEndOf="@+id/green"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
