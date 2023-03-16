@@ -28,6 +28,8 @@ public class SharedPrefUtils {
     private static final String gpsPrefFile = "gps_pref";
     private static final String GPSTime = "GPSTime";
 
+    private static final String GPSMockTime = "GPSMockTime";
+
     // Location methods
     /**
      *
@@ -343,6 +345,12 @@ public class SharedPrefUtils {
         editor.putLong(GPSTime, time);
         editor.commit();
     }
+    public static void storeLastMockGPSTime(Context context, long time){
+        SharedPreferences preferences = context.getSharedPreferences(gpsPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(GPSMockTime, time);
+        editor.commit();
+    }
 
     /**
      *
@@ -352,5 +360,9 @@ public class SharedPrefUtils {
     public static long getLastGPSTime(Context context){
         SharedPreferences preferences = context.getSharedPreferences(gpsPrefFile, MODE_PRIVATE);
         return preferences.getLong(GPSTime, -1);
+    }
+    public static long getLastMockGPSTime(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(gpsPrefFile, MODE_PRIVATE);
+        return preferences.getLong(GPSMockTime, -1);
     }
 }
