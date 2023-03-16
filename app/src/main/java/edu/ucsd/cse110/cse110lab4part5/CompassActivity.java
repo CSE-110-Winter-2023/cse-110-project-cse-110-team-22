@@ -165,10 +165,6 @@ public class CompassActivity extends AppCompatActivity {
         finish();
     }
 
-    public void updateGPSStatus() {
-        // TODO
-    }
-
     /**
      * update uuidToFriendMap and update UI. This is called when the server updates or
      * after a new friend uuid is verified and added by the mediator.
@@ -187,6 +183,17 @@ public class CompassActivity extends AppCompatActivity {
                 .computeAllFriendAngles(userLocation, uuidToFriendMap);
         Map<String, Double> uuidToDistanceMap = LocationUtils
                 .computeAllDistances(userLocation, uuidToFriendMap);
+        for (String uuid : uuidToFriendMap.keySet()) {
+            String name = uuidToFriendMap.get(uuid).getName();
+            double angle = uuidToAngleMap.get(uuid);
+            double dist = uuidToDistanceMap.get(uuid);
+            updateDisplayMaps(uuid, name, angle, dist, STATE);
+        }
+        avoidCollisions(uuidToTextRectMap, 0);
+        for (String uuid : uuidToFriendMap.keySet()) {
+            double updatedDist = uuidToTextRectMap.get(uuid).getCenterDist();
+            uuidToDistanceMap.put(uuid, updatedDist);
+        }
 
         TextView textView = findViewById(R.id.orienta);
         textView.setText("Orientation: "+String.valueOf(userOrientation));
@@ -382,14 +389,14 @@ public class CompassActivity extends AppCompatActivity {
 
 
 
-    public void zoom_in(View view) {
+    public void zoom_in() {
         if(this.stage > First){
             this.stage -= First;
             updateRingUI();
         }
     }
 
-    public void zoom_out(View view) {
+    public void zoom_out() {
         if(this.stage < Fourth){
             this.stage += First;
             updateRingUI();
