@@ -1,11 +1,9 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
-import android.graphics.Rect;
-
 public class TextRect {
     int centerDist;
     double centerAngle;
-    Rect r;
+    Rectangle r;
     String name;
 
     TextRect(String name, int dist, double angle) {
@@ -19,15 +17,15 @@ public class TextRect {
      * Create a new Rect object when called
      * @return an updated Rect object
      */
-    public Rect makeRect(){
+    public Rectangle makeRect(){
         int l, r, u, b;
         int centerX = (int)(centerDist * Math.cos(Math.toRadians(centerAngle)));
         int centerY = (int)(centerDist * Math.sin(Math.toRadians(centerAngle)));
         l = centerX - name.length() * 13;
         r = centerX + name.length() * 13;
-        u = centerY - 18;
-        b = centerY + 18; // top less than bottom
-        Rect rect = new Rect(l, u, r, b);
+        u = centerY + 18;
+        b = centerY - 18;
+        Rectangle rect = new Rectangle(l, u, r, b);
         return rect;
     }
 
@@ -38,7 +36,7 @@ public class TextRect {
      * @return whether r1 and r2 intersects
      */
     public static boolean intersect(TextRect r1, TextRect r2) {
-        return Rect.intersects(r1.getRect(), r2.getRect());
+        return Rectangle.intersects(r1.getRect(), r2.getRect());
     }
 
     /**
@@ -79,11 +77,11 @@ public class TextRect {
 
     public int getCenterDist() {return centerDist;}
     public double getCenterAngle() {return centerAngle;}
-    public Rect getRect() {return r;}
+    public Rectangle getRect() {return r;}
     public String getName() {return name;}
     public void setCenterDist(int dist) {this.centerDist = dist;r = makeRect();}
     public void setName(String name) {this.name = name;r = makeRect();}
     public void setCenterAngle(double centerAngle) {this.centerAngle = centerAngle;r = makeRect();}
-    public void setRect(Rect r) {this.r = r;}
+    public void setRect(Rectangle r) {this.r = r;}
     public void addDist(int d) {this.centerDist += d;r = makeRect();}
 }

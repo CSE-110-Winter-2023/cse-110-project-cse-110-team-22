@@ -8,6 +8,10 @@ import static org.junit.Assert.*;
 
 public class TextRectTest {
     TextRect t1, t2, t3, t4, t5;
+
+    /**
+     * Setting up variables for the tests
+     */
     @Before
     public void setUp() {
         t1 = new TextRect("Emma's big big house", 200, 28);
@@ -17,16 +21,12 @@ public class TextRectTest {
         t5 = new TextRect("2farther", 202, 30);
     }
 
-    @Test
-    public void silly() {
-        Rect r = new Rect(1, 2, 3, 4);
-        //r.left = 1;
-        assertEquals(1,r.left);
-        assertEquals(2,r.top);
-    }
+    /**
+     * Tests for the makeRect() method
+     */
     @Test
     public void makeRectTest() {
-        Rect newRect = t1.makeRect();
+        Rectangle newRect = t1.makeRect();
         int centerX = (int)(t1.getCenterDist() * Math.cos(Math.toRadians(t1.getCenterAngle())));
         int centerY = (int)(t1.getCenterDist() * Math.sin(Math.toRadians(t1.getCenterAngle())));
         assertEquals(centerX - 13 * t1.getName().length(), newRect.left);
@@ -35,6 +35,9 @@ public class TextRectTest {
         assertEquals(centerY - 18, newRect.bottom);
     }
 
+    /**
+     * Tests for the static intersect() method
+     */
     @Test
     public void intersectTest() {
         assertTrue(TextRect.intersect(t1, t2));
@@ -45,6 +48,9 @@ public class TextRectTest {
         assertTrue(TextRect.intersect(t3, t4));
     }
 
+    /**
+     * Tests for the nudge() method
+     */
     @Test
     public void nudgeTest() {
         TextRect.nudge(t1, t3);
@@ -53,6 +59,9 @@ public class TextRectTest {
         assertTrue(t5.getCenterDist() - t2.getCenterDist() > 10);
     }
 
+    /**
+     * Tests for the truncate() method
+     */
     @Test
     public void truncateTest() {
         assertTrue(t1.truncate());
