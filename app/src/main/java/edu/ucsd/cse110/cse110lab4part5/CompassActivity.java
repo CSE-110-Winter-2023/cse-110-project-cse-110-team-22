@@ -99,7 +99,14 @@ public class CompassActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * intermediate method for calling UI update,
+     * recalculating the angle and get data from different Map
+     * @param userOrientation   user's direction
+     * @param uuidToAngleMap    map for friend's angle (UUID, angle)
+     * @param uuidToDistanceMap map for friend's distance(UUID, distance)
+     * @param uuidToFriendMap   map for friend's name(UUID, Friend)
+     */
     public void updateUI(double userOrientation, Map<String, Double> uuidToAngleMap,
                          Map<String, Double> uuidToDistanceMap, Map<String, Friend> uuidToFriendMap){
         for (String uuid: uuidToAngleMap.keySet()) {
@@ -118,6 +125,8 @@ public class CompassActivity extends AppCompatActivity {
         updateCircleAngle(R.id.letter_n, -(float)userOrientation);
 
     }
+
+
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
             int imageViewId = entry.getKey();
@@ -128,7 +137,11 @@ public class CompassActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * updating North pointer
+     * @param imageViewId   image id to be updated
+     * @param angle angle to be set
+     */
     void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
@@ -172,6 +185,10 @@ public class CompassActivity extends AppCompatActivity {
         updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
         updateGPS();
     }
+
+    /**
+     * updates GPS UI based on the GPS status, also display time.
+     */
     public void updateGPS(){
         ImageView green = findViewById(R.id.green);
         ImageView red = findViewById(R.id.red);
@@ -192,7 +209,14 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * update UI for each Friend, dot and name are paired up for each friend.
+     * also check if friend is on edged.
+     * @param imageViewId dot on the edge
+     * @param textViewId friend's name
+     * @param angle friend's direction
+     * @param distance  friend's distance to me
+     */
     void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
         ImageView imageView = findViewById(imageViewId);
 
@@ -226,6 +250,12 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * create friends dynamically with given id and name
+     * create both name and dot for each friend with default setup
+     * @param id  textview id - translate from UUID
+     * @param name  friend's name
+     */
     public void addFriendToCompass(Integer id, String name){
         ConstraintLayout constraintLayout = findViewById(R.id.clock);
         TextView textView = new TextView(this);
@@ -288,8 +318,10 @@ public class CompassActivity extends AppCompatActivity {
     }
 
 
-
-
+    /**
+     * button handler for zoom in
+     * @param view
+     */
     public void zoom_in(View view) {
         if(this.stage > First){
             this.stage -= First;
@@ -299,6 +331,10 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * button handler for zoom out
+     * @param view
+     */
     public void zoom_out(View view) {
         if(this.stage < Fourth){
             this.stage += First;
@@ -306,6 +342,9 @@ public class CompassActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * updates ring UI to different stages
+     */
     public void updateRingUI(){
         int stage = this.stage;
         ImageView ring12 = findViewById(R.id.ring12);
