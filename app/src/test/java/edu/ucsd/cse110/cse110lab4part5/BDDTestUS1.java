@@ -10,6 +10,7 @@ import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -36,6 +38,7 @@ import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
 public class BDDTestUS1 {
+    // Try commenting out this rule and running the test, it will fail!
     ServerAPI serverAPI = ServerAPI.getInstance();
     Friend friend1;
 
@@ -45,34 +48,15 @@ public class BDDTestUS1 {
     Friend friend2;
     String friend2PrivateCode;
 
-    MutableLiveData<Pair<Double, Double>> mockLocationData = new MutableLiveData<>(new Pair<>(32.88014354083708, -117.2318005216365));
+    Location mockLocation = new LandmarkLocation(32.88014354083708, -117.2318005216365, "mock_user_location");
 
-
-    private String getNewUUID(){
-        String uuid;
-        while(true){
-            uuid = String.valueOf(UserUUID.generate_own_uid());
-            boolean exists = true;
-            try {
-                exists = serverAPI.uuidExistsAsync(uuid).get();
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            if(exists == false){
-                break;
-            }
-        }
-        return uuid;
-    }
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
-        String publicUUID1 = getNewUUID();
-        String privateUUID1 = getNewUUID();
-        String publicUUID2 = getNewUUID();
-        String privateUUID2 = getNewUUID();
+        String publicUUID1 = serverAPI.getNewUUID();
+        String privateUUID1 = serverAPI.getNewUUID();
+        String publicUUID2 = serverAPI.getNewUUID();
+        String privateUUID2 = serverAPI.getNewUUID();
         friend1 = new Friend("Bill", publicUUID1);
         friend1.setLocation(new LandmarkLocation(32.905088554461926, -117.12111266246087, "Bill's Location"));
         friend1PrivateCode = privateUUID1;
@@ -102,8 +86,6 @@ public class BDDTestUS1 {
             throw new RuntimeException(e);
         }
 
-//        Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
-        //serverAPI.deleteFriendAsync(friend1.uuid, friend1PrivateCode);
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -120,9 +102,6 @@ public class BDDTestUS1 {
         initScenario.onActivity(activity -> {
             // init mediator and mock the location and orientation services
             FriendMediator.getInstance().init((MainActivity) activity);
-            UserLocationService.singleton(activity).setMockLocationSource(mockLocationData);
-            UserLocation.singleton(0, 0, "You");
-            mockLocationData.postValue(mockLocationData.getValue());
 
 
         });
@@ -163,12 +142,8 @@ public class BDDTestUS1 {
             toCompass.performClick();
             Intent actual_3 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(CompassActivity.class, actual_3).create().get();
-            mockLocationData.postValue(mockLocationData.getValue());
 
-            FriendMediator.getInstance().setUserLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Mock UCSD User Location"));
-            FriendMediator.getInstance().updateUI();
-
-
+            FriendMediator.getInstance().mockLocationChange(mockLocation);
 
             // assert angles in the compass UI exist and are set properly
             assertTrue(assertTextViewRotation((CompassActivity) activity, Integer.valueOf((friend1.uuid)), 74.946434f, .5f));

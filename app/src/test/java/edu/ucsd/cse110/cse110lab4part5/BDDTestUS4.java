@@ -1,8 +1,7 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 
-import static android.content.Context.MODE_PRIVATE;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
@@ -10,10 +9,11 @@ import static org.robolectric.Shadows.shadowOf;
 import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -31,12 +31,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
-public class BDDTestUS3 {
+public class BDDTestUS4 {
+    // Try commenting out this rule and running the test, it will fail!
     ServerAPI serverAPI = ServerAPI.getInstance();
-    Friend friend1;
 
-    String publicUUID;
-    String privateUUID;
+    Location mockLocation = new LandmarkLocation(32.88014354083708, -117.2318005216365, "mock_user_location");
+
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
@@ -46,9 +46,7 @@ public class BDDTestUS3 {
     }
 
     @Test
-    public void BDDTestUS3SendName() {
-        String name = "Julia";
-
+    public void BDDTestUS4(){
 
         // init the friend mediator from main activity
         ActivityScenario initScenario = ActivityScenario.launch(MainActivity.class);
@@ -56,48 +54,47 @@ public class BDDTestUS3 {
         initScenario.moveToState(Lifecycle.State.STARTED);
 
         initScenario.onActivity(activity -> {
-            FriendMediator.getInstance().init((MainActivity) activity);
-
+            // init mediator and mock the location and orientation services
         });
 
-        // start the actual scenario form the input_name class
+        // start from the input name activity
         ActivityScenario scenario = ActivityScenario.launch(input_name.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
 
         scenario.onActivity(activity -> {
             EditText text = activity.findViewById(R.id.enter_name);
-            text.setText(name);
+            text.setText("Julia");
 
-            // now the app should send our name to the server
             Button continue_click = activity.findViewById(R.id.to_show_uid);
             continue_click.performClick();
 
             Intent actual = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(user_uid_showing.class, actual).create().get();
+            String publicUUID = ((TextView)activity.findViewById(R.id.your_uid)).getText().toString();
 
-            publicUUID = String.valueOf(SharedPrefUtils.getPubUUID(activity));
-            privateUUID = String.valueOf(SharedPrefUtils.getPrivUUID(activity));
+            Button toCompass = activity.findViewById(R.id.to_compass_activity);
+            toCompass.performClick();
+            Intent actual_2 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(CompassActivity.class, actual_2).create().get();
 
-            // call the server to see any data associated with our UUID
-            Friend serverSelf;
+            FriendMediator.getInstance().mockLocationChange(mockLocation);
+
             try {
-                serverSelf = serverAPI.getFriendAsync(publicUUID).get();
+                Friend serverSelf = serverAPI.getFriendAsync(publicUUID).get();
+                assertEquals("Julia", serverSelf.name);
+                assertEquals(mockLocation.getLatitude(), serverSelf.getLocation().getLatitude(), .1);
+                assertEquals(mockLocation.getLongitude(), serverSelf.getLocation().getLongitude(), .1);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
-            // check that name was successfully sent to server
-            assertNotNull(serverSelf);
-            assert (serverSelf.name.equals(name));
-
-            // cleanup
-            serverAPI.deleteFriendAsync(publicUUID, privateUUID);
 
         });
 
     }
+
 
 }
