@@ -223,8 +223,8 @@ public class FriendMediator {
         }
     }
 
-    public int getOrGenerateUUID(Context context){
-        return Integer.valueOf(publicUUID);
+    public String getOrGenerateUUID(Context context){
+        return publicUUID;
     }
 
     public void updateUI() {
