@@ -40,7 +40,7 @@ public class FriendMediator {
     private String GPSStatusStr;
 
 
-    String publicUUID;
+    String publicUUID = "Waiting on Server to return a new UUID";
     String privateUUID;
     String name;
 
