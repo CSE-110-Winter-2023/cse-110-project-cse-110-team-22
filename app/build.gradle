@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.test:rules:1.4.0'
     def gson_version = "2.10.1"
     implementation "com.google.code.gson:gson:$gson_version"
 
