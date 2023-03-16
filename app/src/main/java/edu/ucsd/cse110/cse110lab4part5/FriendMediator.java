@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class FriendMediator {
-    public boolean flag = false;
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
     private static FriendMediator instance = null;
     private CompassActivity compassActivity;
@@ -57,7 +56,6 @@ public class FriendMediator {
         orientationService = UserOrientationService.singleton(compassActivity);
         userLocationService.getLocation().observe(compassActivity, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
-            flag = true;
             // upsert new location data to server
             serverAPI.upsertUserAsync(this.publicUUID, serverAPI.formatUpsertJSON(this.privateUUID, this.name, userLocation.getLatitude(), userLocation.getLongitude()));
             Log.d("LocationService", String.valueOf(userLocation.getLatitude()) + " " + String.valueOf(userLocation.getLongitude()));
@@ -247,7 +245,21 @@ public class FriendMediator {
         if(userLocationService != null){
             userLocationService.setMockLocationSource(new MutableLiveData<>(new Pair<>(location.getLatitude(), location.getLongitude())));
         }
-        this.userLocation = UserLocation.singleton(location.getLatitude(), location.getLongitude(), "You");
+        this.userLocation = UserLocation.singleton(location.getLatitude(), location.getLongitude(), location.getLabel());
+
+        try {
+            serverAPI.upsertUserAsync(this.publicUUID, serverAPI.formatUpsertJSON(
+                    this.privateUUID
+                    , this.name
+                    , userLocation.getLatitude()
+                    , userLocation.getLongitude()))
+                    .get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        updateUI();
     }
 
     /**
@@ -260,5 +272,6 @@ public class FriendMediator {
             orientationService.setMockOrientationSource(new MutableLiveData<>(degree));
         }
         this.userOrientation = degree;
+        updateUI();
     }
 }

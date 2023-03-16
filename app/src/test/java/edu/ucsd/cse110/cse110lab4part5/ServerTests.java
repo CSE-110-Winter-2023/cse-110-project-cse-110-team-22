@@ -20,36 +20,12 @@ public class ServerTests {
     Friend friend2;
     String friend2PrivateCode;
 
-    /**
-     * Testing helper method that returns an unused UUID
-     * @return
-     */
-    private String getNewUUID(){
-        String uuid;
-        while(true){
-            uuid = String.valueOf(UserUUID.generate_own_uid());
-            boolean exists = true;
-            try {
-                exists = serverAPI.uuidExistsAsync(uuid).get();
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            if(exists == false){
-                break;
-            }
-        }
-        return uuid;
-    }
-
-
     @Before
     public void setUp() {
-        String publicUUID1 = getNewUUID();
-        String privateUUID1 = getNewUUID();
-        String publicUUID2 = getNewUUID();
-        String privateUUID2 = getNewUUID();
+        String publicUUID1 = serverAPI.getNewUUID();
+        String privateUUID1 = serverAPI.getNewUUID();
+        String publicUUID2 = serverAPI.getNewUUID();
+        String privateUUID2 = serverAPI.getNewUUID();
 
 
         friend1 = new Friend("Julia", publicUUID1);
