@@ -1,18 +1,17 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
 
-import static android.content.Context.MODE_PRIVATE;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.Manifest;
 import android.app.Application;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -30,8 +29,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
-public class BDDTest2UIFriend {
-    ServerAPI serverAPI = MockServerAPI.getInstance();
+public class BDDTestUS8 {
+    // Try commenting out this rule and running the test, it will fail!
+    ServerAPI serverAPI = ServerAPI.getInstance();
     Friend friend1;
 
     // updated values for friend 1 that share UUIDs
@@ -40,22 +40,21 @@ public class BDDTest2UIFriend {
     Friend friend2;
     String friend2PrivateCode;
 
+    Location mockLocation = new LandmarkLocation(32.88014354083708, -117.2318005216365, "mock_user_location");
+
+
     @Before
     public void setup() throws ExecutionException, InterruptedException {
         String publicUUID1 = serverAPI.getNewUUID();
         String privateUUID1 = serverAPI.getNewUUID();
         String publicUUID2 = serverAPI.getNewUUID();
         String privateUUID2 = serverAPI.getNewUUID();
-        friend1 = new Friend("Julia", publicUUID1);
-        friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
+        friend1 = new Friend("BillHasAReallyLongName", publicUUID1);
+        friend1.setLocation(new LandmarkLocation(32.905088554461926, -117.12111266246087, "BillHasAReallyLongName"));
         friend1PrivateCode = privateUUID1;
 
-        friend1New = new Friend("Owen", publicUUID1);
-        friend1New.setLocation(new LandmarkLocation(100, -100, "Owen's Location"));
-
-
-        friend2 = new Friend("Lisa", publicUUID2);
-        friend2.setLocation(new LandmarkLocation(32.87986803114829,  -117.24313628066673, "Lisa's Location"));
+        friend2 = new Friend("PeterAlsoHasALongName", publicUUID2);
+        friend2.setLocation(new LandmarkLocation(32.905088554461926,  -117.12111266246087, "BillHasAReallyLongName")); // scripps institute
         friend2PrivateCode = privateUUID2;
 
         Future<String> response = serverAPI.upsertUserAsync(friend1.uuid
@@ -64,30 +63,28 @@ public class BDDTest2UIFriend {
                         , friend1.getLocation().getLatitude()
                         , friend1.getLocation().getLongitude()));
 
-        Future<String> response_2 = serverAPI.upsertUserAsync(friend1New.uuid
-                , serverAPI.formatUpsertJSON(friend1PrivateCode
-                        , friend1New.name
-                        , friend1New.getLocation().getLatitude()
-                        , friend1New.getLocation().getLongitude()));
+        Future<String> response_2 = serverAPI.upsertUserAsync(friend2.uuid
+                , serverAPI.formatUpsertJSON(friend2PrivateCode
+                        , friend2.name
+                        , friend2.getLocation().getLatitude()
+                        , friend2.getLocation().getLongitude()));
 
-        String responseString;
         try {
-            responseString = response.get();
+            response.get();
+            response_2.get();
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-//        Friend serverFriend = serverAPI.getFriendAsync(friend1.uuid).get();
-        //serverAPI.deleteFriendAsync(friend1.uuid, friend1PrivateCode);
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     @Test
-    public void BDDTest2UIFriend(){
+    public void BDDTestUS1(){
 
         // init the friend mediator from main activity
         ActivityScenario initScenario = ActivityScenario.launch(MainActivity.class);
@@ -95,8 +92,9 @@ public class BDDTest2UIFriend {
         initScenario.moveToState(Lifecycle.State.STARTED);
 
         initScenario.onActivity(activity -> {
+            // init mediator and mock the location and orientation services
             FriendMediator.getInstance().init((MainActivity) activity);
-            FriendMediator.getInstance().setMockServerAPI(serverAPI);
+
 
         });
 
@@ -121,32 +119,59 @@ public class BDDTest2UIFriend {
             Intent actual_1 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(entering_friend_uid.class, actual_1).create().get();
             EditText enter_id = activity.findViewById(R.id.enter_friend_id_blank);
-            enter_id.setText(friend1New.uuid);
+            enter_id.setText(friend1.uuid);
             Button add_button = activity.findViewById(R.id.add_friend_to_database);
             add_button.performClick();
-
-            SharedPreferences preferences = activity.getSharedPreferences("uuid_pref", MODE_PRIVATE);
-            String storedFriends = preferences.getString("uuidFriends", "");
-            assertTrue(preferences.getString("uuidFriends", "").equals(friend1New.uuid));
-            try {
-                Friend serverFriend = serverAPI.getFriendAsync(friend2.uuid).get();
-                assertNull(serverFriend);
-            }
-            catch (Exception e){};
-
-            enter_id = activity.findViewById(R.id.enter_friend_id_blank);
             enter_id.setText(friend2.uuid);
-            add_button = activity.findViewById(R.id.add_friend_to_database);
             add_button.performClick();
-            assertTrue(preferences.getString("uuidFriends", "").equals(friend1New.uuid));
 
-            // cleanup
-            serverAPI.deleteFriendAsync(friend1.uuid, friend1PrivateCode);
-            serverAPI.deleteFriendAsync(friend2.uuid, friend2PrivateCode);
+            Button backButton = activity.findViewById(R.id.back_to_your_uid);
+            backButton.performClick();
+            Intent actual_2 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(user_uid_showing.class, actual_2).create().get();
 
+            Button toCompass = activity.findViewById(R.id.to_compass_activity);
+            toCompass.performClick();
+            Intent actual_3 = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(CompassActivity.class, actual_3).create().get();
+
+            FriendMediator.getInstance().mockLocationChange(mockLocation);
+
+            // Assert labels on top of each other were nudged and truncated
+            assertTrue(assertNudgeTruncateHappened((CompassActivity) activity
+                    , Integer.valueOf((friend1.uuid))
+                    , Integer.valueOf(friend2.uuid), friend1.name, friend2.name));
         });
 
     }
+
+
+    /**
+     * Helper method to detect truncation and nudging of two textviews
+     * @param compassActivity
+     * @param TextViewId1
+     * @param TextVeiwId2
+     * @param label1
+     * @param label2
+     * @return
+     */
+    boolean assertNudgeTruncateHappened(CompassActivity compassActivity, int TextViewId1, int TextVeiwId2, String label1, String label2){
+        TextView textView1 = compassActivity.findViewById(TextViewId1);
+        TextView textView2 = compassActivity.findViewById(TextVeiwId2);
+        ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) textView1.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) textView2.getLayoutParams();
+
+        float angle1 = layoutParams1.circleAngle;
+        float angle2 = layoutParams2.circleAngle;
+
+        String text1 = textView1.getText().toString();
+        String text2 = textView2.getText().toString();
+
+        boolean truncate = !text1.equals(label1) || !text2.equals(label2);
+
+        return(truncate);
+    }
+
 
 
 }

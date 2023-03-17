@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.test:rules:1.4.0'
+    implementation 'androidx.test:rules:1.5.0'
     def gson_version = "2.10.1"
     implementation "com.google.code.gson:gson:$gson_version"
 
@@ -54,7 +54,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.9'
     testImplementation 'androidx.test:core:1.5.0'
     testImplementation 'androidx.test.ext:junit:1.1.5'
-    testImplementation 'org.json:json:20140107'
+    testImplementation 'org.json:json:20180813'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

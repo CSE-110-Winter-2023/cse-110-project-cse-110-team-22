@@ -40,6 +40,8 @@ public class AddFriendUITest {
 
         initScenario.onActivity(activity -> {
             FriendMediator.getInstance().init((MainActivity) activity);
+            FriendMediator.getInstance().setMockServerAPI(MockServerAPI.getInstance());
+
 
         });
 
