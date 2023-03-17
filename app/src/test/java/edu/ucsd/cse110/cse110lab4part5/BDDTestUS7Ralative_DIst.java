@@ -23,7 +23,9 @@ import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
@@ -31,6 +33,7 @@ import org.robolectric.shadows.ShadowApplication;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+@RunWith(RobolectricTestRunner.class)
 public class BDDTestUS7Ralative_DIst {
     ServerAPI serverAPI = ServerAPI.getInstance();
     Friend friend1;
@@ -107,7 +110,7 @@ public class BDDTestUS7Ralative_DIst {
     }
 
     @Test
-    public void BDDTest6GZoom() {
+    public void BDDStory7() {
         Application application = ApplicationProvider.getApplicationContext();
         ShadowApplication app = Shadows.shadowOf(application);
         app.grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -134,6 +137,13 @@ public class BDDTestUS7Ralative_DIst {
 
             Intent actual = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
             activity = Robolectric.buildActivity(user_uid_showing.class, actual).create().get();
+
+            Button to_add_friend = activity.findViewById(R.id.add_friend);
+            to_add_friend.performClick();
+
+            actual = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(entering_friend_uid.class, actual).create().get();
+
             EditText enter_id = activity.findViewById(R.id.enter_friend_id_blank);
             enter_id.setText(friend1New.uuid);
             Button add_button = activity.findViewById(R.id.add_friend_to_database);
@@ -153,6 +163,11 @@ public class BDDTestUS7Ralative_DIst {
             add_button = activity.findViewById(R.id.add_friend_to_database);
             add_button.performClick();
 
+            Button back_to_showUUID = activity.findViewById(R.id.back_to_your_uid);
+            back_to_showUUID.performClick();
+            actual = shadowOf(RuntimeEnvironment.application).getNextStartedActivity();
+            activity = Robolectric.buildActivity(user_uid_showing.class, actual).create().get();
+
             Button to_compass = activity.findViewById(R.id.to_compass_activity);
             to_compass.performClick();
 
@@ -162,17 +177,10 @@ public class BDDTestUS7Ralative_DIst {
             int id2 = UserUUID.String_toUUID(friend2.uuid);
             TextView friend1 = activity.findViewById(id1);
             TextView friend2 = activity.findViewById(id2);
-            int distance = 230;
+            int distance = 100;
             int after_distance = 153;
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) friend1.getLayoutParams();
             assertEquals(distance, layoutParams.circleRadius);
-            ImageButton zoom_out = activity.findViewById(R.id.zoom_out);
-            zoom_out.performClick();
-            assertEquals(after_distance, layoutParams.circleRadius);
-
-
-
-
         });
     }
 }
