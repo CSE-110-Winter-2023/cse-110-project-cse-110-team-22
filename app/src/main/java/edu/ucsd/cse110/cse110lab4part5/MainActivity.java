@@ -47,13 +47,16 @@ public class  MainActivity extends AppCompatActivity {
 //        }
 //        startActivity(intent);
 
-        FriendMediator.getInstance().init(this);
-        if(SharedPrefUtils.hasName(this)){
-            Intent intent = new Intent(this, user_uid_showing.class);
-            startActivity(intent);
-        } else {
-            Intent intent = new Intent(this, input_name.class);
-            startActivity(intent);
+        boolean success = FriendMediator.getInstance().init(this);
+
+        if(success){
+            if (SharedPrefUtils.hasName(this)) {
+                Intent intent = new Intent(this, user_uid_showing.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(this, input_name.class);
+                startActivity(intent);
+            }
         }
     }
 }

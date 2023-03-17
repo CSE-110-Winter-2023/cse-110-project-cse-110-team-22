@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import static androidx.core.content.ContextCompat.createDeviceProtectedStorageContext;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.content.Context;
@@ -29,6 +30,13 @@ public class GPSStatus implements LocationListener {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private LocationManager locationManager;
     private FriendMediator friendMediator = FriendMediator.getInstance();
+
+//    public static GPSStatus getInstance() {
+//        if (instance == null) {
+//            instance = new GPSStatus(this.context);
+//        }
+//        return instance;
+//    }
 
     /**
      * call executor to ping GPS service every 3 seconds
@@ -106,7 +114,7 @@ public class GPSStatus implements LocationListener {
      */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        Long currentTimeMills = System.currentTimeMillis()/6000;
+        Long currentTimeMills = System.currentTimeMillis()/60000;
         Long currentTime = System.currentTimeMillis() / 60000; //get current time in minutes
         Log.d("before checkPermission", String.valueOf(currentTime));
         if (ActivityCompat.checkSelfPermission(this.context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -119,7 +127,10 @@ public class GPSStatus implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Long gpsTime = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getTime()/6000;
+        Long gpsTime;
+        Location location =locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(location!=null) gpsTime = location.getTime()/60000;
+        else gpsTime = 0L;
         if (gpsTime.equals(currentTimeMills)) {
             //update lastActiveTime and store it to SharePrefUtil
             lastActiveTime = currentTime;

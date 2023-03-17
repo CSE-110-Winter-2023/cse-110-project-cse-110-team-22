@@ -31,12 +31,11 @@ import java.util.List;
 import java.util.Map;
 
 public class CompassActivity extends AppCompatActivity {
-    private int stage = 1;
     static final int NORTH = 3;
 
     private Map<Integer, Integer> nameToDot;
 
-    private final int initial = 430;
+    private final int initial = 450;
 
     private final int First = 1;
     private final int Second = 2;
@@ -53,8 +52,14 @@ public class CompassActivity extends AppCompatActivity {
     private boolean GPSSignalGood;
     private String GPSStatusStr;
     Map<String, Friend> uuidToFriendMap;
+    Map<String, Integer> uuidToDisplayDistMap = new HashMap<>();
+    Map<String, TextRect> uuidToTextRectMap = new HashMap<>();
+
+
     LandmarkLocation northLocation;
 
+    int OUTER_THRES = 13000; // The distance of the biggest circle
+    int STATE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +70,11 @@ public class CompassActivity extends AppCompatActivity {
             Log.d("MainActivity", "Asking for location permissions");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
         }
-
+        STATE = 2;
         userLocation = UserLocation.singleton(0, 0, "You");
 
         setContentView(R.layout.activity_compass);
+        updateRingUI();
 
         nameToDot = new HashMap<>();
         FriendMediator.getInstance().setCompassActivity(this);
@@ -83,25 +89,13 @@ public class CompassActivity extends AppCompatActivity {
             mockAngle = 0;
         }
 
-        //Landmark locations
-        //List<Location> locations = SharedPrefUtils.readAllLocations(this);
 
-
-//        ImageView imageView1 = findViewById(R.id.home);
-//        imageView1.setVisibility(View.INVISIBLE);
-//        ImageView imageView2 = findViewById(R.id.friend);
-//        imageView2.setVisibility(View.INVISIBLE);
-//        ImageView imageView3 = findViewById(R.id.familyhouse);
-//        imageView3.setVisibility(View.INVISIBLE);
-//        ImageView imageView4 = findViewById(R.id.me);
-//        imageView4.setVisibility(View.INVISIBLE);
         //north
         northLocation = new LandmarkLocation(90, 10, "North_Pole");
         northLocation.setIconNum(NORTH);
         List<Location> locList = new ArrayList<>();
         locList.add(northLocation);
-//        addFriendToCompass(123456, "jone");
-//        updateCircleAngle(nameToDot.get(123456),123456,60,150);
+
 
     }
 
@@ -115,25 +109,34 @@ public class CompassActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * intermediate method for calling UI update,
+     * recalculating the angle and get data from different Map
+     * @param userOrientation   user's direction
+     * @param uuidToAngleMap    map for friend's angle (UUID, angle)
+     * @param uuidToTextRectMap map for display info (UUID, TextRect)
+     */
     public void updateUI(double userOrientation, Map<String, Double> uuidToAngleMap,
-                         Map<String, Double> uuidToDistanceMap, Map<String, Friend> uuidToFriendMap){
+                         Map<String, TextRect> uuidToTextRectMap){
         for (String uuid: uuidToAngleMap.keySet()) {
 
             double angle = uuidToAngleMap.get(uuid);
             double angleRadian = Math.toRadians(angle);
             angleRadian -= Math.toRadians(userOrientation);
             float angle_float = (float) Math.toDegrees(angleRadian);
-            int dist = uuidToDistanceMap.get(uuid).intValue();
+            int dist = uuidToTextRectMap.get(uuid).getCenterDist();
             int int_UUID = String_toUUID(uuid);
             int dot_UUID = nameToDot.get(int_UUID);
-            updateCircleAngle(dot_UUID, int_UUID, angle_float, dist);
+            String newName = uuidToTextRectMap.get(uuid).getName();
+            updateCircleAngle(dot_UUID, int_UUID, angle_float, dist, newName);
 
         }
 
         updateCircleAngle(R.id.letter_n, -(float)userOrientation);
 
     }
+
+
     public void update(double userOrientation, Map<Integer, Double> directionMap){
         for (Map.Entry<Integer, Double> entry : directionMap.entrySet()) {
             int imageViewId = entry.getKey();
@@ -144,7 +147,11 @@ public class CompassActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * updating North pointer
+     * @param imageViewId   image id to be updated
+     * @param angle angle to be set
+     */
     void updateCircleAngle(int imageViewId, float angle) {
         ImageView imageView = findViewById(imageViewId);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imageView.getLayoutParams();
@@ -158,10 +165,6 @@ public class CompassActivity extends AppCompatActivity {
      */
     public void go_back(View view) {
         finish();
-    }
-
-    public void updateGPSStatus() {
-        // TODO
     }
 
     /**
@@ -182,12 +185,23 @@ public class CompassActivity extends AppCompatActivity {
                 .computeAllFriendAngles(userLocation, uuidToFriendMap);
         Map<String, Double> uuidToDistanceMap = LocationUtils
                 .computeAllDistances(userLocation, uuidToFriendMap);
+        for (String uuid : uuidToFriendMap.keySet()) {
+            String name = uuidToFriendMap.get(uuid).getName();
+            double angle = uuidToAngleMap.get(uuid);
+            double dist = uuidToDistanceMap.get(uuid);
+            updateDisplayMaps(uuid, name, angle, dist, STATE);
+        }
+        avoidCollisions(uuidToTextRectMap, 0);
 
         TextView textView = findViewById(R.id.orienta);
         textView.setText("Orientation: "+String.valueOf(userOrientation));
-        updateUI(userOrientation, uuidToAngleMap, uuidToDistanceMap, uuidToFriendMap);
+        updateUI(userOrientation, uuidToAngleMap, uuidToTextRectMap);
         updateGPS();
     }
+
+    /**
+     * updates GPS UI based on the GPS status, also display time.
+     */
     public void updateGPS(){
         ImageView green = findViewById(R.id.green);
         ImageView red = findViewById(R.id.red);
@@ -208,8 +222,15 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
-
-    void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
+    /**
+     * update UI for each Friend, dot and name are paired up for each friend.
+     * also check if friend is on edged.
+     * @param imageViewId dot on the edge
+     * @param textViewId friend's name
+     * @param angle friend's direction
+     * @param distance  friend's distance to me
+     */
+    void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance, String newName) {
         ImageView imageView = findViewById(imageViewId);
 
         // Set UI icons to border if their distance would bring them past it
@@ -219,6 +240,7 @@ public class CompassActivity extends AppCompatActivity {
         }
 
         TextView textView = findViewById(textViewId);
+        textView.setText(newName);
         ConstraintLayout.LayoutParams layoutParamsText = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
         layoutParamsText.circleAngle = angle;
         layoutParamsText.circleRadius = distance;
@@ -242,6 +264,12 @@ public class CompassActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * create friends dynamically with given id and name
+     * create both name and dot for each friend with default setup
+     * @param id  textview id - translate from UUID
+     * @param name  friend's name
+     */
     public void addFriendToCompass(Integer id, String name){
         ConstraintLayout constraintLayout = findViewById(R.id.clock);
         TextView textView = new TextView(this);
@@ -303,24 +331,134 @@ public class CompassActivity extends AppCompatActivity {
         callUIUpdate();
     }
 
-
-
-
-    public void zoom_in(View view) {
-        if(this.stage > First){
-            this.stage -= First;}
-
+    public void updateDisplayMaps(String uuid, String name, double angle, double miles, int state) {
+        double outerCircle = initial;
+        double dist = 0;
+        switch (state) {
+            case 1: { // 0-1 :1 circle
+                dist = 430.0 * miles;
+                Log.d("Case1", String.valueOf(state));
+                break;
+            }
+            case 2: { // 1-10 : 2 circles
+                double inner = outerCircle / 2;
+                double outer = outerCircle / 2;
+                if (miles < 1) {
+                    dist = inner * miles;
+                    break;
+                }
+                dist = inner + outer / (10 - 1) * (miles - 1);
+                Log.d("Case2", String.valueOf(state));
+                break;
+            }
+            case 3: { // 10-500 : 3 circles
+                double inner1 = outerCircle / 3;
+                double inner2 = outerCircle / 3;
+                double outer = outerCircle / 3;
+                if (miles < 1) {
+                    dist = inner1 * miles;
+                    break;
+                } else if (miles < 10) {
+                    dist = inner1 + inner2 / (10 - 1) * (miles - 1);
+                    break;
+                } else {
+                    dist = inner1 + inner2 + outer / (500 - 10) * (miles - 10);
+                    Log.d("Case3", String.valueOf(state));
+                    break;
+                }
+            }
+            case 4: { // 500+ : 4 circles
+                double inner1 = outerCircle / 4;
+                double inner2 = outerCircle / 4;
+                double inner3 = outerCircle / 4;
+                double outer = outerCircle / 4;
+                if (miles < 1) {
+                    dist = inner1 * miles;
+                    break;
+                } else if (miles < 10) {
+                    dist = inner1 + inner2 / (10 - 1) * (miles - 1);
+                    break;
+                } else if (miles < 500) {
+                    dist = inner1 + inner2 + inner3 / (500 - 10) * (miles - 10);
+                    break;
+                }
+                dist = inner1 + inner2 + inner3 + outer / (OUTER_THRES - 500) * (miles - 500);
+                Log.d("Case4", String.valueOf(state));
+                break;
+            }
+        }
+        Log.d("Distance:::", String.valueOf(dist));
+        Log.d("STATE:::", String.valueOf(state));
+        uuidToTextRectMap.put(uuid, new TextRect(name, (int)(dist + 0.5), angle));
     }
 
-    public void zoom_out(View view) {
-        if(this.stage < Fourth){
-            this.stage += First;
+    private void avoidCollisions(Map<String, TextRect> uuidToTextRectMap, int iteration){
+        int maxIteration = 50;
+        if (iteration >= maxIteration) return;
+        iteration += 1;
+        List<TextRect> textRectslist = new ArrayList<TextRect>(uuidToTextRectMap.values());
+        boolean needIter = false;
+        for (int i = 0; i < textRectslist.size(); i++) {
+            for (int j = i + 1; j < textRectslist.size(); j++) {
+                TextRect tr1 = textRectslist.get(i);
+                TextRect tr2 = textRectslist.get(j);
+                if (!TextRect.intersect(tr1, tr2)) continue;
+                Log.d("Collision", tr1.name + " / " + tr2.name);
+                needIter = true;
+                boolean truncateSuccess = false;
+                if (((tr1.getRect().left <= tr2.getRect().left)
+                        && (tr1.getRect().right >= tr2.getRect().right))
+                        || ((tr2.getRect().left <= tr1.getRect().left)
+                        && (tr2.getRect().right >= tr1.getRect().right))) {
+                    TextRect.nudge(tr1, tr2);
+                    continue;
+                }
+                TextRect left;
+                if (tr1.getRect().left < tr2.getRect().left) {
+                    if (tr1.truncate()) truncateSuccess = true;
+                    else truncateSuccess = tr2.truncate();
+                } else {
+                    if (tr2.truncate()) truncateSuccess = true;
+                    else truncateSuccess = tr1.truncate();
+                }
+                
+                if (!truncateSuccess) {
+                    TextRect.nudge(tr1, tr2);
+                }
+            }
+        }
+        if (needIter) avoidCollisions(uuidToTextRectMap, iteration);
+    };
+
+    /**
+     * button handler for zoom in
+     * @param view
+     */
+    public void zoom_in(View view) {
+        if(STATE > First){
+            STATE -= First;
             updateRingUI();
+            display();
         }
     }
 
+    /**
+     * button handler for zoom out
+     * @param view
+     */
+    public void zoom_out(View view) {
+        if(STATE < Fourth){
+            STATE += First;
+            updateRingUI();
+            display();
+        }
+    }
+
+    /**
+     * updates ring UI to different stages
+     */
     public void updateRingUI(){
-        int stage = this.stage;
+        int stage = STATE;
         ImageView ring12 = findViewById(R.id.ring12);
         ImageView ring14 = findViewById(R.id.ring14);
         ImageView ring34 = findViewById(R.id.ring34);
@@ -355,6 +493,4 @@ public class CompassActivity extends AppCompatActivity {
             ring23.setVisibility(View.INVISIBLE);
         }
     }
-
-
 }
