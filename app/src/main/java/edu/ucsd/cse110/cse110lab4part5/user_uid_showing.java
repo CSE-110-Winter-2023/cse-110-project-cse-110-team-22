@@ -37,9 +37,9 @@ public class user_uid_showing extends AppCompatActivity {
         }
     }
 
-    public void proceed_to_compass(View view){
-        Intent intent = new Intent(this, CompassActivity.class);
-        startActivity(intent);
+        public void proceed_to_compass(View view){
+            Intent intent = new Intent(this, CompassActivity.class);
+            startActivity(intent);
 
     }
 
