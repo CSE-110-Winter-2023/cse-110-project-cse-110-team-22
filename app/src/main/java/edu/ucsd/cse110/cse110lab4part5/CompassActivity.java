@@ -406,8 +406,22 @@ public class CompassActivity extends AppCompatActivity {
                 Log.d("Collision", tr1.name + " / " + tr2.name);
                 needIter = true;
                 boolean truncateSuccess = false;
-                if (tr1.truncate() == true) truncateSuccess = true;
-                if (tr2.truncate() == true) truncateSuccess = true;
+                if (((tr1.getRect().left <= tr2.getRect().left)
+                        && (tr1.getRect().right >= tr2.getRect().right))
+                        || ((tr2.getRect().left <= tr1.getRect().left)
+                        && (tr2.getRect().right >= tr1.getRect().right))) {
+                    TextRect.nudge(tr1, tr2);
+                    continue;
+                }
+                TextRect left;
+                if (tr1.getRect().left < tr2.getRect().left) {
+                    if (tr1.truncate()) truncateSuccess = true;
+                    else truncateSuccess = tr2.truncate();
+                } else {
+                    if (tr2.truncate()) truncateSuccess = true;
+                    else truncateSuccess = tr1.truncate();
+                }
+                
                 if (!truncateSuccess) {
                     TextRect.nudge(tr1, tr2);
                 }
