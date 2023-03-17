@@ -1,12 +1,16 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import static edu.ucsd.cse110.cse110lab4part5.UserUUID.String_toUUID;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +40,7 @@ public class FriendMediator {
     private String GPSStatusStr;
 
 
-    String publicUUID;
+    String publicUUID = "Waiting on Server to return a new UUID";
     String privateUUID;
     String name;
 
@@ -54,6 +58,8 @@ public class FriendMediator {
         orientationService = UserOrientationService.singleton(compassActivity);
         userLocationService.getLocation().observe(compassActivity, loc -> {
             userLocation = UserLocation.singleton(loc.first, loc.second, "You");
+            // upsert new location data to server
+            serverAPI.upsertUserAsync(this.publicUUID, serverAPI.formatUpsertJSON(this.privateUUID, this.name, userLocation.getLatitude(), userLocation.getLongitude()));
             Log.d("LocationService", String.valueOf(userLocation.getLatitude()) + " " + String.valueOf(userLocation.getLongitude()));
         });
         orientationService.getOrientation().observe(compassActivity, orient -> {
@@ -62,7 +68,7 @@ public class FriendMediator {
         });
         for (String uuid: uuidToFriendMap.keySet()) {
             Friend f = uuidToFriendMap.get(uuid);
-            compassActivity.addFriendToCompass(Integer.parseInt(f.getUuid()), f.getName());
+            compassActivity.addFriendToCompass(String_toUUID(f.getUuid()), f.getName());
         }
     }
 
@@ -82,8 +88,6 @@ public class FriendMediator {
         for(String uuid: friendUUIDS){
             uuidToFriendMap.put(uuid, new Friend("", uuid));
         }
-
-
         // If no existing uuids, generate them
         if(!SharedPrefUtils.hasPubUUID(context)){
             String publicUUID = serverAPI.getNewUUID();
@@ -99,7 +103,6 @@ public class FriendMediator {
 
 
         name = SharedPrefUtils.getName(context);
-
         executor.scheduleAtFixedRate(() -> {
             try{
                 Log.d("FriendMediator", "Started task");
@@ -116,6 +119,7 @@ public class FriendMediator {
                 }
                 Log.d("Mediator", "Finished Updating round");
                 // All friends updated, notify UI by calling the main thread
+//                GPSStatus gpsStatus = new GPSStatus(compassActivity);
                 if(compassActivity != null) {
                     compassActivity.runOnUiThread(this::updateUI);
                 }
@@ -152,7 +156,7 @@ public class FriendMediator {
             SharedPrefUtils.writeID(context, uuid);
             //TODO: Fix
             if (compassActivity != null) {
-                compassActivity.addFriendToCompass(Integer.parseInt(uuid), friend.getName()); // new
+                compassActivity.addFriendToCompass(String_toUUID(uuid), friend.getName()); // new
             }
             updateUI();
         } else {
@@ -202,9 +206,7 @@ public class FriendMediator {
             this.name = name;
             SharedPrefUtils.writeName(context, name);
         }
-
-        // TODO: Update this for future stories to use actual services
-        // Do initial upsert of Self
+        // Do initial upsert of self to get name in database with default long/lat values
         Future<String> response = serverAPI.upsertUserAsync(publicUUID, serverAPI.formatUpsertJSON(privateUUID
                 , name
                 , 0.0
@@ -219,8 +221,8 @@ public class FriendMediator {
         }
     }
 
-    public int getOrGenerateUUID(Context context){
-        return Integer.valueOf(publicUUID);
+    public String getOrGenerateUUID(Context context){
+        return publicUUID;
     }
 
     public void updateUI() {
@@ -234,8 +236,42 @@ public class FriendMediator {
         compassActivity.display();
     }
 
+    /**
+     * Testing method which mocks a location update from the LocationService to the Mediator
+     * @param location update
+     */
     @VisibleForTesting
-    public void setUserLocation(Location location){
-        this.userLocation = location;
+    public void mockLocationChange(Location location){
+        if(userLocationService != null){
+            userLocationService.setMockLocationSource(new MutableLiveData<>(new Pair<>(location.getLatitude(), location.getLongitude())));
+        }
+        this.userLocation = UserLocation.singleton(location.getLatitude(), location.getLongitude(), location.getLabel());
+
+        try {
+            serverAPI.upsertUserAsync(this.publicUUID, serverAPI.formatUpsertJSON(
+                    this.privateUUID
+                    , this.name
+                    , userLocation.getLatitude()
+                    , userLocation.getLongitude()))
+                    .get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        updateUI();
+    }
+
+    /**
+     * Testing method which mocks an orientation update from the OrientationService to the Mediator
+     * @param degree update
+     */
+    @VisibleForTesting
+    public void mockOrientationChange(Float degree){
+        if(orientationService != null){
+            orientationService.setMockOrientationSource(new MutableLiveData<>(degree));
+        }
+        this.userOrientation = degree;
+        updateUI();
     }
 }
