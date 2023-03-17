@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
 public class BDDTest2UIFriend {
-    ServerAPI serverAPI = ServerAPI.getInstance();
+    ServerAPI serverAPI = MockServerAPI.getInstance();
     Friend friend1;
 
     // updated values for friend 1 that share UUIDs
