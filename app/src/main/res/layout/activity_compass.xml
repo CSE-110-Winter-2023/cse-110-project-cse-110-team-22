@@ -52,7 +52,7 @@
             android:id="@+id/orienta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextViewTextViewTextView"
+            android:text="Orientation"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,9 +61,9 @@
 
         <ImageView
             android:id="@+id/me"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:visibility="invisible"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

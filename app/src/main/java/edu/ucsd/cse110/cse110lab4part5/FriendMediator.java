@@ -158,6 +158,7 @@ public class FriendMediator {
             if (compassActivity != null) {
                 compassActivity.addFriendToCompass(String_toUUID(uuid), friend.getName()); // new
             }
+            Utilities.showAlert((Activity)context, "Success");
             updateUI();
         } else {
             // TODO something like a warning "invalid uuid"

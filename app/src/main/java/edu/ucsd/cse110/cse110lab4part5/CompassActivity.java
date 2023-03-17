@@ -58,7 +58,7 @@ public class CompassActivity extends AppCompatActivity {
 
     LandmarkLocation northLocation;
 
-    int OUTER_THRES = 12000; // The distance of the biggest circle
+    int OUTER_THRES = 13000; // The distance of the biggest circle
     int STATE = 2;
 
     @Override
