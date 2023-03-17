@@ -14,6 +14,7 @@ public class TextRect {
 
     TextRect(String name, int dist, double angle) {
         this.name = name;
+        if (name.length() > 17) this.name = name.substring(0, 17);
         this.centerDist = dist;
         this.centerAngle = 90 - angle; // horizontal to the right is 0 degrees.
         length = calculateLength(name);
@@ -52,8 +53,6 @@ public class TextRect {
      * @param r2 TextRect number 2.
      */
     public static void nudge(TextRect r1, TextRect r2) {
-        if (r1.getName().length() > 17) r1.setName(r1.getName().substring(0, 17));
-        if (r2.getName().length() > 17) r2.setName(r2.getName().substring(0, 17));
         double ang = r1.getCenterAngle();
         if (!((45 > ang && 135 < ang) || (-89.9 < ang && ang < -45) || (ang < 269.9 && ang > 225))) {
             if (Math.abs(r1.getCenterAngle() - r2.getCenterAngle()) < 1) {
