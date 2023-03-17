@@ -52,6 +52,15 @@ public class TextRect {
      * @param r2 TextRect number 2.
      */
     public static void nudge(TextRect r1, TextRect r2) {
+        if (Math.abs(r1.getCenterAngle() - r2.getCenterAngle()) < 1) {
+            if (r1.getName().length() > 3) {
+                r1.setName(r1.getName().substring(0, 3));
+            }
+            if (r2.getName().length() > 3) {
+                r2.setName(r2.getName().substring(0, 3));
+            }
+            if (!intersect(r1, r2)) return;
+        }
         if (r1.getCenterDist() > r2.getCenterDist()) {
             int addedDist = (HEIGHT - r1.getCenterDist() + r2.getCenterDist()) / 2;
             r1.addDist(addedDist);
@@ -125,7 +134,11 @@ public class TextRect {
     public Rectangle getRect() {return r;}
     public String getName() {return name;}
     public void setCenterDist(int dist) {this.centerDist = dist;r = makeRect();}
-    public void setName(String name) {this.name = name;r = makeRect();}
+    public void setName(String name) {
+        this.name = name;
+        length = calculateLength(name);
+        r = makeRect();
+    }
     public void setCenterAngle(double centerAngle) {this.centerAngle = centerAngle;r = makeRect();}
     public void setRect(Rectangle r) {this.r = r;}
     public void addDist(int d) {this.centerDist += d;r = makeRect();}
