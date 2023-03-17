@@ -35,7 +35,7 @@ public class CompassActivity extends AppCompatActivity {
 
     private Map<Integer, Integer> nameToDot;
 
-    private final int initial = 430;
+    private final int initial = 450;
 
     private final int First = 1;
     private final int Second = 2;
@@ -58,7 +58,7 @@ public class CompassActivity extends AppCompatActivity {
 
     LandmarkLocation northLocation;
 
-    int OUTER_THRES = 1000; // The distance of the biggest circle
+    int OUTER_THRES = 12000; // The distance of the biggest circle
     int STATE = 2;
 
     @Override
@@ -133,7 +133,8 @@ public class CompassActivity extends AppCompatActivity {
             int dist = uuidToTextRectMap.get(uuid).getCenterDist();
             int int_UUID = String_toUUID(uuid);
             int dot_UUID = nameToDot.get(int_UUID);
-            updateCircleAngle(dot_UUID, int_UUID, angle_float, dist);
+            String newName = uuidToTextRectMap.get(uuid).getName();
+            updateCircleAngle(dot_UUID, int_UUID, angle_float, dist, newName);
 
         }
 
@@ -191,10 +192,6 @@ public class CompassActivity extends AppCompatActivity {
             updateDisplayMaps(uuid, name, angle, dist, STATE);
         }
         avoidCollisions(uuidToTextRectMap, 0);
-        for (String uuid : uuidToFriendMap.keySet()) {
-            double updatedDist = uuidToTextRectMap.get(uuid).getCenterDist();
-            uuidToDistanceMap.put(uuid, updatedDist);
-        }
 
         TextView textView = findViewById(R.id.orienta);
         textView.setText("Orientation: "+String.valueOf(userOrientation));
@@ -222,7 +219,7 @@ public class CompassActivity extends AppCompatActivity {
     }
 
 
-    void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance) {
+    void updateCircleAngle(int imageViewId, int textViewId, float angle, int distance, String newName) {
         ImageView imageView = findViewById(imageViewId);
 
         // Set UI icons to border if their distance would bring them past it
@@ -232,6 +229,7 @@ public class CompassActivity extends AppCompatActivity {
         }
 
         TextView textView = findViewById(textViewId);
+        textView.setText(newName);
         ConstraintLayout.LayoutParams layoutParamsText = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
         layoutParamsText.circleAngle = angle;
         layoutParamsText.circleRadius = distance;
@@ -317,11 +315,13 @@ public class CompassActivity extends AppCompatActivity {
     }
 
     public void updateDisplayMaps(String uuid, String name, double angle, double miles, int state) {
-        double outerCircle = 430.0;
+        double outerCircle = initial;
         double dist = 0;
         switch (state) {
             case 1: { // 0-1 :1 circle
                 dist = 430.0 * miles;
+                Log.d("Case1", String.valueOf(state));
+                break;
             }
             case 2: { // 1-10 : 2 circles
                 double inner = outerCircle / 2;
@@ -331,6 +331,8 @@ public class CompassActivity extends AppCompatActivity {
                     break;
                 }
                 dist = inner + outer / (10 - 1) * (miles - 1);
+                Log.d("Case2", String.valueOf(state));
+                break;
             }
             case 3: { // 10-500 : 3 circles
                 double inner1 = outerCircle / 3;
@@ -343,7 +345,9 @@ public class CompassActivity extends AppCompatActivity {
                     dist = inner1 + inner2 / (10 - 1) * (miles - 1);
                     break;
                 } else {
-                    dist = inner1 + inner2 + outer / (10 - 1) * (miles - 1);
+                    dist = inner1 + inner2 + outer / (500 - 10) * (miles - 10);
+                    Log.d("Case3", String.valueOf(state));
+                    break;
                 }
             }
             case 4: { // 500+ : 4 circles
@@ -361,9 +365,13 @@ public class CompassActivity extends AppCompatActivity {
                     dist = inner1 + inner2 + inner3 / (500 - 10) * (miles - 10);
                     break;
                 }
-                dist = inner1 + inner2 + inner3 + outer / (OUTER_THRES - 10) * (miles - 1);
+                dist = inner1 + inner2 + inner3 + outer / (OUTER_THRES - 500) * (miles - 500);
+                Log.d("Case4", String.valueOf(state));
+                break;
             }
         }
+        Log.d("Distance:::", String.valueOf(dist));
+        Log.d("STATE:::", String.valueOf(state));
         uuidToTextRectMap.put(uuid, new TextRect(name, (int)(dist + 0.5), angle));
     }
 
@@ -374,10 +382,11 @@ public class CompassActivity extends AppCompatActivity {
         List<TextRect> textRectslist = new ArrayList<TextRect>(uuidToTextRectMap.values());
         boolean needIter = false;
         for (int i = 0; i < textRectslist.size(); i++) {
-            for (int j = i; j < textRectslist.size(); j++) {
+            for (int j = i + 1; j < textRectslist.size(); j++) {
                 TextRect tr1 = textRectslist.get(i);
                 TextRect tr2 = textRectslist.get(j);
                 if (!TextRect.intersect(tr1, tr2)) continue;
+                Log.d("Collision", tr1.name + " / " + tr2.name);
                 needIter = true;
                 boolean truncateSuccess = false;
                 if (tr1.truncate() == true) truncateSuccess = true;

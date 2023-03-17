@@ -1,15 +1,22 @@
 package edu.ucsd.cse110.cse110lab4part5;
 
+import android.util.Log;
+
 public class TextRect {
     int centerDist;
     double centerAngle;
     Rectangle r;
     String name;
+    int length;
+    static double LONGCHAR = 21.8;
+    static double SHORTCHAR = 12;
+    static int HEIGHT = 38;
 
     TextRect(String name, int dist, double angle) {
         this.name = name;
         this.centerDist = dist;
         this.centerAngle = 90 - angle; // horizontal to the right is 0 degrees.
+        length = calculateLength(name);
         r = makeRect();
     }
 
@@ -21,10 +28,10 @@ public class TextRect {
         int l, r, u, b;
         int centerX = (int)(centerDist * Math.cos(Math.toRadians(centerAngle)));
         int centerY = (int)(centerDist * Math.sin(Math.toRadians(centerAngle)));
-        l = centerX - name.length() * 13;
-        r = centerX + name.length() * 13;
-        u = centerY + 18;
-        b = centerY - 18;
+        l = centerX - length / 2;
+        r = centerX + length / 2;
+        u = centerY + HEIGHT / 2;
+        b = centerY - HEIGHT / 2;
         Rectangle rect = new Rectangle(l, u, r, b);
         return rect;
     }
@@ -46,33 +53,71 @@ public class TextRect {
      */
     public static void nudge(TextRect r1, TextRect r2) {
         if (r1.getCenterDist() > r2.getCenterDist()) {
-            int addedDist = (37 - r1.getCenterDist() + r2.getCenterDist()) / 2;
+            int addedDist = (HEIGHT - r1.getCenterDist() + r2.getCenterDist()) / 2;
             r1.addDist(addedDist);
             r2.addDist(-addedDist);
+//            while (intersect(r1, r2)) {
+//                r1.addDist(5);
+//                r2.addDist(-5);
+//                Log.d("..", "..................");
+//            }
+            for (int i = 0; i < 5; i++) {
+                if (intersect(r1, r2)) {
+                    r1.addDist(5);
+                    r2.addDist(-5);
+                } else break;
+            }
             if (r2.getCenterDist() < 0) {
                 r2.setCenterDist(1);
-                r1.setCenterDist(36);
+                r1.setCenterDist(HEIGHT + 1);
             }
         } else {
-            int addedDist = (37 - r2.getCenterDist() + r1.getCenterDist()) / 2;
+            int addedDist = (HEIGHT - r2.getCenterDist() + r1.getCenterDist()) / 2;
             r2.addDist(addedDist);
             r1.addDist(-addedDist);
+//            while (intersect(r1, r2)) {
+//                r2.addDist(5);
+//                r1.addDist(-5);
+//            }
+            for (int i = 0; i < 5; i++) {
+                if (intersect(r1, r2)) {
+                    r2.addDist(5);
+                    r1.addDist(-5);
+                } else break;
+            }
             if (r1.getCenterDist() < 0) {
                 r1.setCenterDist(1);
-                r2.setCenterDist(36);
+                r2.setCenterDist(HEIGHT + 1);
             }
         }
     }
 
     /**
-     * Truncate the string to the first 3 characters.
+     * Truncate the string. If length <= 3, do nothing.
+     * If 3 < length <= 8, remove last char. Otherwise remove 2 chars.
      * @return if the operation has been done
      */
     public boolean truncate() {
         if (name.length() <= 3) return false;
-        name = name.substring(0, 3);
+        if (name.length() > 8) {
+            length -= calculateLength(name.substring(name.length() - 2));
+            name = name.substring(0, name.length() - 2);
+        } else {
+            length -= calculateLength(name.substring(name.length() - 1));
+            name = name.substring(0, name.length() - 1);
+        }
         r = makeRect();
         return true;
+    }
+
+    private int calculateLength(String name) {
+        double l = 0;
+        for (char c: name.toCharArray()) {
+            if (c == 'i' || c == 'j' || c == 'l' || c == 't' || c == '\'') {
+                l += SHORTCHAR;
+            } else l += LONGCHAR;
+        }
+        return (int)l;
     }
 
     public int getCenterDist() {return centerDist;}
