@@ -12,6 +12,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import okhttp3.internal.Util;
 
 public class FriendMediator {
     Map<String, Friend> uuidToFriendMap = new HashMap<>();
@@ -79,19 +83,26 @@ public class FriendMediator {
         return instance;
     }
 
-    public void init(MainActivity context){
+    public boolean init(MainActivity context){
         this.mainActivity = context;
 
 
         List<String> friendUUIDS = SharedPrefUtils.getAllID(context);
 
         for(String uuid: friendUUIDS){
-            uuidToFriendMap.put(uuid, new Friend("", uuid));
+            Friend blankFriend = new Friend("", uuid);
+            blankFriend.setLocation(new LandmarkLocation(0, 0, "default Friend Location"));
+            uuidToFriendMap.put(uuid, blankFriend);
         }
         // If no existing uuids, generate them
         if(!SharedPrefUtils.hasPubUUID(context)){
-            String publicUUID = serverAPI.getNewUUID();
-            String privateUUID = serverAPI.getNewUUID();
+            String publicUUID = serverAPI.getNewUUIDTimeout(9);
+            String privateUUID = serverAPI.getNewUUIDTimeout(9);
+            //if(true){
+            if(publicUUID == null || privateUUID == null){
+                Utilities.closeAppServerError(context);
+                return false;
+            }
             SharedPrefUtils.setPubUUID(context, Integer.valueOf(publicUUID));
             SharedPrefUtils.setPrivUUID(context, Integer.valueOf(privateUUID));
         }
@@ -109,12 +120,19 @@ public class FriendMediator {
                 for(String uuid: uuidToFriendMap.keySet()){
                     Future<Friend> friend = serverAPI.getFriendAsync(uuid);
                     try {
-                        uuidToFriendMap.put(uuid, friend.get());
+                        Friend constructedFriend = friend.get(9, TimeUnit.SECONDS);
+                        if(constructedFriend != null) {
+                            uuidToFriendMap.put(uuid, constructedFriend);
+                        } else{
+                            Log.d("Server Error", "Server unresponsive to update friend in mapping");
+                        }
                         // NOTE: FRIEND IS UPDATED
                     } catch (ExecutionException e) {
                         Log.e("Mediator", e.toString());
                     } catch (InterruptedException e) {
                         Log.e("Mediator", e.toString());
+                    } catch (TimeoutException e){
+                        Log.d("Server Error", "Server took too long to respond to update request for " + uuid);
                     }
                 }
                 Log.d("Mediator", "Finished Updating round");
@@ -128,6 +146,7 @@ public class FriendMediator {
                 Log.d("Mediator Error", e.toString());
             }
             }, 0, 1, TimeUnit.SECONDS);
+        return true;
     }
 
     /*
@@ -141,12 +160,17 @@ public class FriendMediator {
         boolean friendIsValid;// = updateNewFriendStatus(friend);
         Future<Friend> future = serverAPI.getFriendAsync(uuid);
         Friend friend = null;
+        boolean crash = false;
         try {
-            friend = future.get();
+            friend = future.get(9, TimeUnit.SECONDS);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            Utilities.closeAppServerError(context);
+            crash = true;
         }
         friendIsValid = (friend != null);
 
@@ -154,14 +178,14 @@ public class FriendMediator {
         if (friendIsValid) {
             uuidToFriendMap.put(uuid, friend);
             SharedPrefUtils.writeID(context, uuid);
-            //TODO: Fix
             if (compassActivity != null) {
                 compassActivity.addFriendToCompass(String_toUUID(uuid), friend.getName()); // new
             }
             updateUI();
         } else {
-            // TODO something like a warning "invalid uuid"
-            Utilities.showAlert((Activity)context, "invalid uuid");
+            if(!crash) {
+                Utilities.showAlert((Activity) context, "invalid uuid");
+            }
         }
     }
 
