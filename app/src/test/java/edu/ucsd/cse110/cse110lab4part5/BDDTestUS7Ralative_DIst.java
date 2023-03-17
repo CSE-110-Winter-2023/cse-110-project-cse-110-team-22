@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class BDDTestUS7Ralative_DIst {
-    ServerAPI serverAPI = ServerAPI.getInstance();
+    ServerAPI serverAPI = MockServerAPI.getInstance();
     Friend friend1;
 
     // updated values for friend 1 that share UUIDs
@@ -118,6 +118,7 @@ public class BDDTestUS7Ralative_DIst {
 
         initScenario.onActivity(activity -> {
             FriendMediator.getInstance().init((MainActivity) activity);
+            FriendMediator.getInstance().setMockServerAPI(serverAPI);
 
         });
 
