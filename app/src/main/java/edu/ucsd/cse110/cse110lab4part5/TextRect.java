@@ -52,24 +52,24 @@ public class TextRect {
      * @param r2 TextRect number 2.
      */
     public static void nudge(TextRect r1, TextRect r2) {
-        if (Math.abs(r1.getCenterAngle() - r2.getCenterAngle()) < 1) {
-            if (r1.getName().length() > 3) {
-                r1.setName(r1.getName().substring(0, 3));
+        if (r1.getName().length() > 17) r1.setName(r1.getName().substring(0, 17));
+        if (r2.getName().length() > 17) r2.setName(r2.getName().substring(0, 17));
+        double ang = r1.getCenterAngle();
+        if (!((45 > ang && 135 < ang) || (-89.9 < ang && ang < -45) || (ang < 269.9 && ang > 225))) {
+            if (Math.abs(r1.getCenterAngle() - r2.getCenterAngle()) < 1) {
+                if (r1.getName().length() > 3) {
+                    r1.setName(r1.getName().substring(0, 3));
+                }
+                if (r2.getName().length() > 3) {
+                    r2.setName(r2.getName().substring(0, 3));
+                }
+                if (!intersect(r1, r2)) return;
             }
-            if (r2.getName().length() > 3) {
-                r2.setName(r2.getName().substring(0, 3));
-            }
-            if (!intersect(r1, r2)) return;
         }
         if (r1.getCenterDist() > r2.getCenterDist()) {
             int addedDist = (HEIGHT - r1.getCenterDist() + r2.getCenterDist()) / 2;
             r1.addDist(addedDist);
             r2.addDist(-addedDist);
-//            while (intersect(r1, r2)) {
-//                r1.addDist(5);
-//                r2.addDist(-5);
-//                Log.d("..", "..................");
-//            }
             for (int i = 0; i < 5; i++) {
                 if (intersect(r1, r2)) {
                     r1.addDist(5);
@@ -84,10 +84,6 @@ public class TextRect {
             int addedDist = (HEIGHT - r2.getCenterDist() + r1.getCenterDist()) / 2;
             r2.addDist(addedDist);
             r1.addDist(-addedDist);
-//            while (intersect(r1, r2)) {
-//                r2.addDist(5);
-//                r1.addDist(-5);
-//            }
             for (int i = 0; i < 5; i++) {
                 if (intersect(r1, r2)) {
                     r2.addDist(5);
