@@ -96,6 +96,7 @@ public class BDDTest2UIFriend {
 
         initScenario.onActivity(activity -> {
             FriendMediator.getInstance().init((MainActivity) activity);
+            FriendMediator.getInstance().setMockServerAPI(serverAPI);
 
         });
 

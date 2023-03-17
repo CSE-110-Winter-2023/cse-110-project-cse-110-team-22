@@ -31,10 +31,16 @@ public class MockServerAPI extends ServerAPI{
     private Friend getFriend(String uuid){
         String body =MockDB.get(uuid);
        if(body!=null){
-           return Friend.fromJSON(body);
+           return this.friendFromJSON(uuid, body);
        }
        return null;
     }
+
+    private Friend friendFromJSON(String uuid, String body) {
+        body = "{\n" + "\"public_code\":\"" + uuid + "\"," + body.substring(1);
+        return Friend.fromJSON(body);
+    }
+
     @AnyThread
     public Future<Friend> getFriendAsync(String uuid) {
         ExecutorService executor = Executors.newSingleThreadExecutor();

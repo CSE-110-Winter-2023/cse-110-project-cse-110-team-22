@@ -274,4 +274,9 @@ public class FriendMediator {
         this.userOrientation = degree;
         updateUI();
     }
+
+    @VisibleForTesting
+    public void setMockServerAPI(ServerAPI serverAPI){
+        this.serverAPI = serverAPI;
+    }
 }
