@@ -39,7 +39,7 @@ import java.util.concurrent.Future;
 @RunWith(RobolectricTestRunner.class)
 public class BDDTestUS1 {
     // Try commenting out this rule and running the test, it will fail!
-    ServerAPI serverAPI = ServerAPI.getInstance();
+    ServerAPI serverAPI = MockServerAPI.getInstance();
     Friend friend1;
 
     // updated values for friend 1 that share UUIDs
@@ -102,6 +102,7 @@ public class BDDTestUS1 {
         initScenario.onActivity(activity -> {
             // init mediator and mock the location and orientation services
             FriendMediator.getInstance().init((MainActivity) activity);
+            FriendMediator.getInstance().setMockServerAPI(serverAPI);
 
 
         });

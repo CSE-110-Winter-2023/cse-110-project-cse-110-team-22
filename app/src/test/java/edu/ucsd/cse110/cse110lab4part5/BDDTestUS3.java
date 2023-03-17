@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
 public class BDDTestUS3 {
-    ServerAPI serverAPI = ServerAPI.getInstance();
+    ServerAPI serverAPI = MockServerAPI.getInstance();
     Friend friend1;
 
     String publicUUID;
@@ -57,6 +57,7 @@ public class BDDTestUS3 {
 
         initScenario.onActivity(activity -> {
             FriendMediator.getInstance().init((MainActivity) activity);
+            FriendMediator.getInstance().setMockServerAPI(serverAPI);
 
         });
 

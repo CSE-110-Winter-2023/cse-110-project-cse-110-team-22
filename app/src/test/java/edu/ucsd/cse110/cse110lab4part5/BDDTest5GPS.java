@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
 
 @RunWith(RobolectricTestRunner.class)
 public class BDDTest5GPS {
-    ServerAPI serverAPI = ServerAPI.getInstance();
+    ServerAPI serverAPI = MockServerAPI.getInstance();
     Friend friend1;
 
     // updated values for friend 1 that share UUIDs
@@ -41,31 +41,13 @@ public class BDDTest5GPS {
     Friend friend2;
     String friend2PrivateCode;
 
-    private String getNewUUID(){
-        String uuid;
-        while(true){
-            uuid = String.valueOf(UserUUID.generate_own_uid());
-            boolean exists = true;
-            try {
-                exists = serverAPI.uuidExistsAsync(uuid).get();
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            if(exists == false){
-                break;
-            }
-        }
-        return uuid;
-    }
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
-        String publicUUID1 = getNewUUID();
-        String privateUUID1 = getNewUUID();
-        String publicUUID2 = getNewUUID();
-        String privateUUID2 = getNewUUID();
+        String publicUUID1 = serverAPI.getNewUUID();
+        String privateUUID1 = serverAPI.getNewUUID();
+        String publicUUID2 = serverAPI.getNewUUID();
+        String privateUUID2 = serverAPI.getNewUUID();
         friend1 = new Friend("Julia", publicUUID1);
         friend1.setLocation(new LandmarkLocation(32.88014354083708, -117.2318005216365, "Julia's Location"));
         friend1PrivateCode = privateUUID1;
@@ -119,6 +101,8 @@ public class BDDTest5GPS {
 
         initScenario.onActivity(activity -> {
             FriendMediator.getInstance().init((MainActivity) activity);
+            FriendMediator.getInstance().setMockServerAPI(serverAPI);
+
 
         });
 
