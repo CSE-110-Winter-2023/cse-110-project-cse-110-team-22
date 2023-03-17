@@ -83,7 +83,7 @@ public class FriendMediator {
         return instance;
     }
 
-    public void init(MainActivity context){
+    public boolean init(MainActivity context){
         this.mainActivity = context;
 
 
@@ -98,8 +98,10 @@ public class FriendMediator {
         if(!SharedPrefUtils.hasPubUUID(context)){
             String publicUUID = serverAPI.getNewUUIDTimeout(9);
             String privateUUID = serverAPI.getNewUUIDTimeout(9);
+            //if(true){
             if(publicUUID == null || privateUUID == null){
                 Utilities.closeAppServerError(context);
+                return false;
             }
             SharedPrefUtils.setPubUUID(context, Integer.valueOf(publicUUID));
             SharedPrefUtils.setPrivUUID(context, Integer.valueOf(privateUUID));
@@ -144,6 +146,7 @@ public class FriendMediator {
                 Log.d("Mediator Error", e.toString());
             }
             }, 0, 1, TimeUnit.SECONDS);
+        return true;
     }
 
     /*
