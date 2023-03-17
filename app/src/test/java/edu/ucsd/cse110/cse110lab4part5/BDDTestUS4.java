@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
 @RunWith(RobolectricTestRunner.class)
 public class BDDTestUS4 {
     // Try commenting out this rule and running the test, it will fail!
-    ServerAPI serverAPI = ServerAPI.getInstance();
+    ServerAPI serverAPI = MockServerAPI.getInstance();
 
     Location mockLocation = new LandmarkLocation(32.88014354083708, -117.2318005216365, "mock_user_location");
 
@@ -52,6 +52,8 @@ public class BDDTestUS4 {
         ActivityScenario initScenario = ActivityScenario.launch(MainActivity.class);
         initScenario.moveToState(Lifecycle.State.CREATED);
         initScenario.moveToState(Lifecycle.State.STARTED);
+        FriendMediator.getInstance().setMockServerAPI(serverAPI);
+
 
         initScenario.onActivity(activity -> {
             // init mediator and mock the location and orientation services
