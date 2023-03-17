@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -211,7 +213,7 @@ public class ServerAPI {
     @VisibleForTesting
     public Future<String> deleteFriendAsync(String uuid, String privateCode) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(() -> upsertUser(uuid, privateCode));
+        Future<String> future = executor.submit(() -> deleteFriend(uuid, privateCode));
 
         return future;
     }
@@ -258,7 +260,36 @@ public class ServerAPI {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            if(uuid == null){
+                Log.d("BadUUIDCall", "Server returned null on get new UUID");
+            }
+            if(exists == false && uuid != null){
+                break;
+            }
+        }
+        Log.d("ServerAPIUUID", uuid);
+        return uuid;
+    }
 
+    /**
+     * GetNewUUID method with a timeout: used in real code when we expect the server may be unresponsive
+     * @param seconds to timeout after
+     * @return new UUID if server is up, null if it is down
+     */
+    public String getNewUUIDTimeout(int seconds){
+        String uuid;
+        while(true){
+            uuid = String.valueOf(UserUUID.generate_own_uid());
+            boolean exists = true;
+            try {
+                exists = uuidExistsAsync(uuid).get(seconds, TimeUnit.SECONDS);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (TimeoutException e) {
+                return null;
+            }
             if(uuid == null){
                 Log.d("BadUUIDCall", "Server returned null on get new UUID");
             }
