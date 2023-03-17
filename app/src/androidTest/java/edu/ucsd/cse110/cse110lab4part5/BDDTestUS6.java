@@ -76,7 +76,7 @@ public class BDDTestUS6 {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("123321"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("2132040428"), closeSoftKeyboard());
 
         ViewInteraction materialButton3 = onView(
                 allOf(withId(R.id.add_friend_to_database), withText("Add"),
@@ -128,22 +128,28 @@ public class BDDTestUS6 {
         appCompatImageButton.perform(click());
 
         ViewInteraction imageView = onView(
-                allOf(withId(R.id.ring23),
+                allOf(withId(R.id.ring13),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
                         isDisplayed()));
         imageView.check(matches(isDisplayed()));
 
         ViewInteraction imageView2 = onView(
-                allOf(withId(R.id.ring13),
+                allOf(withId(R.id.ring23),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
                         isDisplayed()));
         imageView2.check(matches(isDisplayed()));
 
-        ViewInteraction imageButton = onView(
-                allOf(withId(R.id.zoom_out),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
+        ViewInteraction imageView3 = onView(
+                allOf(withParent(allOf(withId(R.id.clock),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
-        imageButton.check(matches(isDisplayed()));
+        imageView3.check(matches(isDisplayed()));
+
+        ViewInteraction imageView4 = onView(
+                allOf(withParent(allOf(withId(R.id.clock),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
+                        isDisplayed()));
+        imageView4.check(matches(isDisplayed()));
 
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withId(R.id.zoom_out),
@@ -155,18 +161,6 @@ public class BDDTestUS6 {
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
-        ViewInteraction imageView3 = onView(
-                allOf(withId(R.id.ring34),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
-                        isDisplayed()));
-        imageView3.check(matches(isDisplayed()));
-
-        ViewInteraction imageView4 = onView(
-                allOf(withId(R.id.ring12),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
-                        isDisplayed()));
-        imageView4.check(matches(isDisplayed()));
-
         ViewInteraction imageView5 = onView(
                 allOf(withId(R.id.ring14),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
@@ -174,10 +168,72 @@ public class BDDTestUS6 {
         imageView5.check(matches(isDisplayed()));
 
         ViewInteraction imageView6 = onView(
-                allOf(withId(R.id.ring14),
+                allOf(withId(R.id.ring12),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
                         isDisplayed()));
         imageView6.check(matches(isDisplayed()));
+
+        ViewInteraction imageView7 = onView(
+                allOf(withId(R.id.ring34),
+                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class))),
+                        isDisplayed()));
+        imageView7.check(matches(isDisplayed()));
+
+        ViewInteraction textView = onView(
+                allOf(withText("SSSS"),
+                        withParent(allOf(withId(R.id.clock),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
+                        isDisplayed()));
+        textView.check(matches(withText("SSSS")));
+
+        ViewInteraction textView2 = onView(
+                allOf(withText("SSSS"),
+                        withParent(allOf(withId(R.id.clock),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
+                        isDisplayed()));
+        textView2.check(matches(withText("SSSS")));
+
+        ViewInteraction appCompatImageButton3 = onView(
+                allOf(withId(R.id.zoom_in),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatImageButton3.perform(click());
+
+        ViewInteraction appCompatImageButton4 = onView(
+                allOf(withId(R.id.zoom_in),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatImageButton4.perform(click());
+
+        ViewInteraction appCompatImageButton5 = onView(
+                allOf(withId(R.id.zoom_in),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatImageButton5.perform(click());
+
+        ViewInteraction imageView8 = onView(
+                allOf(withParent(allOf(withId(R.id.clock),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
+                        isDisplayed()));
+        imageView8.check(matches(isDisplayed()));
+
+        ViewInteraction imageView9 = onView(
+                allOf(withParent(allOf(withId(R.id.clock),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
+                        isDisplayed()));
+        imageView9.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
