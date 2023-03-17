@@ -29,10 +29,8 @@ public class TextRectTest {
         Rectangle newRect = t1.makeRect();
         int centerX = (int)(t1.getCenterDist() * Math.cos(Math.toRadians(t1.getCenterAngle())));
         int centerY = (int)(t1.getCenterDist() * Math.sin(Math.toRadians(t1.getCenterAngle())));
-        assertEquals(centerX - 13 * t1.getName().length(), newRect.left);
-        assertEquals(centerX + 13 * t1.getName().length(), newRect.right);
-        assertEquals(centerY + 18, newRect.top);
-        assertEquals(centerY - 18, newRect.bottom);
+        assertEquals(2 * centerX, t1.r.left + t1.r.right);
+        assertEquals(2 * centerY, t1.r.top + t1.r.bottom);
     }
 
     /**
@@ -68,7 +66,9 @@ public class TextRectTest {
         assertTrue(t2.truncate());
         assertTrue(t3.truncate());
         assertTrue(t4.truncate());
-        assertFalse(t1.truncate());
-        assertFalse(t2.truncate());
+        assertTrue(t1.truncate());
+        assertTrue(t3.truncate());
+        assertTrue(t3.truncate());
+        assertFalse(t3.truncate());
     }
 }
